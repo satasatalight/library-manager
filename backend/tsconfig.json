@@ -1,45 +1,23 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    // File Layout
-    "rootDir": "./src",
-    "outDir": "./dist",
-
-    // Environment Settings
-    // See also https://aka.ms/tsconfig/module
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    // "target": "esnext",
-    // "types": [],
-    // For nodejs:
-    "lib": ["esnext"],
-    "types": ["node"],
-    // and npm install -D @types/node
-
-    // Other Outputs
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-
-    // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-
-    // Style Options
-    // "noImplicitReturns": true,
-    // "noImplicitOverride": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    // "noFallthroughCasesInSwitch": true,
-    // "noPropertyAccessFromIndexSignature": true,
-
-    // Recommended Options
+    "target": "ES2022",
+    "module": "nodenext",
+    "esModuleInterop": true,
+    "lib": ["ES2022"],
     "strict": true,
-    "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+    "forceConsistentCasingInFileNames": true,
+    // Node runs the .ts files directly and tsc only typechecks, so imports
+    // name the .ts files
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    // Node strips types one file at a time, so type-only imports must say so
+    // and syntax that needs compiling (enums, namespaces...) isn't allowed
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "useUnknownInCatchVariables": false,
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "tests/**/*.ts", "eslint.config.ts"],
+  "exclude": ["src/public/*"]
 }

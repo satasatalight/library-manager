@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+tsconfig.tsbuildinfo
 dist
 dist-ssr
 *.local
@@ -24,7 +25,7 @@ dist-ssr
 *.sw?
 
 # env files
-.env
+.env*
 
 # dart gitignores
 # Miscellaneous

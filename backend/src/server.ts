@@ -1,6 +1,15 @@
-import app from "./app";
-import config from "./config";
+import logger from 'jet-logger';
 
-app.listen(config.port, () => {
-    console.log(`Server running on port ${config.port}`);
+import app from './app.ts';
+import config from './config.ts';
+
+const SERVER_START_MESSAGE = `Express server started on port: ${config.port}`;
+
+// Start the server
+app.listen(config.port, (err) => {
+  if (!!err) {
+    logger.err(err.message);
+  } else {
+    logger.info(SERVER_START_MESSAGE);
+  }
 });
