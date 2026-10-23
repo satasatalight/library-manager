@@ -2,6 +2,7 @@ import { useState } from "react";
 import heroImg from "./assets/hero.png";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "./assets/vite.svg";
+import './sass/styles.scss';
 import "./App.css";
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
         </div>
         <button
           type="button"
-          className="counter"
+          className="btn"
           onClick={() => setCount((count) => count + 1)}
         >
           Count is {count}
