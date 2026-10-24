@@ -1,22 +1,20 @@
 // Import all of Bootstrap’s CSS
 @use "../../node_modules/bootstrap/scss/bootstrap.scss" with (
-    $theme-colors: (
-        "base": #e6ddc5
-    ),
-    $utilities: (
-        "font-family": (
-            property: font-family,
-            class: font,
-            values: (
-                "monospace": var(--font-mono),
-                "body": var(--body-font-family),
-                "kurale": "Kurale"
-            )
-        ),
+  // set custom values
+  $theme-colors: ("base": #e6ddc5),
+  $utilities: (
+    "font-family": (
+      property: font-family,
+      class: font,
+      values: (
+        "monospace": var(--font-mono),
+        "body": var(--body-font-family),
+        "kurale": "Kurale",
+      ),
     )
+  ),
+  $font-sizes: ("head": 9rem)
 );
 
 // import fonts
-@import url('https://fonts.googleapis.com/css2?family=Kurale&display=swap');
-@import "../../node_modules/bootstrap/scss/functions";
-@import "../../node_modules/bootstrap/scss/variables";
+@import url("https://fonts.googleapis.com/css2?family=Kurale&display=swap");
