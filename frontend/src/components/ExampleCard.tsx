@@ -3,15 +3,18 @@ import { useState } from "react";
 
 type ExampleRequest = {
   message: string;
-}
+};
 
 export default function ExampleCard() {
   const [userMessage, setUserMessage] = useState("");
   const [serverResponse, setServerResponse] = useState("");
 
   async function callBackend() {
-    const req = {message: userMessage} as ExampleRequest;
-    const response = await axios.post("https://library-manager-ashy.vercel.app/example", req);
+    const req = { message: userMessage } as ExampleRequest;
+    const response = await axios.post(
+      "https://library-manager-ashy.vercel.app/example",
+      req,
+    );
     setServerResponse(response.data);
   }
 
@@ -25,14 +28,18 @@ export default function ExampleCard() {
           type="text"
           className="form-control"
           placeholder="Message"
-          onChange={e => setUserMessage(e.target.value)}
+          onChange={(e) => setUserMessage(e.target.value)}
         ></input>
-        <button onClick={() => callBackend()} className="btn btn-accent" type="button">
+        <button
+          onClick={() => callBackend()}
+          className="btn btn-accent"
+          type="button"
+        >
           Send
         </button>
       </div>
       <div className="mt-3 mb-2">Response from server:</div>
-      <textarea className="form-control" value={serverResponse} readOnly/>
+      <textarea className="form-control" value={serverResponse} readOnly />
     </div>
   );
 }
