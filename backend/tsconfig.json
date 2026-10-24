@@ -11,6 +11,7 @@
     // name the .ts files
     "noEmit": true,
     "allowImportingTsExtensions": true,
+    "rewriteRelativeImportExtensions": true,
     // Node strips types one file at a time, so type-only imports must say so
     // and syntax that needs compiling (enums, namespaces...) isn't allowed
     "verbatimModuleSyntax": true,
