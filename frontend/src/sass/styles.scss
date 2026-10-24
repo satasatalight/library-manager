@@ -1,7 +1,7 @@
 // Import all of Bootstrap’s CSS
 @use "../../node_modules/bootstrap/scss/bootstrap.scss" with (
   // set custom values
-  $theme-colors: ("base": #e6ddc5),
+  $theme-colors: ("base": #e6ddc5, "accent": #8f4670),
   $utilities: (
     "font-family": (
       property: font-family,
