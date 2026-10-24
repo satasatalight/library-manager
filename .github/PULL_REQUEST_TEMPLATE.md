@@ -1,3 +1,5 @@
+<!-- Please match your PR title with the Notion task name that the PR completes -->
+
 # Pull Request
 
 ## Description
@@ -20,8 +22,9 @@
 
 - [ ] I have tested my changes locally
 - [ ] I ran `npm run format`
-- [ ] `npm run lint` passes without errors
 - [ ] `npm run typecheck` passes without errors
-- [ ] `npm run build` completes successfully
+- [ ] `npm run lint` passes without errors
+- [ ] `npm run build` completes successfully <!-- For frontend -->
+- [ ] `npm run test` completes successfully <!-- For backend -->
 
 ## Additional Notes
