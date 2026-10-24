@@ -2,7 +2,7 @@ import assert from 'node:assert';
 import { describe, it } from 'node:test';
 import request from 'supertest';
 
-import app from '#src/app.ts';
+import app from '../app.ts';
 
 describe('test /example POST endpoint', function () {
   it('sends hello world + the message back', function () {
