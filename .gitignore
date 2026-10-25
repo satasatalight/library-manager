@@ -76,3 +76,7 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# React Router framework build output
+frontend/build/
+frontend/.react-router/
