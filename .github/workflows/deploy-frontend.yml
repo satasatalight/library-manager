@@ -17,7 +17,7 @@ jobs:
         run: |
           cd frontend
           npm ci
-          npm run build
+          BASE_URL='https://satasatalight.github.io/library-manager/' npm run build
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
