@@ -5,21 +5,23 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npx react-router build",
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc -b --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview --outDir build/client"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.8.0",
     "axios": "^1.20.0",
     "bootstrap": "^5.3.8",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
+    "react-dom": "^19.3.1",
+    "isbot": "^5"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@react-router/fs-routes": "^8.5.0",
     "@types/bootstrap": "^5.2.11",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
