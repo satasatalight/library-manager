@@ -1,7 +1,6 @@
-import "./sass/styles.scss";
-import ExampleCard from "./components/ExampleCard";
+import ExampleCard from "../components/ExampleCard";
 
-function App() {
+function Login() {
   return (
     <div className="vh-100 w-100 bg-base">
       <div className="main container border-start border-end shadow-lg mx-auto px-5 pt-5 h-100 w-75 ">
@@ -16,4 +15,4 @@ function App() {
   );
 }
 
-export default App;
+export default Login;
