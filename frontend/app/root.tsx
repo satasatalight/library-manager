@@ -1,11 +1,11 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import stylesUrl from "./sass/styles.scss?url";
 
-export function links() {
-  return [{ rel: "stylesheet", href: stylesUrl }];
-}
+export const links = () => {
+  return [{rel: "stylesheet", href: stylesUrl}];
+};
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export default function Root() {
   return (
     <html lang="en">
       <head>
@@ -15,14 +15,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <Outlet />
         <ScrollRestoration />
         <Scripts />
       </body>
     </html>
   );
-}
-
-export default function Root() {
-  return <Outlet />;
 }
