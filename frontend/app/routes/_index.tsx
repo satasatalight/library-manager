@@ -25,7 +25,9 @@ function Login() {
           <a
             href="#"
             onClick={() =>
-              setEntryFieldComponent(<>Put the Forgot Password Component here</>)
+              setEntryFieldComponent(
+                <>Put the Forgot Password Component here</>,
+              )
             }
             className="link-accent"
           >

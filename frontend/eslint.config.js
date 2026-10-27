@@ -21,8 +21,8 @@ export default defineConfig([
     rules: {
       "react-refresh/only-export-components": [
         "warn",
-        { allowExportNames: ["links"] }
-      ]
-    }
+        { allowExportNames: ["links"] },
+      ],
+    },
   },
 ]);
