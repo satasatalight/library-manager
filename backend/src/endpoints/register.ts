@@ -9,13 +9,27 @@ interface RegisterBody {
   last_name: string;
   password: string;
 }
+let mongoClient: MongoClient;
+const DB_NAME = "Library-Manager";
+const USERS_TABLE_NAME = "users";
 
-async function validateEmail(email: string) {
-    
+async function validateEmail(email: string): Promise<boolean> {
+    // Correct email structure
+    if (!email.match("/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/.")) {
+      return false;
+    }
+
+    // Email not in database
+    const collection = await mongoClient.db(DB_NAME).collection(USERS_TABLE_NAME);
+    if (collection.findOne({ "email": email }) != null) {
+      return false;
+    }
+
+    // Email valid!
+    return true;
 }
 
 export default async function register(req: RegisterBody, res: Response) {
-    let mongoClient: MongoClient;
     mongoClient = await getMongoClient();
     
     await mongoClient.close();
