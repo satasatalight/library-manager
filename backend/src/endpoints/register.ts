@@ -24,21 +24,19 @@ interface DatabaseUserEntry {
 async function validateEmail(email: string): Promise<boolean> {
     // Correct email structure
     if (!email.match("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")) {
-      console.log("Regex didn't match: " + email);
       return false;
     }
 
     // Email not in database
     const collection = mongoClient.db(DB_NAME).collection(USERS_TABLE_NAME);
     if (await collection.findOne({ "email": email }) != null) {
-      console.log("Found match: " + await collection.findOne({ "email": email }));
       return false;
     }
 
     return true;
 }
 function validateNames(req: RegisterBody): boolean {
-  if (!req.first_name.match("[A-Za-z\-]+") || !req.last_name.match("[A-Za-z\-]+")) {
+  if (!req.first_name.match("^[A-Za-z\-]+$") || !req.last_name.match("^[A-Za-z\-]+$")) {
     return false;
   }
 
@@ -110,6 +108,9 @@ export default async function register(req: RegisterBody, res: Response) {
         reason: "We could not register your account. Our database may be unable to add your information. Please try again later."
       });
     }
+
+    console.log("New account registered:");
+    console.log(entry);
     
     await mongoClient.close();
     return res.status(200).send({
