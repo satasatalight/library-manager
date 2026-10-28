@@ -1,9 +1,9 @@
 import express from 'express';
-import { config } from 'dotenv';
 import { MongoClient } from 'mongodb';
 
 import example from './endpoints/example.ts';
 import register from './endpoints/register.ts';
+import config from './config.ts';
 
 const app = express();
 
@@ -12,8 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // MongoDB connection
-config();
-const DB_URI = process.env.MONGODB_URI!;
+const DB_URI = config.mongo_uri;
 export async function getMongoClient() {
     let mongoClient;
 
