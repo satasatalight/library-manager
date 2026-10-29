@@ -3,6 +3,7 @@ import type { MongoClient } from 'mongodb';
 import { hash, randomInt } from 'node:crypto';
 
 import { getMongoClient } from '../app.ts';
+import nodemailer from 'nodemailer';
 
 interface RegisterBody {
   email: string;
@@ -67,6 +68,12 @@ function hashPassword(password: string): string {
 async function storeData(entry: DatabaseUserEntry): Promise<boolean> {
   try {
     await mongoClient.db(DB_NAME).collection(USERS_TABLE_NAME).insertOne(entry);
+
+    // Any email with @testing.email will auto-delete
+    if (entry.email.match("^[a-zA-Z0-9._%+-]+@testing\.email$")) {
+      await mongoClient.db(DB_NAME).collection(USERS_TABLE_NAME).deleteOne(entry);
+      console.log(entry.email + " user entry test successfully removed!");
+    }
   } catch (error) {
     return false;
   }
@@ -77,6 +84,12 @@ async function storeData(entry: DatabaseUserEntry): Promise<boolean> {
 async function storeValidationData(entry: PendingVerificationEntry): Promise<boolean> {
   try {
     await mongoClient.db(DB_NAME).collection(VERIFY_TABLE_NAME).insertOne(entry);
+
+    // Any email with @testing.email will auto-delete
+    if (entry.email.match("^[a-zA-Z0-9._%+-]+@testing\.email$")) {
+      await mongoClient.db(DB_NAME).collection(VERIFY_TABLE_NAME).deleteOne(entry);
+      console.log(entry.email + " verification entry test successfully removed!");
+    }
   } catch (error) {
     return false;
   }
