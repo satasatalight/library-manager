@@ -16,7 +16,7 @@ const config: Config = {
   mongo_uri: String(process.env.MONGODB_URI),
   jwt_key: String(process.env.JWT_KEY),
   email_user: String(process.env.EMAIL_USER),
-  email_pass: String(process.env.EMAIL_PASS)
+  email_pass: String(process.env.EMAIL_PASS),
 };
 
 export default config;

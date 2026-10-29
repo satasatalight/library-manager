@@ -1,9 +1,9 @@
 import type { Response } from 'express';
 import type { MongoClient } from 'mongodb';
 import { hash, randomInt } from 'node:crypto';
+import nodemailer from 'nodemailer';
 
 import { getMongoClient } from '../app.ts';
-import nodemailer from 'nodemailer';
 import config from '../config.ts';
 
 interface RegisterBody {
@@ -71,9 +71,12 @@ async function storeData(entry: DatabaseUserEntry): Promise<boolean> {
     await mongoClient.db(DB_NAME).collection(USERS_TABLE_NAME).insertOne(entry);
 
     // Any email with @testing.email will auto-delete
-    if (entry.email.match("^[a-zA-Z0-9._%+-]+@testing\.email$")) {
-      await mongoClient.db(DB_NAME).collection(USERS_TABLE_NAME).deleteOne(entry);
-      console.log(entry.email + " user entry test successfully removed!");
+    if (entry.email.match('^[a-zA-Z0-9._%+-]+@testing\.email$')) {
+      await mongoClient
+        .db(DB_NAME)
+        .collection(USERS_TABLE_NAME)
+        .deleteOne(entry);
+      console.log(entry.email + ' user entry test successfully removed!');
     }
   } catch (error) {
     return false;
@@ -82,25 +85,35 @@ async function storeData(entry: DatabaseUserEntry): Promise<boolean> {
   return true;
 }
 
-async function storeValidationData(entry: PendingVerificationEntry): Promise<boolean> {
+async function storeValidationData(
+  entry: PendingVerificationEntry,
+): Promise<boolean> {
   try {
-    await mongoClient.db(DB_NAME).collection(VERIFY_TABLE_NAME).insertOne(entry);
+    await mongoClient
+      .db(DB_NAME)
+      .collection(VERIFY_TABLE_NAME)
+      .insertOne(entry);
 
     // Any email with @testing.email will auto-delete
-    if (entry.email.match("^[a-zA-Z0-9._%+-]+@testing\.email$")) {
-      await mongoClient.db(DB_NAME).collection(VERIFY_TABLE_NAME).deleteOne(entry);
-      console.log(entry.email + " verification entry test successfully removed!");
+    if (entry.email.match('^[a-zA-Z0-9._%+-]+@testing\.email$')) {
+      await mongoClient
+        .db(DB_NAME)
+        .collection(VERIFY_TABLE_NAME)
+        .deleteOne(entry);
+      console.log(
+        entry.email + ' verification entry test successfully removed!',
+      );
     }
   } catch (error) {
     return false;
   }
-  
+
   return true;
 }
 
 async function sendVerificationEmail(email: string, code: number) {
   const transporter = nodemailer.createTransport({
-    service: "Ethereal",
+    service: 'Ethereal',
     secure: false,
     auth: {
       user: config.email_user,
@@ -111,12 +124,15 @@ async function sendVerificationEmail(email: string, code: number) {
   const info = await transporter.sendMail({
     from: `"LitLog" <${config.email_user}>`,
     to: email,
-    subject: "LitLog: Verify Your Email",
-    html: "<p>Please verify your email using the code: <b>"+ code +"</b><br /><br />Thank you for choosing <b>LitLog</b>.</p>",
+    subject: 'LitLog: Verify Your Email',
+    html:
+      '<p>Please verify your email using the code: <b>' +
+      code +
+      '</b><br /><br />Thank you for choosing <b>LitLog</b>.</p>',
   });
 
-  console.log("Message sent: %s", info.messageId);
-  console.log("Preview: %s", nodemailer.getTestMessageUrl(info));
+  console.log('Message sent: %s', info.messageId);
+  console.log('Preview: %s', nodemailer.getTestMessageUrl(info));
 }
 
 export default async function register(req: RegisterBody, res: Response) {
@@ -170,9 +186,9 @@ export default async function register(req: RegisterBody, res: Response) {
   // TODO: store email + verification code + expiry timestamp in pendingVerification collection
   const verifyEntry: PendingVerificationEntry = {
     email: req.email,
-    code: randomInt(100000,1000000),
-    expiry: Date.now() + (EXPIRY_TIME_DAYS * 24 * 60 * 60 * 1000)
-  }
+    code: randomInt(100000, 1000000),
+    expiry: Date.now() + EXPIRY_TIME_DAYS * 24 * 60 * 60 * 1000,
+  };
   if ((await storeValidationData(verifyEntry)) == false) {
     return res.status(500).send({
       status: 'error',
@@ -188,7 +204,7 @@ export default async function register(req: RegisterBody, res: Response) {
     console.error(error);
     return res.status(500).send({
       status: 'error',
-      reason: 'Verification email could not be sent.'
+      reason: 'Verification email could not be sent.',
     });
   }
 
