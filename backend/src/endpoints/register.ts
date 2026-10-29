@@ -11,15 +11,14 @@ interface RegisterBody {
   password: string;
 }
 let mongoClient: MongoClient;
-const DB_NAME = 'Library-Manager';
+const DB_NAME = 'litlog';
 const USERS_TABLE_NAME = 'users';
 interface DatabaseUserEntry {
   email: string;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   password: string;
-  is_validated: boolean;
-  validation_code: number;
+  isEmailVerified: boolean;
 }
 
 async function validateEmail(email: string): Promise<boolean> {
@@ -103,11 +102,11 @@ export default async function register(req: RegisterBody, res: Response) {
 
   const entry: DatabaseUserEntry = {
     email: req.email,
-    first_name: req.first_name,
-    last_name: req.last_name,
+    firstName: req.first_name,
+    lastName: req.last_name,
     password: hashPassword(req.password),
-    is_validated: false,
-    validation_code: randomInt(100000, 1000000), // Random 6-digit code
+    isEmailVerified: false,
+    // validation_code: randomInt(100000, 1000000), // Random 6-digit code
   };
   if ((await storeData(entry)) == false) {
     return res.status(500).send({
@@ -116,6 +115,9 @@ export default async function register(req: RegisterBody, res: Response) {
         'We could not register your account. Our database may be unable to add your information. Please try again later.',
     });
   }
+
+  // TODO: store email + verification code + expiry timestamp in pendingVerification collection
+  // TODO: send email w/ verification code thru nodemailer to user
 
   console.log('New account registered:');
   console.log(entry);
