@@ -4,6 +4,7 @@ import { hash, randomInt } from 'node:crypto';
 
 import { getMongoClient } from '../app.ts';
 import nodemailer from 'nodemailer';
+import config from '../config.ts';
 
 interface RegisterBody {
   email: string;
@@ -97,6 +98,27 @@ async function storeValidationData(entry: PendingVerificationEntry): Promise<boo
   return true;
 }
 
+async function sendVerificationEmail(email: string, code: number) {
+  const transporter = nodemailer.createTransport({
+    service: "Ethereal",
+    secure: false,
+    auth: {
+      user: config.email_user,
+      pass: config.email_pass,
+    },
+  });
+
+  const info = await transporter.sendMail({
+    from: `"LitLog" <${config.email_user}>`,
+    to: email,
+    subject: "LitLog: Verify Your Email",
+    html: "<p>Please verify your email using the code: <b>"+ code +"</b><br /><br />Thank you for choosing <b>LitLog</b>.</p>",
+  });
+
+  console.log("Message sent: %s", info.messageId);
+  console.log("Preview: %s", nodemailer.getTestMessageUrl(info));
+}
+
 export default async function register(req: RegisterBody, res: Response) {
   if (!req.email || !req.first_name || !req.last_name || !req.password) {
     return res.status(400).send({
@@ -160,6 +182,15 @@ export default async function register(req: RegisterBody, res: Response) {
   }
 
   // TODO: send email w/ verification code thru nodemailer to user
+  try {
+    await sendVerificationEmail(verifyEntry.email, verifyEntry.code);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({
+      status: 'error',
+      reason: 'Verification email could not be sent.'
+    });
+  }
 
   console.log('New account registered:');
   console.log(entry);
