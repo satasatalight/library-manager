@@ -20,6 +20,13 @@ interface DatabaseUserEntry {
   password: string;
   isEmailVerified: boolean;
 }
+const VERIFY_TABLE_NAME = 'pendingVerification';
+const EXPIRY_TIME_DAYS = 7;
+interface PendingVerificationEntry {
+  email: string;
+  code: number;
+  expiry: number;
+}
 
 async function validateEmail(email: string): Promise<boolean> {
   // Correct email structure
@@ -57,14 +64,23 @@ function hashPassword(password: string): string {
   return hash('sha256', password);
 }
 
-// Set email code in database so validation endpoint can retrieve
-async function storeData(entry: DatabaseUserEntry) {
+async function storeData(entry: DatabaseUserEntry): Promise<boolean> {
   try {
     await mongoClient.db(DB_NAME).collection(USERS_TABLE_NAME).insertOne(entry);
   } catch (error) {
     return false;
   }
 
+  return true;
+}
+
+async function storeValidationData(entry: PendingVerificationEntry): Promise<boolean> {
+  try {
+    await mongoClient.db(DB_NAME).collection(VERIFY_TABLE_NAME).insertOne(entry);
+  } catch (error) {
+    return false;
+  }
+  
   return true;
 }
 
@@ -117,6 +133,19 @@ export default async function register(req: RegisterBody, res: Response) {
   }
 
   // TODO: store email + verification code + expiry timestamp in pendingVerification collection
+  const verifyEntry: PendingVerificationEntry = {
+    email: req.email,
+    code: randomInt(100000,1000000),
+    expiry: Date.now() + (EXPIRY_TIME_DAYS * 24 * 60 * 60 * 1000)
+  }
+  if ((await storeValidationData(verifyEntry)) == false) {
+    return res.status(500).send({
+      status: 'error',
+      reason:
+        'We could not register your account. Our database may be unable to add your information. Please try again later.',
+    });
+  }
+
   // TODO: send email w/ verification code thru nodemailer to user
 
   console.log('New account registered:');
