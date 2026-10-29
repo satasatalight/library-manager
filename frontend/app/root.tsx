@@ -2,7 +2,7 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 import stylesUrl from "./sass/styles.scss?url";
 
 export const links = () => {
-  return [{rel: "stylesheet", href: stylesUrl}];
+  return [{ rel: "stylesheet", href: stylesUrl }];
 };
 
 export default function Root() {
