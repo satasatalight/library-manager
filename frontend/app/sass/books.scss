@@ -1,0 +1,222 @@
+// The page uses the same Bootstrap theme values and utility classes as _index.tsx.
+// These rules only handle the book-list-specific layout and interactions.
+
+.books-main {
+  max-width: 1200px;
+  color: #212529;
+}
+
+.books-heading {
+  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.books-toolbar {
+  width: 100%;
+}
+
+.books-search-input {
+  width: min(100%, 340px);
+  min-height: 44px;
+  background-color: #fff;
+  color: #212529;
+
+  &::placeholder {
+    color: #777;
+    opacity: 1;
+  }
+
+  &:focus {
+    background-color: #fff;
+  }
+}
+
+.books-icon-button {
+  display: inline-flex;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.35rem;
+  line-height: 1;
+
+  &:hover,
+  &:focus-visible,
+  &.is-active {
+    border-color: rgba(33, 37, 41, 0.3);
+    background: rgba(255, 255, 255, 0.55);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #8f4670;
+    outline-offset: 2px;
+  }
+}
+
+.books-action-hint {
+  color: #212529;
+  font-size: 0.95rem;
+}
+
+.books-list {
+  width: min(100%, 760px);
+}
+
+.book-list-item {
+  border-bottom: 1px solid rgba(33, 37, 41, 0.2);
+
+  &:first-child {
+    border-top: 1px solid rgba(33, 37, 41, 0.2);
+  }
+
+  &__content,
+  &__select {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 0.75rem;
+    text-align: left;
+  }
+
+  &__select {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+
+    &:hover,
+    &:focus-visible {
+      background: rgba(255, 255, 255, 0.45);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #8f4670;
+      outline-offset: -2px;
+    }
+  }
+
+  &__title {
+    font-family: "Kurale", Georgia, serif;
+    font-size: 1.35rem;
+    line-height: 1.25;
+  }
+
+  &__details {
+    color: #4e4e4e;
+    font-size: 0.9rem;
+  }
+
+  &--action {
+    cursor: pointer;
+  }
+}
+
+.books-note {
+  color: #555;
+  font-size: 0.8rem;
+}
+
+.book-dialog-backdrop {
+  position: fixed;
+  z-index: 1050;
+  inset: 0;
+  display: grid;
+  overflow-y: auto;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.book-dialog {
+  width: min(100%, 460px);
+  color: #212529;
+}
+
+.book-input {
+  min-height: 44px;
+  background-color: #fff;
+  color: #212529;
+
+  &::placeholder {
+    color: #777;
+    opacity: 1;
+  }
+
+  &:focus {
+    background-color: #fff;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .books-main {
+    width: 100% !important;
+    border-right: 0 !important;
+    border-left: 0 !important;
+  }
+
+  .books-toolbar {
+    max-width: 440px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .books-search-input {
+    flex: 1 0 100%;
+  }
+}
+
+.book-list-item__content,
+.book-list-item__select {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  width: 100%;
+  text-align: left;
+}
+
+.book-list-item__select {
+  text-align: left;
+}
+
+.book-list-item__cover {
+  display: block;
+  width: 65px;
+  height: 100px;
+  object-fit: contain;
+  object-position: center;
+  flex: 0 0 65px;
+  border-radius: 4px;
+}
+
+.book-list-item__text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: left;
+  gap: 0.35rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.book-list-item__title,
+.book-list-item__details,
+.book-list-item__description {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+
+.book-list-item__description {
+  color: #4e4e4e;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
