@@ -4,23 +4,17 @@ import RegisterForm from "../components/RegisterForm";
 import VerifyForm from "../components/VerifyForm";
 
 function Login() {
-  const [entryFieldComponent, setEntryFieldComponent] = useState(
-     <LoginForm />,
-  );
+  const [entryFieldComponent, setEntryFieldComponent] = useState(<LoginForm />);
 
   function handleRegisterSuccess(email: string): void {
     setEntryFieldComponent(
-      <VerifyForm
-        email={email}
-        onVerifySuccess={handleVerifySuccess}
-      />
+      <VerifyForm email={email} onVerifySuccess={handleVerifySuccess} />,
     );
   }
 
   function handleVerifySuccess(): void {
     setEntryFieldComponent(<LoginForm />);
   }
-
 
   return (
     <div className="vh-100 w-100 bg-base">
@@ -34,7 +28,7 @@ function Login() {
             onClick={(e) => {
               e.preventDefault();
               setEntryFieldComponent(
-                <RegisterForm onRegisterSuccess={handleRegisterSuccess} />
+                <RegisterForm onRegisterSuccess={handleRegisterSuccess} />,
               );
             }}
             className="link-accent"
