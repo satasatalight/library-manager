@@ -1,10 +1,20 @@
 import { useState } from "react";
 import LoginForm from "../components/LoginForm";
+import RegisterForm from "../components/RegisterForm";
+import VerifyForm from "../components/VerifyForm";
 
 function Login() {
-  const [entryFieldComponent, setEntryFieldComponent] = useState(
-     <LoginForm />,
-  );
+  const [entryFieldComponent, setEntryFieldComponent] = useState(<LoginForm />);
+
+  function handleRegisterSuccess(email: string): void {
+    setEntryFieldComponent(
+      <VerifyForm email={email} onVerifySuccess={handleVerifySuccess} />,
+    );
+  }
+
+  function handleVerifySuccess(): void {
+    setEntryFieldComponent(<LoginForm />);
+  }
 
   return (
     <div className="vh-100 w-100 bg-base">
@@ -15,9 +25,12 @@ function Login() {
           <br />
           <a
             href="#"
-            onClick={() =>
-              setEntryFieldComponent(<>Put the Sign Up Component here</>)
-            }
+            onClick={(e) => {
+              e.preventDefault();
+              setEntryFieldComponent(
+                <RegisterForm onRegisterSuccess={handleRegisterSuccess} />,
+              );
+            }}
             className="link-accent"
           >
             Don't Have an account? Sign Up
