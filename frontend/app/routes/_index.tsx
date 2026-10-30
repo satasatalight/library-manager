@@ -1,10 +1,20 @@
 import { useState } from "react";
 import LoginForm from "../components/LoginForm";
+import ResetForm from "../components/ResetForm";
+import NewPasswordForm from "../components/NewPasswordForm";
 
 function Login() {
-  const [entryFieldComponent, setEntryFieldComponent] = useState(
-     <LoginForm />,
-  );
+  const [entryFieldComponent, setEntryFieldComponent] = useState(<LoginForm />);
+
+  function handleResetRequested(): void {
+    setEntryFieldComponent(
+      <NewPasswordForm onPasswordResetSuccess={handlePasswordResetSuccess} />,
+    );
+  }
+
+  function handlePasswordResetSuccess(): void {
+    setEntryFieldComponent(<LoginForm />);
+  }
 
   return (
     <div className="vh-100 w-100 bg-base">
@@ -15,9 +25,10 @@ function Login() {
           <br />
           <a
             href="#"
-            onClick={() =>
-              setEntryFieldComponent(<>Put the Sign Up Component here</>)
-            }
+            onClick={(e) => {
+              e.preventDefault();
+              setEntryFieldComponent(<>Put the Sign Up Component here</>);
+            }}
             className="link-accent"
           >
             Don't Have an account? Sign Up
@@ -25,11 +36,12 @@ function Login() {
           <br />
           <a
             href="#"
-            onClick={() =>
+            onClick={(e) => {
+              e.preventDefault();
               setEntryFieldComponent(
-                <>Put the Forgot Password Component here</>,
-              )
-            }
+                <ResetForm onResetRequested={handleResetRequested} />,
+              );
+            }}
             className="link-accent"
           >
             Forgot Password?
