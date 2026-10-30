@@ -3,6 +3,7 @@ import { MongoClient } from 'mongodb';
 
 import config from './config.ts';
 import example from './endpoints/example.ts';
+import login from './endpoints/login.ts';
 import register from './endpoints/register.ts';
 
 const app = express();
@@ -38,6 +39,9 @@ app.post('/example', (req, res) => {
 });
 app.post('/users/register', async (req, res) => {
   return await register(req.body, res);
+});
+app.post('/users/login', async (req, res) => {
+  return await login(req.body, res);
 });
 
 export default app;
