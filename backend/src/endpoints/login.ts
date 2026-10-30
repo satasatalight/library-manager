@@ -3,7 +3,8 @@ import type { Response } from 'express';
 import type { MongoClient, ObjectId } from 'mongodb';
 import { hash } from 'node:crypto';
 import config from '../config.ts';
-import { sign } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
+const { sign } = jwt;
 
 interface LoginBody {
     email: string;
