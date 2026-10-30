@@ -78,7 +78,7 @@ export default async function login(req: LoginBody, res: Response)
 
         The login is valid, so we take care of the rest.
     */
-   const token = await createJWT(user_id);
+   const token = createJWT(user_id);
    await mongoClient.close();
    return res.status(200).send
    ({
@@ -120,7 +120,7 @@ async function validateCredentials(credentials: LoginBody): Promise<WithId<Docum
     }
 }
 
-async function createJWT(user: ObjectId): Promise<string>
+function createJWT(user: ObjectId): string
 {
     const payload =
     {
