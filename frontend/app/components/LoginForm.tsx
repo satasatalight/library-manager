@@ -6,9 +6,12 @@ function LoginForm() {
   const [loginPassword, setLoginPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [invalidEmail, setInvalidEmail] = useState(false);
 
   function handleSetLoginEmail(e: React.ChangeEvent<HTMLInputElement>): void {
     setLoginEmail(e.target.value);
+    setInvalidEmail(false);
+    setMessage("");
   }
 
   function handleSetPassword(e: React.ChangeEvent<HTMLInputElement>): void {
@@ -24,18 +27,31 @@ function LoginForm() {
       return;
     }
 
-    const obj = {
-      email: loginEmail,
-      password: loginPassword,
-    };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(loginEmail)) {
+      setInvalidEmail(true);
+      setMessage("Invalid email format.");
+      return;
+    }
+
+    setInvalidEmail(false);
+
+    if (!loginPassword) {
+      setMessage("Please enter your password.");
+      return;
+    }
+
+    setMessage("");
+    setIsSubmitting(true);
 
     try {
-      setIsSubmitting(true);
-      setMessage("Logging in...");
-
       const response = await axios.post(
         "https://library-manager-ashy.vercel.app/users/login",
-        obj,
+        {
+          email: loginEmail,
+          password: loginPassword,
+        },
       );
 
       const res = response.data;
@@ -65,11 +81,14 @@ function LoginForm() {
     <form
       className="d-flex flex-column align-items-center mt-5"
       onSubmit={doLogin}
+      noValidate
     >
+      <h2 className="mb-4">Login</h2>
+
       <input
         type="email"
         placeholder="Email"
-        className="form-control w-75 mb-4"
+        className={`form-control w-75 mb-4 ${invalidEmail ? "is-invalid" : ""}`}
         value={loginEmail}
         onChange={handleSetLoginEmail}
         required
@@ -89,10 +108,18 @@ function LoginForm() {
         className="btn btn-accent px-5"
         disabled={isSubmitting}
       >
-        {isSubmitting ? "Logging in..." : "Login"}
+        {isSubmitting ? "Logging In..." : "Login"}
       </button>
 
-      <span className="mt-3">{message}</span>
+      {message && (
+        <p
+          className={`mt-3 text-center ${
+            message === "Login successful!" ? "text-success" : "text-danger"
+          }`}
+        >
+          {message}
+        </p>
+      )}
     </form>
   );
 }
