@@ -12,6 +12,7 @@ function RegisterForm({ onRegisterSuccess }: RegisterFormProps) {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [invalidEmail, setInvalidEmail] = useState(false);
 
   function handleSetFirstName(e: React.ChangeEvent<HTMLInputElement>): void {
     setFirstName(e.target.value);
@@ -23,6 +24,8 @@ function RegisterForm({ onRegisterSuccess }: RegisterFormProps) {
 
   function handleSetEmail(e: React.ChangeEvent<HTMLInputElement>): void {
     setEmail(e.target.value);
+    setInvalidEmail(false);
+    setMessage("");
   }
 
   function handleSetPassword(e: React.ChangeEvent<HTMLInputElement>): void {
@@ -38,20 +41,35 @@ function RegisterForm({ onRegisterSuccess }: RegisterFormProps) {
       return;
     }
 
-    const obj = {
-      first_name: firstName,
-      last_name: lastName,
-      email: email,
-      password: password,
-    };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      setInvalidEmail(true);
+      setMessage("Invalid email format.");
+      return;
+    }
+
+    setInvalidEmail(false);
+
+    if (!firstName.trim() || !lastName.trim() || password.length < 8) {
+      setMessage(
+        "Please fill in all fields and use a password of at least 8 characters.",
+      );
+      return;
+    }
+
+    setMessage("");
+    setIsSubmitting(true);
 
     try {
-      setIsSubmitting(true);
-      setMessage("Registering account...");
-
       const response = await axios.post(
         "https://library-manager-ashy.vercel.app/users/register",
-        obj,
+        {
+          first_name: firstName,
+          last_name: lastName,
+          email: email,
+          password: password,
+        },
       );
 
       const res = response.data;
@@ -80,8 +98,9 @@ function RegisterForm({ onRegisterSuccess }: RegisterFormProps) {
     <form
       className="d-flex flex-column align-items-center mt-5"
       onSubmit={doRegister}
+      noValidate
     >
-      <h2 className="fw-bold mb-5">Create Account</h2>
+      <h2 className="mb-4">Create Account</h2>
 
       <input
         type="text"
@@ -104,7 +123,7 @@ function RegisterForm({ onRegisterSuccess }: RegisterFormProps) {
       <input
         type="email"
         placeholder="Email"
-        className="form-control w-75 mb-4"
+        className={`form-control w-75 mb-4 ${invalidEmail ? "is-invalid" : ""}`}
         value={email}
         onChange={handleSetEmail}
         required
@@ -122,13 +141,13 @@ function RegisterForm({ onRegisterSuccess }: RegisterFormProps) {
 
       <button
         type="submit"
-        className="btn btn-accent px-5"
+        className="btn bg-white text-black px-5"
         disabled={isSubmitting}
       >
-        {isSubmitting ? "Registering..." : "Create"}
+        {isSubmitting ? "Creating Account..." : "Create"}
       </button>
 
-      <span className="mt-3">{message}</span>
+      {message && <p className="mt-3 text-danger text-center">{message}</p>}
     </form>
   );
 }
