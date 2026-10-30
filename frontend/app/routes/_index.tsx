@@ -1,8 +1,9 @@
 import { useState } from "react";
+import LoginForm from "../components/LoginForm";
 
 function Login() {
   const [entryFieldComponent, setEntryFieldComponent] = useState(
-    <>Put the Login Component Here</>,
+     <LoginForm />,
   );
 
   return (
