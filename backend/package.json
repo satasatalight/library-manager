@@ -33,6 +33,7 @@
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
     "@types/connect-livereload": "^0.6.3",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/livereload": "^0.9.5",
     "@types/morgan": "^1.9.10",
     "@types/node": "^26.6.5",
