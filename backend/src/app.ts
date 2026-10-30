@@ -42,6 +42,6 @@ app.post('/users/register', async (req, res) => {
 });
 app.post('/users/login', async (req, res) => {
   return await login(req.body, res);
-})
+});
 
 export default app;
