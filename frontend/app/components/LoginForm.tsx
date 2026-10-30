@@ -105,7 +105,7 @@ function LoginForm() {
 
       <button
         type="submit"
-        className="btn bg-white text-black px-5"
+        className="btn btn-accent px-5"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Logging In..." : "Login"}
