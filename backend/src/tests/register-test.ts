@@ -5,8 +5,8 @@ import request from 'supertest';
 import app from '../app.ts';
 
 interface ResponseBody {
-    status: string;
-    reason: string;
+  status: string;
+  reason: string;
 }
 
 describe('Test /users/register POST endpoint', function () {
@@ -24,7 +24,9 @@ describe('Test /users/register POST endpoint', function () {
       .then((response) => {
         const { status, reason } = response.body as ResponseBody;
         assert.equal(status, 'success');
-        assert.equal(reason, 'Your account has been registered. Please verify your email.',
+        assert.equal(
+          reason,
+          'Your account has been registered. Please verify your email.',
         );
       });
   });

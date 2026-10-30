@@ -3,8 +3,8 @@ import { MongoClient } from 'mongodb';
 
 import config from './config.ts';
 import example from './endpoints/example.ts';
-import register from './endpoints/register.ts';
 import login from './endpoints/login.ts';
+import register from './endpoints/register.ts';
 
 const app = express();
 
