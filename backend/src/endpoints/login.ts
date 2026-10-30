@@ -1,6 +1,6 @@
 import { getMongoClient } from '../app.ts';
 import type { Response } from 'express';
-import type { MongoClient, ObjectId } from 'mongodb';
+import type { Document, MongoClient, ObjectId, WithId } from 'mongodb';
 import { hash } from 'node:crypto';
 import config from '../config.ts';
 import jwt from 'jsonwebtoken';
@@ -48,28 +48,29 @@ export default async function login(req: LoginBody, res: Response)
     mongoClient = await getMongoClient();
 
     // Check if the login attempt is valid.
-    const user_id = await validateCredentials(credentials);
+    const user_document = await validateCredentials(credentials);
+    const user_id = user_document?._id;
     // user_id is null if no matching credentials were found.
-    if(user_id == null)
+    if(user_id == null || user_document == null)
     {
         return res.status(401).send
         ({
             status: 'error',
             reason: 'Invalid email or password.',
             token: null
-        })
+        });
     }
     
     // Check if the email is verified.
-    if((await isEmailVerified(user_id)) == false)
-    {
+   if(user_document.isEmailVerified == false)
+   {
         return res.status(403).send
         ({
             status: 'error',
             reason: 'You have not verified your email. Please verify before logging in.',
             token: null
-        })
-    }
+        });
+   }
 
     /*
         By this point, the credentials are known to be valid
@@ -89,7 +90,7 @@ export default async function login(req: LoginBody, res: Response)
 
 }
 
-async function validateCredentials(credentials: LoginBody): Promise<ObjectId | null>
+async function validateCredentials(credentials: LoginBody): Promise<WithId<Document> | null>
 {
     
     try
@@ -106,7 +107,7 @@ async function validateCredentials(credentials: LoginBody): Promise<ObjectId | n
         // If we got a result; means credentials were valid.
         if(credentials_valid != null)
         {
-            return credentials_valid._id;
+            return credentials_valid;
         }
 
         // No result; credentials are not valid.
@@ -116,32 +117,6 @@ async function validateCredentials(credentials: LoginBody): Promise<ObjectId | n
     {
         // Some error happened; login is invalid.
         return null;
-    }
-}
-
-async function isEmailVerified(user: ObjectId): Promise<boolean>
-{
-    try
-    {
-        const email_verified = await mongoClient
-        .db(DB_NAME)
-        .collection(USERS_TABLE_NAME)
-        .findOne({
-            _id: user
-        });
-
-        if(email_verified)
-        {
-            if(email_verified.isEmailVerified)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    catch(error)
-    {
-        return false;
     }
 }
 
