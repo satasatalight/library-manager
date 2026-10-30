@@ -49,6 +49,7 @@ export default async function login(req: LoginBody, res: Response)
 
     // Check if the login attempt is valid.
     const user_id = await validateCredentials(credentials);
+    // user_id is null if no matching credentials were found.
     if(user_id == null)
     {
         return res.status(401).send
@@ -77,6 +78,7 @@ export default async function login(req: LoginBody, res: Response)
         The login is valid, so we take care of the rest.
     */
    const token = await createJWT(user_id);
+   await mongoClient.close();
    return res.status(200).send
    ({
         status: 'success',
