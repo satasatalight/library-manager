@@ -1,6 +1,7 @@
 import { useState } from "react";
 import LoginForm from "../components/LoginForm";
 import RegisterForm from "../components/RegisterForm";
+import VerifyForm from "../components/VerifyForm";
 
 function Login() {
   const [entryFieldComponent, setEntryFieldComponent] = useState(
@@ -9,9 +10,17 @@ function Login() {
 
   function handleRegisterSuccess(email: string): void {
     setEntryFieldComponent(
-      <>Registration successful! Please verify your email: {email}</>
+      <VerifyForm
+        email={email}
+        onVerifySuccess={handleVerifySuccess}
+      />
     );
   }
+
+  function handleVerifySuccess(): void {
+    setEntryFieldComponent(<LoginForm />);
+  }
+
 
   return (
     <div className="vh-100 w-100 bg-base">
