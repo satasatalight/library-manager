@@ -1,14 +1,15 @@
 import { useState } from "react";
+import LoginForm from "../components/LoginForm";
 
 function Login() {
   const [entryFieldComponent, setEntryFieldComponent] = useState(
-    <>Put the Login Component Here</>,
+     <LoginForm />,
   );
 
   return (
     <div className="vh-100 w-100 bg-base">
       <div className="main container border-start border-end shadow-lg mx-auto px-5 pt-5 h-100 w-75 ">
-        <h1 className="fs-head font-kurale">LitLog</h1>
+        <h1 className="fs-head font-kurale text-center">LitLog</h1>
         <div className="mt-4">
           {entryFieldComponent}
           <br />
