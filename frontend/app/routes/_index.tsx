@@ -2,6 +2,8 @@ import { useState } from "react";
 import LoginForm from "../components/LoginForm";
 import ResetForm from "../components/ResetForm";
 import NewPasswordForm from "../components/NewPasswordForm";
+import RegisterForm from "../components/RegisterForm";
+import VerifyForm from "../components/VerifyForm";
 
 function Login() {
   const [entryFieldComponent, setEntryFieldComponent] = useState(<LoginForm />);
@@ -16,6 +18,16 @@ function Login() {
     setEntryFieldComponent(<LoginForm />);
   }
 
+  function handleRegisterSuccess(email: string): void {
+    setEntryFieldComponent(
+      <VerifyForm email={email} onVerifySuccess={handleVerifySuccess} />,
+    );
+  }
+
+  function handleVerifySuccess(): void {
+    setEntryFieldComponent(<LoginForm />);
+  }
+
   return (
     <div className="vh-100 w-100 bg-base">
       <div className="main container border-start border-end shadow-lg mx-auto px-5 pt-5 h-100 w-75 ">
@@ -27,7 +39,9 @@ function Login() {
             href="#"
             onClick={(e) => {
               e.preventDefault();
-              setEntryFieldComponent(<>Put the Sign Up Component here</>);
+              setEntryFieldComponent(
+                <RegisterForm onRegisterSuccess={handleRegisterSuccess} />,
+              );
             }}
             className="link-accent"
           >
