@@ -1,10 +1,22 @@
 import { useState } from "react";
 import LoginForm from "../components/LoginForm";
+import ResetForm from "../components/ResetForm";
+import NewPasswordForm from "../components/NewPasswordForm";
 import RegisterForm from "../components/RegisterForm";
 import VerifyForm from "../components/VerifyForm";
 
 function Login() {
   const [entryFieldComponent, setEntryFieldComponent] = useState(<LoginForm />);
+
+  function handleResetRequested(): void {
+    setEntryFieldComponent(
+      <NewPasswordForm onPasswordResetSuccess={handlePasswordResetSuccess} />,
+    );
+  }
+
+  function handlePasswordResetSuccess(): void {
+    setEntryFieldComponent(<LoginForm />);
+  }
 
   function handleRegisterSuccess(email: string): void {
     setEntryFieldComponent(
@@ -38,11 +50,12 @@ function Login() {
           <br />
           <a
             href="#"
-            onClick={() =>
+            onClick={(e) => {
+              e.preventDefault();
               setEntryFieldComponent(
-                <>Put the Forgot Password Component here</>,
-              )
-            }
+                <ResetForm onResetRequested={handleResetRequested} />,
+              );
+            }}
             className="link-accent"
           >
             Forgot Password?
