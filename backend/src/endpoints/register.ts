@@ -15,7 +15,7 @@ interface RegisterBody {
 let mongoClient: MongoClient;
 const DB_NAME = 'litlog';
 const USERS_TABLE_NAME = 'users';
-interface DatabaseUserEntry {
+export interface DatabaseUserEntry {
   email: string;
   firstName: string;
   lastName: string;

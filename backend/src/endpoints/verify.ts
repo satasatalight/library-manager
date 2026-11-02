@@ -2,7 +2,7 @@ import { getMongoClient } from '../app.ts';
 import type { Response } from 'express';
 import type { MongoClient } from 'mongodb';
 
-import type { PendingVerificationEntry } from './register.ts';
+import type { PendingVerificationEntry, DatabaseUserEntry } from './register.ts';
 
 interface VerifyBody {
     email: string;
@@ -20,6 +20,21 @@ async function fetchVerifyData(email: string): Promise<PendingVerificationEntry 
     .findOne({email: email});
 }
 
+function isCodeExpired(expiry: number): boolean {
+    return Date.now() > expiry;
+}
+
+async function verifyUser(email: string): Promise<boolean> {
+    try {
+        await mongoClient.db(DB_NAME)
+        .collection<DatabaseUserEntry>(USERS_TABLE_NAME)
+        .updateOne({email: email}, { $set: {isEmailVerified: true} });
+    } catch (error) {
+        return false;
+    }
+    return true;
+}
+
 export default async function verify(req: VerifyBody, res: Response) {
     if (!req.email || !req.code) {
         return res.status(400).send({
@@ -29,11 +44,37 @@ export default async function verify(req: VerifyBody, res: Response) {
     }
 
     mongoClient = await getMongoClient();
-    let verifyEntry = fetchVerifyData(req.email);
+    let verifyEntry: PendingVerificationEntry | null = await fetchVerifyData(req.email);
     if (verifyEntry == null) {
         return res.status(404).send({
             status: "error",
             reason: "We could not find your email. Please ensure you have registered your account. If you are still receiving this error, please ensure your email is correct."
+        });
+    }
+
+    if (isCodeExpired(verifyEntry.expiry)) {
+        return res.status(403).send({
+            status: "error",
+            reason: "Your code has expired."
+        });
+    }
+
+    if (req.code != verifyEntry.code) {
+        return res.status(403).send({
+            status: "error",
+            reason: "We could not match your code. Please ensure the code is correct."
+        });
+    }
+
+    if (await verifyUser(req.email)) {
+        return res.status(200).send({
+            status: "success",
+            reason: "Your email has been verified. You may now log in using your username and password."
+        });
+    } else {
+        return res.status(500).send({
+            status: "error",
+            reason: "We could not update your verification status. The database may be unavailable. Please try again later."
         });
     }
 }
