@@ -153,7 +153,7 @@ export default async function addBook(req: AddBookBody, res: Response)
     return res.status(200).send({
         status: 'success',
         reason: 'Book successfully added.',
-        book_id: entry_id_for_request
+        book_id: book_id
     });
 }
 
