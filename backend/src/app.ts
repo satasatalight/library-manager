@@ -5,6 +5,7 @@ import config from './config.ts';
 import example from './endpoints/example.ts';
 import login from './endpoints/login.ts';
 import register from './endpoints/register.ts';
+import verify from './endpoints/verify.ts';
 
 const app = express();
 
@@ -42,6 +43,9 @@ app.post('/users/register', async (req, res) => {
 });
 app.post('/users/login', async (req, res) => {
   return await login(req.body, res);
+});
+app.post('/users/register/verify', async (req, res) => {
+  return await verify(req.body, res);
 });
 
 export default app;
