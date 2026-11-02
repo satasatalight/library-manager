@@ -1,11 +1,11 @@
 import type { Response } from 'express';
-import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { Db, MongoClient, type Document, type InsertOneResult, type ObjectId, type WithId } from 'mongodb';
 
 import { getMongoClient } from '../app.ts';
 import config from '../config.ts';
 
-const { verify } = jwt;
+const { verify, JsonWebTokenError, TokenExpiredError} = jwt;
 
 interface NewBook
 {
