@@ -24,7 +24,7 @@ interface DatabaseUserEntry {
 }
 const VERIFY_TABLE_NAME = 'pendingVerification';
 const EXPIRY_TIME_DAYS = 7;
-interface PendingVerificationEntry {
+export interface PendingVerificationEntry {
   email: string;
   code: number;
   expiry: number;
