@@ -46,6 +46,21 @@ export default function Books() {
         }
 
         const library = response.data.library;
+
+        // example data
+        // uncomment this to test
+        // const library = [
+          // {
+            // book_id: 1,
+            // title: "example",
+            // author: "mr. example",
+            // genre: "example-like",
+            // publication_year: 1000,
+            // description: "this is an example",
+            // cover_image: null
+          // }
+        // ];
+
         setBooks(Array.isArray(library) ? library.map(normalizeBook) : []);
       } catch (error) {
         setBooks([]);
