@@ -2,6 +2,7 @@ import express from 'express';
 import { MongoClient } from 'mongodb';
 
 import config from './config.ts';
+import addBook from './endpoints/add-book.ts';
 import example from './endpoints/example.ts';
 import login from './endpoints/login.ts';
 import register from './endpoints/register.ts';
@@ -42,6 +43,9 @@ app.post('/users/register', async (req, res) => {
 });
 app.post('/users/login', async (req, res) => {
   return await login(req.body, res);
+});
+app.post('/library/add', async (req, res) => {
+  return await addBook(req.body, res);
 });
 
 export default app;
