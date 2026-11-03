@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-function LoginForm() {
+interface LoginFormProps {
+  onLoginSuccess: () => void;
+}
+
+function LoginForm({ onLoginSuccess }: LoginFormProps) {
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -19,7 +23,7 @@ function LoginForm() {
   }
 
   async function doLogin(
-    event: React.SubmitEvent<HTMLFormElement>,
+    event: React.FormEvent<HTMLFormElement>,
   ): Promise<void> {
     event.preventDefault();
 
@@ -58,7 +62,8 @@ function LoginForm() {
 
       if (res.status === "success" && typeof res.token === "string") {
         sessionStorage.setItem("token", res.token);
-        setMessage("Login successful!");
+
+        onLoginSuccess();
       } else {
         setMessage(res.reason || "Login failed.");
       }

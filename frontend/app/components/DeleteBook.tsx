@@ -1,4 +1,11 @@
-import type { Book } from "./AddBook";
+import { useState } from "react";
+import axios from "axios";
+import {
+  API_BASE_URL,
+  getApiErrorMessage,
+  getAuthToken,
+} from "../utils/bookApi.ts";
+import type { Book } from "../types/book.ts";
 
 type DeleteBookProps = {
   book: Book;
@@ -6,23 +13,81 @@ type DeleteBookProps = {
   onCancel: () => void;
 };
 
-export default function DeleteBook({ onCancel }: DeleteBookProps) {
-  return (
-    <div className="position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-dark bg-opacity-50">
-      <section
-        className="bg-white rounded shadow p-4 text-center"
-        role="dialog"
-        aria-modal="true"
-      >
-        <h2>DeleteBook component to be added later</h2>
+export default function DeleteBook({
+  book,
+  onConfirm,
+  onCancel,
+}: DeleteBookProps) {
+  const [message, setMessage] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
-        <button
-          type="button"
-          className="btn btn-outline-dark mt-3"
-          onClick={onCancel}
-        >
-          Close
-        </button>
+  async function handleDelete() {
+    if (isDeleting) return;
+
+    setIsDeleting(true);
+    setMessage("");
+
+    try {
+      const response = await axios.post(`${API_BASE_URL}/library/delete`, {
+        book_id: book.id,
+        token: getAuthToken(),
+      });
+
+      if (response.data?.status !== "success") {
+        throw new Error(
+          response.data?.reason || "The book could not be deleted.",
+        );
+      }
+
+      onConfirm();
+    } catch (error) {
+      setMessage(getApiErrorMessage(error, "Unable to delete the book."));
+    } finally {
+      setIsDeleting(false);
+    }
+  }
+
+  return (
+    <div
+      className="book-dialog-backdrop"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget && !isDeleting) onCancel();
+      }}
+    >
+      <section
+        className="book-dialog bg-base shadow-lg p-4 p-md-5 text-center"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="delete-book-heading"
+      >
+        <h2 id="delete-book-heading" className="font-kurale mb-3">
+          Delete Book
+        </h2>
+
+        {message && (
+          <p className="text-danger mb-3" role="alert">
+            {message}
+          </p>
+        )}
+
+        <div className="d-flex justify-content-center gap-3">
+          <button
+            type="button"
+            className="btn btn-outline-dark"
+            onClick={onCancel}
+            disabled={isDeleting}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="btn btn-dark"
+            onClick={handleDelete}
+            disabled={isDeleting}
+          >
+            {isDeleting ? "Deleting..." : "Confirm"}
+          </button>
+        </div>
       </section>
     </div>
   );

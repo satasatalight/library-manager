@@ -1,38 +1,17 @@
-import { useMemo, useState } from "react";
-import AddBook, { type Book } from "../components/AddBook";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import AddBook from "../components/AddBook";
 import EditBook from "../components/EditBook";
 import DeleteBook from "../components/DeleteBook";
+import SearchBook from "../components/SearchBook";
+import {
+  API_BASE_URL,
+  getApiErrorMessage,
+  getAuthToken,
+  normalizeBook,
+} from "../utils/bookApi.ts";
+import type { Book } from "../types/book.ts";
 import "../sass/books.scss";
-
-const startingBooks: Book[] = [
-  {
-    id: 1,
-    title: "Super Awesome Book",
-    author: "John Doe",
-    genre: "Awesomeness",
-    year: 2001,
-    description: "Awesome book description",
-    coverImageUrl: "",
-  },
-  {
-    id: 2,
-    title: "Even More Awesome Book",
-    author: "Jane Doe",
-    genre: "Even More Awesomeness",
-    year: 2007,
-    description: "Awesomer book description",
-    coverImageUrl: "",
-  },
-  {
-    id: 3,
-    title: "Funny Placeholder Data",
-    author: "John Placeholder",
-    genre: "Placeholding",
-    year: 1776,
-    description: "Placeholding since 1776",
-    coverImageUrl: "",
-  },
-];
 
 type ActionMode = "edit" | "delete" | null;
 type Dialog =
@@ -42,32 +21,45 @@ type Dialog =
   | null;
 
 export default function Books() {
-  const [books, setBooks] = useState<Book[]>(startingBooks);
-  const [search, setSearch] = useState("");
+  const [books, setBooks] = useState<Book[]>([]);
+  const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [actionMode, setActionMode] = useState<ActionMode>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchResults, setSearchResults] = useState<Book[]>([]);
   const [dialog, setDialog] = useState<Dialog>(null);
 
-  const filteredBooks = useMemo(() => {
-    const searchText = search.trim().toLowerCase();
-    if (!searchText) return books;
+  useEffect(() => {
+    async function loadLibrary() {
+      setIsLoading(true);
+      setMessage("");
 
-    return books.filter((book) =>
-      [
-        book.title,
-        book.author,
-        book.genre,
-        String(book.year),
-        book.description,
-      ].some((value) => value.toLowerCase().includes(searchText)),
-    );
-  }, [books, search]);
+      try {
+        const response = await axios.post(`${API_BASE_URL}/library/view`, {
+          token: getAuthToken(),
+        });
 
-  function addBook(details: Omit<Book, "id">) {
-    setBooks((current) => {
-      const nextId =
-        current.reduce((largest, book) => Math.max(largest, book.id), 0) + 1;
-      return [...current, { ...details, id: nextId }];
-    });
+        if (response.data?.status !== "success") {
+          throw new Error(
+            response.data?.reason || "Your library could not be loaded.",
+          );
+        }
+
+        const library = response.data.library;
+        setBooks(Array.isArray(library) ? library.map(normalizeBook) : []);
+      } catch (error) {
+        setBooks([]);
+        setMessage(getApiErrorMessage(error, "Unable to load your library."));
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    void loadLibrary();
+  }, []);
+
+  function addBook(book: Book) {
+    setBooks((current) => [...current, book]);
     setDialog(null);
   }
 
@@ -104,22 +96,32 @@ export default function Books() {
           <button
             type="button"
             className="btn rounded-pill px-4 bg-white border border-2 border-dark text-dark"
+            onClick={() => {
+              sessionStorage.removeItem("token");
+              window.location.href = "/";
+            }}
           >
             Logout
           </button>
         </div>
+
         <h1 className="books-heading font-kurale text-center mb-4">Books</h1>
 
         <div className="books-toolbar d-flex flex-wrap align-items-center justify-content-center gap-2 mb-4">
-          <input
-            className="form-control books-search-input"
-            type="search"
+          <button
+            type="button"
+            className={`books-icon-button ${isSearchOpen ? "is-active" : ""}`}
             aria-label="Search books"
-            placeholder="Search books"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-          />
-
+            aria-pressed={isSearchOpen}
+            title="Search your library"
+            onClick={() => {
+              setActionMode(null);
+              setSearchResults([]);
+              setIsSearchOpen((current) => !current);
+            }}
+          >
+            🔍
+          </button>
           <button
             type="button"
             className={`books-icon-button ${actionMode === "delete" ? "is-active" : ""}`}
@@ -130,6 +132,7 @@ export default function Books() {
           >
             🗑️
           </button>
+
           <button
             type="button"
             className="books-icon-button"
@@ -142,6 +145,7 @@ export default function Books() {
           >
             ➕
           </button>
+
           <button
             type="button"
             className={`books-icon-button ${actionMode === "edit" ? "is-active" : ""}`}
@@ -154,6 +158,12 @@ export default function Books() {
           </button>
         </div>
 
+        {isSearchOpen && (
+          <div className="d-flex justify-content-center mb-4">
+            <SearchBook onResults={setSearchResults} />
+          </div>
+        )}
+
         {actionMode && (
           <p className="books-action-hint text-center mb-3" role="status">
             {actionMode === "edit"
@@ -162,9 +172,17 @@ export default function Books() {
           </p>
         )}
 
+        {message && (
+          <p className="text-danger text-center mb-3" role="alert">
+            {message}
+          </p>
+        )}
+
         <section className="books-list mx-auto" aria-label="Book list">
-          {filteredBooks.length > 0 ? (
-            filteredBooks.map((book) => (
+          {isLoading ? (
+            <p className="text-center py-4 mb-0">Loading your library...</p>
+          ) : (isSearchOpen ? searchResults : books).length > 0 ? (
+            (isSearchOpen ? searchResults : books).map((book) => (
               <article
                 className={`book-list-item ${actionMode ? "book-list-item--action" : ""}`}
                 key={book.id}
@@ -188,11 +206,11 @@ export default function Books() {
                       <span className="book-list-item__title">
                         {book.title}
                       </span>
-
                       <span className="book-list-item__details">
-                        {book.author} · {book.genre} · {book.year}
+                        {[book.author, book.genre, book.year]
+                          .filter(Boolean)
+                          .join(" · ")}
                       </span>
-
                       <span className="book-list-item__description">
                         {book.description}
                       </span>
@@ -213,11 +231,11 @@ export default function Books() {
                       <span className="book-list-item__title">
                         {book.title}
                       </span>
-
                       <span className="book-list-item__details">
-                        {book.author} · {book.genre} · {book.year}
+                        {[book.author, book.genre, book.year]
+                          .filter(Boolean)
+                          .join(" · ")}
                       </span>
-
                       <span className="book-list-item__description">
                         {book.description}
                       </span>
@@ -228,19 +246,18 @@ export default function Books() {
             ))
           ) : (
             <p className="text-center py-4 mb-0">
-              No books found. Try another search.
+              {isSearchOpen
+                ? "No matching books to display."
+                : "Your library is empty."}
             </p>
           )}
         </section>
-
-        <p className="books-note text-center mt-4">
-          Book changes are temporary and reset when you refresh the page.
-        </p>
       </div>
 
       {dialog?.type === "add" && (
         <AddBook onAdd={addBook} onCancel={() => setDialog(null)} />
       )}
+
       {dialog?.type === "edit" && (
         <EditBook
           key={dialog.book.id}
@@ -249,6 +266,7 @@ export default function Books() {
           onCancel={() => setDialog(null)}
         />
       )}
+
       {dialog?.type === "delete" && (
         <DeleteBook
           book={dialog.book}

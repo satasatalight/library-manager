@@ -40,7 +40,7 @@ function prerenderedRoutes() {
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [reactRouter(), prerenderedRoutes()],
-  base: process.env.BASE_URL ?? "./",
+  base: process.env.BASE_URL ?? "/",
   environments: {
     client: {
       build: {

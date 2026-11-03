@@ -1,6 +1,3 @@
-// The page uses the same Bootstrap theme values and utility classes as _index.tsx.
-// These rules only handle the book-list-specific layout and interactions.
-
 .books-main {
   max-width: 1200px;
   color: #212529;
@@ -14,6 +11,10 @@
 
 .books-toolbar {
   width: 100%;
+}
+
+.books-search-wrapper {
+  width: min(100%, 340px);
 }
 
 .books-search-input {
