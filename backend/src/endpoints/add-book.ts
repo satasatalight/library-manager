@@ -64,19 +64,19 @@ export default async function addBook(req: AddBookBody, res: Response)
     }
     catch(error)
     {
-        if(error instanceof JsonWebTokenError) // Token improperly formatted.
-        {
-            return res.status(400).send({
-                status: 'error',
-                reason: 'Your session may have been tampered with. Please login again.',
-                book_id: null
-            });
-        }
-        else if(error instanceof TokenExpiredError) // Token expired
+        if(error instanceof TokenExpiredError) // Token expired
         {
             return res.status(401).send({
                 status: 'error',
                 reason: 'Your token has expired. Please login again.',
+                book_id: null
+            });
+        }
+        else if(error instanceof JsonWebTokenError) // Token improperly formatted.
+        {
+            return res.status(400).send({
+                status: 'error',
+                reason: 'Your session may have been tampered with. Please login again.',
                 book_id: null
             });
         }
