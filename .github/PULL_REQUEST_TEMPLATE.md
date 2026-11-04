@@ -21,10 +21,10 @@
 <!-- Mark all with an "x" -->
 
 - [ ] I have tested my changes locally
-- [ ] I ran `npm run format`
-- [ ] `npm run typecheck` passes without errors
-- [ ] `npm run lint` passes without errors
-- [ ] `npm run build` completes successfully <!-- For frontend -->
+- [ ] I ran `npm run format` | `dart format .`
+- [ ] `npm run lint` | `dart analyze` passes without errors
+- [ ] `npm run build` | `flutter build apk` completes and previews successfully <!-- For frontend and mobile -->
+- [ ] `npm run typecheck` passes without errors  <!-- For frontend and backend -->
 - [ ] `npm run test` completes successfully <!-- For backend -->
 
 ## Additional Notes
