@@ -5,7 +5,7 @@ import {
   type Document,
   type InsertOneResult,
   MongoClient,
-  type ObjectId,
+  ObjectId,
   type UpdateResult,
   type WithId,
 } from 'mongodb';
@@ -20,9 +20,9 @@ interface Book
     title: string;
     author: string | null;
     genre: string | null;
-    publication_year: number | null;
+    publicationYear: number | null;
     description: string | null;
-    cover_image: URL | null;
+    coverImageUrl: URL | null;
 }
 
 interface EditBookBody
@@ -113,32 +113,60 @@ export default async function editBook(req: EditBookBody, res: Response)
         title: req.title,
         author: req.author,
         genre: req.genre,
-        publication_year: req.publication_year,
+        publicationYear: req.publication_year,
         description: req.description,
-        cover_image: req.cover_image
+        coverImageUrl: req.cover_image
     };
 
     mongoClient = await getMongoClient();
+    /*
+    An error occurs if the book ID is improperly formatted and we don't catch it.
+    */
+    let result: UpdateResult<Document> | null;
+    try
+    {
+        result = await updateBookInformation(new ObjectId(req.book_id), BookToEdit);
+    }
+    catch
+    {
+        return res.status(400).send({
+            status: 'error',
+            reason: 'The book ID may have been tampered with.'
+        })
+    }
 
-    let result: boolean = await updateBookInformation(req.book_id, BookToEdit);
+    if(result === null)
+    {
+        return res.status(500).send({
+            status: 'error',
+            reason: 'An expected error happened with the database.'
+        });
+    }
 
-    if(result == true)
+    if(result.matchedCount == 1 && result.modifiedCount == 1)
     {
         return res.status(200).send({
             status: 'success',
             reason: 'Book successfully edited.'
         });
     }
+    else if(result.matchedCount == 1 && result.modifiedCount == 0)
+    {
+        return res.status(200).send({
+            status: 'success',
+            reason: 'No new book information was provided.'
+        });
+    }
     else
     {
         return res.status(500).send({
             status: 'error',
-            reason: 'Your book could not be found or edited.'
+            reason: 'We could not find your book.'
         });
     }
 }
 
-async function updateBookInformation(book_id: ObjectId, Book: Book): Promise<boolean>
+async function updateBookInformation(book_id: ObjectId, Book: Book): Promise<UpdateResult<Document> | null>
 {
     let result: UpdateResult<Document>;
     try
@@ -149,20 +177,13 @@ async function updateBookInformation(book_id: ObjectId, Book: Book): Promise<boo
         .updateOne
         (
             { _id: book_id },
-            Book
+            { $set: Book }
         );
     }
     catch
     {
-        return false;
+        return null;
     }
 
-    if(result.matchedCount == 1 && result.modifiedCount == 1)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return result;
 }
