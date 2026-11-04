@@ -15,8 +15,8 @@ describe('Test /users/login POST endpoint', function () {
     return request(app)
       .post('/users/login')
       .send({
-        email: 'example@testing.email',
-        password: 'examplepassword',
+        email: 'authenticated@guy.com',
+        password: 'theverifiedguy',
       })
       .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(200)
