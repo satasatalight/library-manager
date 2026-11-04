@@ -129,11 +129,14 @@ export default async function editBook(req: EditBookBody, res: Response)
     }
     catch
     {
+        await mongoClient.close();
         return res.status(400).send({
             status: 'error',
             reason: 'The book ID may have been tampered with.'
         })
     }
+
+    await mongoClient.close();
 
     if(result === null)
     {
