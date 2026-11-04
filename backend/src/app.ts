@@ -6,6 +6,8 @@ import addBook from './endpoints/add-book.ts';
 import example from './endpoints/example.ts';
 import login from './endpoints/login.ts';
 import register from './endpoints/register.ts';
+import { reset } from 'supertest/lib/cookies.js';
+import editBook from './endpoints/edit-book.ts';
 
 const app = express();
 
@@ -46,6 +48,9 @@ app.post('/users/login', async (req, res) => {
 });
 app.post('/library/add', async (req, res) => {
   return await addBook(req.body, res);
+});
+app.post('/library/edit', async (req, res) => {
+  return await editBook(req.body, res);
 });
 
 export default app;
