@@ -146,6 +146,7 @@ export default async function register(req: RegisterBody, res: Response) {
   mongoClient = await getMongoClient();
 
   if ((await validateEmail(req.email)) == false) {
+    await mongoClient.close();
     return res.status(400).send({
       status: 'error',
       reason:
@@ -153,6 +154,7 @@ export default async function register(req: RegisterBody, res: Response) {
     });
   }
   if (validateNames(req) == false) {
+    await mongoClient.close();
     return res.status(400).send({
       status: 'error',
       reason:
@@ -160,6 +162,7 @@ export default async function register(req: RegisterBody, res: Response) {
     });
   }
   if (validatePassword(req.password) == false) {
+    await mongoClient.close();
     return res.status(400).send({
       status: 'error',
       reason:
@@ -176,6 +179,7 @@ export default async function register(req: RegisterBody, res: Response) {
     // validation_code: randomInt(100000, 1000000), // Random 6-digit code
   };
   if ((await storeData(entry)) == false) {
+    await mongoClient.close();
     return res.status(500).send({
       status: 'error',
       reason:
@@ -190,6 +194,7 @@ export default async function register(req: RegisterBody, res: Response) {
     expiry: Date.now() + EXPIRY_TIME_DAYS * 24 * 60 * 60 * 1000,
   };
   if ((await storeValidationData(verifyEntry)) == false) {
+    await mongoClient.close();
     return res.status(500).send({
       status: 'error',
       reason:
@@ -202,6 +207,7 @@ export default async function register(req: RegisterBody, res: Response) {
     await sendVerificationEmail(verifyEntry.email, verifyEntry.code);
   } catch (error) {
     console.error(error);
+    await mongoClient.close();
     return res.status(500).send({
       status: 'error',
       reason: 'Verification email could not be sent.',
