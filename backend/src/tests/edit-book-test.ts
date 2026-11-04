@@ -4,10 +4,9 @@ import request from 'supertest';
 
 import app from '../app.ts';
 
-interface EditBookResponseBody
-{
-    status: string;
-    reason: string;
+interface EditBookResponseBody {
+  status: string;
+  reason: string;
 }
 
 interface AddBookResponseBody {
@@ -42,32 +41,33 @@ describe('Test /library/edit POST endpoint', function () {
             publication_year: '1970',
             description: 'This is a book that was never written.',
             cover_image: null,
-            token: login_body.token
+            token: login_body.token,
           })
           .expect('Content-Type', 'application/json; charset=utf-8')
           .expect(200)
           .then((response) => {
             const add_body = response.body as AddBookResponseBody;
-            
+
             return request(app)
-            .post('/library/edit')
-            .send({
+              .post('/library/edit')
+              .send({
                 book_id: add_body.book_id,
                 title: 'Edited Example Book',
                 author: 'Johnny Editseed',
                 genre: 'One of the edited ones',
-                publication_year: "1970",
+                publication_year: '1970',
                 description: 'This is an edited book that was never written.',
                 cover_image: null,
-                token: login_body.token
-            })
-            .expect('Content-Type', 'application/json; charset=utf-8')
-            .expect(200)
-            .then((response) => {
-                const { status, reason } = response.body as EditBookResponseBody;
+                token: login_body.token,
+              })
+              .expect('Content-Type', 'application/json; charset=utf-8')
+              .expect(200)
+              .then((response) => {
+                const { status, reason } =
+                  response.body as EditBookResponseBody;
                 assert.equal(status, 'success');
                 assert.equal(reason, 'Book successfully edited.');
-            });
+              });
           });
       });
   });
