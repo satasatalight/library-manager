@@ -22,8 +22,8 @@ interface LoginResponseBody {
   token: string | null;
 }
 
-describe('Test /library/add POST endpoint', function () {
-  it('Attempts to add a new book to a user library', function () {
+describe('Test /library/edit POST endpoint', function () {
+  it('Attempts to edit a newly added book in the user library', function () {
     request(app)
       .post('/users/login')
       .send({
