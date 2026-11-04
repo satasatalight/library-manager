@@ -6,7 +6,6 @@ import addBook from './endpoints/add-book.ts';
 import example from './endpoints/example.ts';
 import login from './endpoints/login.ts';
 import register from './endpoints/register.ts';
-import { reset } from 'supertest/lib/cookies.js';
 import editBook from './endpoints/edit-book.ts';
 
 const app = express();
