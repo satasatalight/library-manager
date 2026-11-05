@@ -1,27 +1,27 @@
+import { ImapFlow } from 'imapflow';
+import { simpleParser } from 'mailparser';
 import assert from 'node:assert';
+import { randomUUID } from 'node:crypto';
 import { describe, it } from 'node:test';
 import request from 'supertest';
 
 import app from '../app.ts';
-import { ImapFlow } from 'imapflow';
-import { simpleParser } from 'mailparser';
 import config from '../config.ts';
-import { randomUUID } from 'node:crypto';
 
 interface ResponseBody {
   status: string;
   reason: string;
 }
 interface LoginResponseBody {
-    status: string;
-    reason: string;
-    token: string;
+  status: string;
+  reason: string;
+  token: string;
 }
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export async function getVerificationCode(email: string): Promise<string> {
-    const timeoutMs = 15_000;
-    const pollIntervalMs = 1_000;
+  const timeoutMs = 15_000;
+  const pollIntervalMs = 1_000;
 
   const client = new ImapFlow({
     host: 'imap.ethereal.email',
@@ -104,34 +104,38 @@ describe('Test password reset endpoints', function () {
 
         const code: number = parseInt(await getVerificationCode(email));
         return request(app)
-        .post('/users/login/reset')
-        .send({
+          .post('/users/login/reset')
+          .send({
             email: email,
             code: code,
-            new_password: new_password
-        })
-        .expect('Content-Type', 'application/json; charset=utf-8')
-        .expect(200)
-        .then(async (response) => {
+            new_password: new_password,
+          })
+          .expect('Content-Type', 'application/json; charset=utf-8')
+          .expect(200)
+          .then(async (response) => {
             const { status, reason } = response.body as ResponseBody;
             assert.equal(status, 'success');
-            assert.equal(reason, 'Your password has been reset. Please login using the new password.');
+            assert.equal(
+              reason,
+              'Your password has been reset. Please login using the new password.',
+            );
 
             return request(app)
-            .post('/users/login')
-            .send({
+              .post('/users/login')
+              .send({
                 email: email,
-                password: new_password
-            })
-            .expect('Content-Type', 'application/json; charset=utf-8')
-            .expect(200)
-            .then(async (response) => {
-                const { status, reason, token } = response.body as LoginResponseBody;
+                password: new_password,
+              })
+              .expect('Content-Type', 'application/json; charset=utf-8')
+              .expect(200)
+              .then((response) => {
+                const { status, reason, token } =
+                  response.body as LoginResponseBody;
                 assert.equal(status, 'success');
                 assert.equal(reason, 'Your login attempt was successful.');
                 assert.notEqual(token, null);
-            })
-        })
+              });
+          });
       });
   });
 });

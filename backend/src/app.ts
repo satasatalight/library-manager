@@ -7,9 +7,11 @@ import editBook, { type EditBookBody } from './endpoints/edit-book.ts';
 import example, { type ExampleBody } from './endpoints/example.ts';
 import login, { type LoginBody } from './endpoints/login.ts';
 import register, { type RegisterBody } from './endpoints/register.ts';
-import verify, { type VerifyBody } from './endpoints/verify.ts';
-import resetRequest, { type ResetRequestBody } from './endpoints/reset-request.ts';
+import resetRequest, {
+  type ResetRequestBody,
+} from './endpoints/reset-request.ts';
 import reset, { type ResetBody } from './endpoints/reset.ts';
+import verify, { type VerifyBody } from './endpoints/verify.ts';
 
 const app = express();
 
@@ -49,9 +51,9 @@ app.post('/users/register/verify', async (req, res) => {
 app.post('/users/login/reset_request', async (req, res) => {
   return await resetRequest(req.body as ResetRequestBody, res);
 });
-app.post('/users/login/reset', async (req,res) => {
+app.post('/users/login/reset', async (req, res) => {
   return await reset(req.body as ResetBody, res);
-})
+});
 
 app.post('/library/add', async (req, res) => {
   return await addBook(req.body as AddBookBody, res);
