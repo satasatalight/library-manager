@@ -22,8 +22,8 @@ interface LoginResponseBody {
 }
 
 describe('Test /library/edit POST endpoint', function () {
-  it('Attempts to edit a newly added book in the user library', function () {
-    request(app)
+  it('Attempts to edit a newly added book in the user library', async function () {
+    await request(app)
       .post('/users/login')
       .send({
         email: 'authenticated@guy.com',
