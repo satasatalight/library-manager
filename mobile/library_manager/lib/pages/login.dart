@@ -17,95 +17,26 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final TextEditingController _emailCont = TextEditingController();
-  final TextEditingController _passwordCont = TextEditingController();
-
+  //final TextEditingController _forgotEmailCont = TextEditingController();
   final _secureStorage = const FlutterSecureStorage();
   late Widget currentField;
   bool isLoginView = true;
 
+
   @override
   void initState(){
     super.initState();
+    _loadLoginForm();
+  }
+  void _loadLoginForm() {
     currentField = login_form.LoginForm(
-      usernameCont: _emailCont,
-      passwordCont: _passwordCont,
+      onLoginFailed: (email, password) {
+        _showRegisterPrompt(email, password);
+      },
     );
   }
-  Future<void> handleSubmit() async {
-    String email = _emailCont.text.trim();
-    String password = _passwordCont.text;
 
-    // Email format validation
-    final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
-    if (!emailRegex.hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid email format.')),
-      );
-      return;
-    }
-
-    if (password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your password.')),
-      );
-      return;
-    }
-
-    void _showDebugPopup(String title, String token) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Received JWT Token:'),
-                const SizedBox(height: 8),
-                SelectableText(
-                  token,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Dismiss debug popup
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-
-    final dio = Dio();
-
-    try {
-      // 1. First, attempt to log in
-      final response = await dio.post(
-        'https://library-manager-ashy.vercel.app/users/login',
-        data: {'email': email, 'password': password},
-      );
-
-      final data = response.data;
-
-      if (response.statusCode == 200 && data['status'] == 'success' && data['token'] is String) {
-        await _secureStorage.write(key: 'token', value: data['token']);
-        //Navigator.pushReplacementNamed(context, '/home');
-        _showDebugPopup('Login Successful! ', data['token']);
-      }
-    } on DioException catch (e) {
-      // 2. If login fails (e.g. 401 Invalid credentials / account doesn't exist)
-      // Prompt the user if they want to create an account instead
-      _showRegisterPrompt(email, password);
-    }
-  }
-
+  // 2. Prompt user when account isn't found
   void _showRegisterPrompt(String email, String password) {
     showDialog(
       context: context,
@@ -123,7 +54,18 @@ class _LoginState extends State<Login> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Dismiss dialog
-                _executeRegistration(email, password); // Y -> register user
+                // Switch view to the RegisterForm, pre-filling their credentials
+                setState(() {
+                  currentField = register_form.RegisterForm(
+                    initialEmail: email,
+                    initialPassword: password,
+                    onRegistrationSuccess: () {
+                      // After successful registration, navigate to library or reload login
+                      Navigator.pushReplacementNamed(context, '/library');
+                    },
+                    onBackToLogin: _loadLoginForm,
+                  );
+                });
               },
               child: const Text('Yes'),
             ),
@@ -132,111 +74,17 @@ class _LoginState extends State<Login> {
       },
     );
   }
-  Future<void> _executeRegistration(String email, String password) async {
-    try {
-      final dio = Dio();
 
-      // Call your backend register endpoint
-      final response = await dio.post(
-        'https://library-manager-ashy.vercel.app/users/register',
-        data: {'email': email, 'password': password},
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account created successfully! Logging you in...')),
-        );
-
-        // Automatically attempt login right after successful registration,
-        // or redirect them depending on your verification flow requirements
-        handleSubmit();
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Registration failed. Please try again.')),
-        );
-      }
-    } on DioException catch (e) {
-      String errorMsg = 'Could not create account.';
-      if (e.response != null && e.response?.data != null) {
-        errorMsg = e.response?.data['reason'] ?? errorMsg;
-      }
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMsg)),
-      );
-    }
+  Future<void> handlePasswordReset() async {
   }
-
   void changeToForgotPassword() {
     setState(() {
-      currentField = forgot_password_form.ForgotPasswordForm();
+      currentField = forgot_password_form.ForgotPasswordForm(
+        onResetRequested: handlePasswordReset,
+      );
     });
   }
-  /*
-  Future<void> handleLogin() async {
-    String email = _usernameCont.text.trim();
-    String password = _passwordCont.text;
 
-    final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
-    if (!emailRegex.hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid email format.')),
-      );
-      return;
-    }
-
-    if(email.isEmpty || password.isEmpty){
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Email or Password is Empty')),
-      );
-      return;
-    }
-    try {
-      final dio = Dio();
-
-      // Dio automatically encodes maps in 'data' to JSON
-      final response = await dio.post(
-        'https://library-manager-ashy.vercel.app/users/login',
-        data: {
-          'email': email,
-          'password': password,
-        },
-      );
-
-      // response.data is already decoded from JSON!
-      final data = response.data;
-
-      if (response.statusCode == 200 && data['status'] == 'success') {
-        String token = data['token'];
-        await _secureStorage.write(key: 'token', value: token);
-        print('Login successful! Token: $token');
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(data['reason'] ?? 'Login failed.')),
-        );
-      }
-    } on DioException catch (e) {
-      // Dio gives you robust error handling out of the box
-      print('Network error: ${e.message}');
-
-      // If the backend sent a 401/403 response with a body, we can still read it:
-      String errorMsg = 'Could not connect to the server.';
-      if (e.response != null && e.response?.data != null) {
-        errorMsg = e.response?.data['reason'] ?? errorMsg;
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMsg)),
-      );
-    }
-  }
-*/
-  @override
-  void dispose(){
-    _emailCont.dispose();
-    _passwordCont.dispose();
-    super.dispose();
-  }
 
   // This widget is the root of your application.
   @override
@@ -259,10 +107,6 @@ class _LoginState extends State<Login> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 currentField,
-                FilledButton(
-                  onPressed: handleSubmit,
-                  child: Text("Login"),
-                ),
                 FilledButton(
                   onPressed: changeToForgotPassword,
                   child: Text("Forgot Password?"),
