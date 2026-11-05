@@ -3,7 +3,6 @@ import { simpleParser } from 'mailparser';
 import assert from 'node:assert';
 import { randomUUID } from 'node:crypto';
 import { describe, it } from 'node:test';
-import { types } from 'node:util';
 import request from 'supertest';
 
 import app from '../app.ts';
@@ -100,8 +99,7 @@ describe('Test /users/register/verify POST endpoint', function () {
       })
       .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(200)
-      .then(async (response) => {
-        const { status, reason } = response.body as ResponseBody;
+      .then(async () => {
         const code: number = parseInt(
           await getVerificationCode({ email: email }),
         );

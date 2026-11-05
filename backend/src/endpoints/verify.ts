@@ -36,7 +36,7 @@ async function verifyUser(email: string): Promise<boolean> {
       .db(DB_NAME)
       .collection<DatabaseUserEntry>(USERS_TABLE_NAME)
       .updateOne({ email: email }, { $set: { isEmailVerified: true } });
-  } catch (error) {
+  } catch {
     return false;
   }
   return true;
