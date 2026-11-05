@@ -80,3 +80,7 @@ app.*.map.json
 # React Router framework build output
 frontend/build/
 frontend/.react-router/
+
+# flutter gitignores
+mobile/library_manager/build
+mobile/library_manager/android/.kotlin
