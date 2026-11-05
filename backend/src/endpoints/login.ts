@@ -99,7 +99,7 @@ async function validateCredentials(
 
     // No result; credentials are not valid.
     return null;
-  } catch (error) {
+  } catch (_error) {
     // Some error happened; login is invalid.
     return null;
   }
