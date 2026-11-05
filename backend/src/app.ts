@@ -43,6 +43,7 @@ app.post('/users/register', async (req, res) => {
 app.post('/users/login', async (req, res) => {
   return await login(req.body as LoginBody, res);
 });
+
 app.post('/users/register/verify', async (req, res) => {
   return await verify(req.body as VerifyBody, res);
 });
