@@ -5,7 +5,6 @@ import 'package:library_manager/components/forgot_password_form.dart'
 as forgot_password_form;
 import 'package:library_manager/components/register_form.dart' as register_form;
 
-
 void main() {
   runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -42,7 +41,7 @@ class Homepage extends State<Home> {
                   padding: const EdgeInsets.only(
                     top: 12,
                     left: 56,
-                    right: 59,
+                    right: 56,
                     bottom: 12,
                   ),
                   decoration: ShapeDecoration(
@@ -53,14 +52,14 @@ class Homepage extends State<Home> {
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    spacing: 10,
+                    spacing: 1,
                     children: [
                       Text(
                         'Library',
-                        style: TextStyle(
+                        style: GoogleFonts.kurale(
                           color: Colors.white,
                           fontSize: 16,
-                          fontFamily: 'IM FELL English',
+                          height: 0.2,
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -76,10 +75,10 @@ class Homepage extends State<Home> {
                   height: 39,
                   child: Text(
                     'LitLog',
-                    style: TextStyle(
+                    style: GoogleFonts.kurale(
                       color: Colors.black,
                       fontSize: 32,
-                      fontFamily: 'Kurale',
+                      height: 0.75,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -108,11 +107,11 @@ class Homepage extends State<Home> {
                   height: 18,
                   child: Text(
                     'Currently reading: ',
-                    style: TextStyle(
+                    style: GoogleFonts.kurale(
                       color: Colors.black,
                       fontSize: 16,
-                      fontFamily: 'Kurale',
-                      fontWeight: FontWeight.w400,
+                      height: 0.4,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
@@ -130,11 +129,11 @@ class Homepage extends State<Home> {
                     children: [
                       Text(
                         'Daily Reminder to Read!',
-                        style: TextStyle(
+                        style: GoogleFonts.kurale(
                           color: Colors.black,
                           fontSize: 20,
-                          fontFamily: 'Kurale',
-                          fontWeight: FontWeight.w400,
+                          height: 0.5,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
@@ -158,10 +157,9 @@ class Homepage extends State<Home> {
                   height: 108,
                   child: Text(
                     'Cool ass book cover Image',
-                    style: TextStyle(
+                    style: GoogleFonts.kurale(
                       color: Colors.white,
                       fontSize: 16,
-                      fontFamily: 'IM FELL English',
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -183,10 +181,9 @@ class Homepage extends State<Home> {
                         height: 27,
                         child: Text(
                           'Title: ',
-                          style: TextStyle(
+                          style: GoogleFonts.kurale(
                             color: Colors.black,
                             fontSize: 16,
-                            fontFamily: 'Kurale',
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -196,10 +193,9 @@ class Homepage extends State<Home> {
                         height: 27,
                         child: Text(
                           'Author:',
-                          style: TextStyle(
+                          style: GoogleFonts.kurale(
                             color: Colors.black,
                             fontSize: 16,
-                            fontFamily: 'Kurale',
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -209,10 +205,9 @@ class Homepage extends State<Home> {
                         height: 27,
                         child: Text(
                           'Last Page: ',
-                          style: TextStyle(
+                          style: GoogleFonts.kurale(
                             color: Colors.black,
                             fontSize: 16,
-                            fontFamily: 'Kurale',
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -222,10 +217,9 @@ class Homepage extends State<Home> {
                         height: 27,
                         child: Text(
                           'Pages Left: ',
-                          style: TextStyle(
+                          style: GoogleFonts.kurale(
                             color: Colors.black,
                             fontSize: 16,
-                            fontFamily: 'Kurale',
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -235,10 +229,9 @@ class Homepage extends State<Home> {
                         height: 118,
                         child: Text(
                           'Notes:',
-                          style: TextStyle(
+                          style: GoogleFonts.kurale(
                             color: Colors.black,
                             fontSize: 16,
-                            fontFamily: 'Kurale',
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -249,10 +242,10 @@ class Homepage extends State<Home> {
               ),
               Positioned(
                 left: 82,
-                top: 527,
+                top: 520,
                 child: Container(
                   width: 237,
-                  height: 139,
+                  height: 150,
                   padding: const EdgeInsets.only(
                     top: 21,
                     left: 14,
@@ -265,26 +258,25 @@ class Homepage extends State<Home> {
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     spacing: 4,
                     children: [
                       SizedBox(
                         width: 144,
-                        height: 20,
+                        height: 25,
                         child: Text(
                           'Update Page Count',
-                          style: TextStyle(
+                          style: GoogleFonts.kurale(
                             color: Colors.white,
                             fontSize: 16,
-                            fontFamily: 'IM FELL English',
                             fontWeight: FontWeight.w400,
                           ),
                         ),
                       ),
                       Container(
                         width: 209,
-                        height: 58,
+                        height: 49,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -315,10 +307,9 @@ class Homepage extends State<Home> {
                                 children: [
                                   Text(
                                     'Enter Page Number',
-                                    style: TextStyle(
+                                    style: GoogleFonts.kurale(
                                       color: const Color(0xFF9A9A9A),
-                                      fontSize: 16,
-                                      fontFamily: 'Kurale',
+                                      fontSize: 15,
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
@@ -330,7 +321,7 @@ class Homepage extends State<Home> {
                       ),
                       Container(
                         width: 130,
-                        height: 22,
+                        height: 33,
                         padding: const EdgeInsets.only(top: 4, left: 14, right: 17, bottom: 6),
                         decoration: ShapeDecoration(
                           color: const Color(0xFFDB68AA),
@@ -344,10 +335,9 @@ class Homepage extends State<Home> {
                           children: [
                             Text(
                               'Update!',
-                              style: TextStyle(
+                              style: GoogleFonts.kurale(
                                 color: Colors.white,
                                 fontSize: 16,
-                                fontFamily: 'IM FELL English',
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
@@ -378,10 +368,9 @@ class Homepage extends State<Home> {
                         height: 18,
                         child: Text(
                           'Im done with this book!',
-                          style: TextStyle(
+                          style: GoogleFonts.kurale(
                             color: Colors.white,
                             fontSize: 16,
-                            fontFamily: 'IM FELL English',
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -391,10 +380,9 @@ class Homepage extends State<Home> {
                         height: 14,
                         child: Text(
                           '(clear current read)',
-                          style: TextStyle(
+                          style: GoogleFonts.kurale(
                             color: const Color(0xFFDF70B0),
                             fontSize: 12,
-                            fontFamily: 'IM FELL English',
                             fontWeight: FontWeight.w400,
                           ),
                         ),
