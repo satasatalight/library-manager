@@ -9,6 +9,7 @@ import login, { type LoginBody } from './endpoints/login.ts';
 import register, { type RegisterBody } from './endpoints/register.ts';
 import verify, { type VerifyBody } from './endpoints/verify.ts';
 import resetRequest, { type ResetRequestBody } from './endpoints/reset-request.ts';
+import reset, { type ResetBody } from './endpoints/reset.ts';
 
 const app = express();
 
@@ -23,9 +24,7 @@ export async function getMongoClient() {
 
   try {
     mongoClient = new MongoClient(DB_URI);
-    console.log('Connecting to MongoDB Atlas cluster...');
     await mongoClient.connect();
-    console.log('Successfully connected to MongoDB Atlas!');
 
     return mongoClient;
   } catch (error) {
@@ -50,6 +49,9 @@ app.post('/users/register/verify', async (req, res) => {
 app.post('/users/login/reset_request', async (req, res) => {
   return await resetRequest(req.body as ResetRequestBody, res);
 });
+app.post('/users/login/reset', async (req,res) => {
+  return await reset(req.body as ResetBody, res);
+})
 
 app.post('/library/add', async (req, res) => {
   return await addBook(req.body as AddBookBody, res);
