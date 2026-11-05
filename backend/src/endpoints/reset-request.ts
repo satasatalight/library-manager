@@ -5,7 +5,7 @@ import type { MongoClient } from "mongodb";
 import nodemailer from "nodemailer";
 import { randomInt } from "node:crypto";
 
-export interface resetRequestBody {
+export interface ResetRequestBody {
     email: string
 }
 let mongoClient: MongoClient;
@@ -62,7 +62,7 @@ async function emailResetCode(email: string, code: number) {
     return true;
 }
 
-export default async function resetRequest(req: resetRequestBody, res: Response) {
+export default async function resetRequest(req: ResetRequestBody, res: Response) {
     if (!req.email) {
         return res.status(400).send({
             status: "error",
