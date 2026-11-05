@@ -21,7 +21,7 @@ interface NewBook {
   cover_image: URL | null;
 }
 
-interface AddBookBody {
+export interface AddBookBody {
   title: string;
   author: string | null;
   genre: string | null;

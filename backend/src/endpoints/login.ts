@@ -8,7 +8,7 @@ import config from '../config.ts';
 
 const { sign } = jwt;
 
-interface LoginBody {
+export interface LoginBody {
   email: string;
   password: string;
 }

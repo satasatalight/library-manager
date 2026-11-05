@@ -6,7 +6,7 @@ import nodemailer from 'nodemailer';
 import { getMongoClient } from '../app.ts';
 import config from '../config.ts';
 
-interface RegisterBody {
+export interface RegisterBody {
   email: string;
   first_name: string;
   last_name: string;

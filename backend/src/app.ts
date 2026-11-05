@@ -4,7 +4,7 @@ import { MongoClient } from 'mongodb';
 import config from './config.ts';
 import addBook from './endpoints/add-book.ts';
 import editBook from './endpoints/edit-book.ts';
-import example from './endpoints/example.ts';
+import example, { type ExampleBody } from './endpoints/example.ts';
 import login from './endpoints/login.ts';
 import register from './endpoints/register.ts';
 
@@ -33,9 +33,6 @@ export async function getMongoClient() {
 }
 
 // routing
-interface ExampleBody {
-  message: string;
-}
 app.post('/example', (req, res) => {
   return example((req.body as ExampleBody).message, res);
 });

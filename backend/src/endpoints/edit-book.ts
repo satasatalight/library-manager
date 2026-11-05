@@ -21,7 +21,7 @@ interface Book {
   coverImageUrl: URL | null;
 }
 
-interface EditBookBody {
+export interface EditBookBody {
   book_id: ObjectId;
   title: string;
   author: string | null;
