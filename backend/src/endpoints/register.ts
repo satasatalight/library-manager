@@ -32,7 +32,7 @@ interface PendingVerificationEntry {
 
 async function validateEmail(email: string): Promise<boolean> {
   // Correct email structure
-  if (!email.match('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')) {
+  if (!email.match(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)) {
     return false;
   }
 
@@ -46,8 +46,8 @@ async function validateEmail(email: string): Promise<boolean> {
 }
 function validateNames(req: RegisterBody): boolean {
   if (
-    !req.first_name.match('^[A-Za-z\-]+$') ||
-    !req.last_name.match('^[A-Za-z\-]+$')
+    !req.first_name.match(/^[A-Za-z-]+$/) ||
+    !req.last_name.match(/^[A-Za-z-]+$/)
   ) {
     return false;
   }
@@ -71,14 +71,14 @@ async function storeData(entry: DatabaseUserEntry): Promise<boolean> {
     await mongoClient.db(DB_NAME).collection(USERS_TABLE_NAME).insertOne(entry);
 
     // Any email with @testing.email will auto-delete
-    if (entry.email.match('^[a-zA-Z0-9._%+-]+@testing\.email$')) {
+    if (entry.email.match(/^[a-zA-Z0-9._%+-]+@testing\.email$/)) {
       await mongoClient
         .db(DB_NAME)
         .collection(USERS_TABLE_NAME)
         .deleteOne(entry);
       console.log(entry.email + ' user entry test successfully removed!');
     }
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 
@@ -95,7 +95,7 @@ async function storeValidationData(
       .insertOne(entry);
 
     // Any email with @testing.email will auto-delete
-    if (entry.email.match('^[a-zA-Z0-9._%+-]+@testing\.email$')) {
+    if (entry.email.match(/^[a-zA-Z0-9._%+-]+@testing\.email$/)) {
       await mongoClient
         .db(DB_NAME)
         .collection(VERIFY_TABLE_NAME)
@@ -104,7 +104,7 @@ async function storeValidationData(
         entry.email + ' verification entry test successfully removed!',
       );
     }
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 
