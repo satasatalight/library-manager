@@ -8,6 +8,7 @@ import example, { type ExampleBody } from './endpoints/example.ts';
 import login, { type LoginBody } from './endpoints/login.ts';
 import register, { type RegisterBody } from './endpoints/register.ts';
 import verify, { type VerifyBody } from './endpoints/verify.ts';
+import resetRequest, { type resetRequestBody } from './endpoints/reset-request.ts';
 
 const app = express();
 
@@ -45,6 +46,9 @@ app.post('/users/login', async (req, res) => {
 });
 app.post('/users/register/verify', async (req, res) => {
   return await verify(req.body as VerifyBody, res);
+});
+app.post('/users/login/reset_request', async (req, res) => {
+  return await resetRequest(req.body as resetRequestBody, res);
 });
 
 app.post('/library/add', async (req, res) => {
