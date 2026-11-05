@@ -2,11 +2,11 @@ import express from 'express';
 import { MongoClient } from 'mongodb';
 
 import config from './config.ts';
-import addBook from './endpoints/add-book.ts';
-import editBook from './endpoints/edit-book.ts';
+import addBook, { type AddBookBody } from './endpoints/add-book.ts';
+import editBook, { type EditBookBody } from './endpoints/edit-book.ts';
 import example, { type ExampleBody } from './endpoints/example.ts';
-import login from './endpoints/login.ts';
-import register from './endpoints/register.ts';
+import login, { type LoginBody } from './endpoints/login.ts';
+import register, { type RegisterBody } from './endpoints/register.ts';
 
 const app = express();
 
@@ -37,16 +37,16 @@ app.post('/example', (req, res) => {
   return example((req.body as ExampleBody).message, res);
 });
 app.post('/users/register', async (req, res) => {
-  return await register(req.body, res);
+  return await register(req.body as RegisterBody, res);
 });
 app.post('/users/login', async (req, res) => {
-  return await login(req.body, res);
+  return await login(req.body as LoginBody, res);
 });
 app.post('/library/add', async (req, res) => {
-  return await addBook(req.body, res);
+  return await addBook(req.body as AddBookBody, res);
 });
 app.post('/library/edit', async (req, res) => {
-  return await editBook(req.body, res);
+  return await editBook(req.body as EditBookBody, res);
 });
 
 export default app;
