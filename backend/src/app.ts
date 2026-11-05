@@ -7,7 +7,7 @@ import editBook, { type EditBookBody } from './endpoints/edit-book.ts';
 import example, { type ExampleBody } from './endpoints/example.ts';
 import login, { type LoginBody } from './endpoints/login.ts';
 import register, { type RegisterBody } from './endpoints/register.ts';
-import verify from './endpoints/verify.ts';
+import verify, { type VerifyBody } from './endpoints/verify.ts';
 
 const app = express();
 
@@ -44,11 +44,7 @@ app.post('/users/login', async (req, res) => {
   return await login(req.body as LoginBody, res);
 });
 app.post('/users/register/verify', async (req, res) => {
-  return await verify(req.body, res);
-});
-
-app.post('/users/register/verify', async (req, res) => {
-  return await verify(req.body, res);
+  return await verify(req.body as VerifyBody, res);
 });
 
 app.post('/library/add', async (req, res) => {

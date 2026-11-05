@@ -7,7 +7,7 @@ import type {
   PendingVerificationEntry,
 } from './register.ts';
 
-interface VerifyBody {
+export interface VerifyBody {
   email: string;
   code: number;
 }
