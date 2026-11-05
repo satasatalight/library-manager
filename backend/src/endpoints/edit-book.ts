@@ -1,13 +1,10 @@
 import type { Response } from 'express';
 import jwt from 'jsonwebtoken';
 import {
-  Db,
   type Document,
-  type InsertOneResult,
   MongoClient,
   ObjectId,
   type UpdateResult,
-  type WithId,
 } from 'mongodb';
 
 import { getMongoClient } from '../app.ts';
@@ -38,8 +35,6 @@ interface EditBookBody {
 let mongoClient: MongoClient;
 
 const DB_NAME = 'litlog';
-const USERS_TABLE_NAME = 'users';
-const USER_BOOKS_TABLE_NAME = 'userBooks';
 const LIBRARY_TABLE_NAME = 'library';
 
 export default async function editBook(req: EditBookBody, res: Response) {
@@ -58,14 +53,12 @@ export default async function editBook(req: EditBookBody, res: Response) {
   }
 
   // Next, check if the token is valid and can be verified.
-  let user_id: ObjectId | undefined;
   interface JWTBody {
     userId: ObjectId;
   }
 
   try {
-    const verified_token = verify(req.token, config.jwt_key) as JWTBody;
-    user_id = verified_token.userId;
+    verify(req.token, config.jwt_key) as JWTBody;
   } catch (error) {
     if (error instanceof TokenExpiredError) // Token was valid, but expired.
     {
