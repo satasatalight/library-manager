@@ -17,7 +17,7 @@ const EXPIRY_TIME_DAYS = 7;
 async function emailExists(email: string): Promise<boolean> {
     try {
         const collection = mongoClient.db(DB_NAME).collection(USERS_TABLE_NAME);
-        return collection.findOne({ email: email }) != null;
+        return await collection.findOne({ email: email }) != null;
     } catch {
         return false;
     }
