@@ -17,8 +17,8 @@ interface LoginResponseBody {
 }
 
 describe('Test /library/add POST endpoint', function () {
-  it('Attempts to add a new book to a user library', function () {
-    request(app)
+  it('Attempts to add a new book to a user library', async function () {
+    await request(app)
       .post('/users/login')
       .send({
         email: 'authenticated@guy.com',
