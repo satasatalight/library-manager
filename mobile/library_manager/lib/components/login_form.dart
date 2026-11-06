@@ -39,7 +39,7 @@ class _LoginFormState extends State<LoginForm> {
       return;
     }
 
-    void _showDebugPopup(String title, String token) {
+    void showDebugPopup(String title, String token) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -83,9 +83,8 @@ class _LoginFormState extends State<LoginForm> {
 
       if (response.statusCode == 200 && data['status'] == 'success' && data['token'] is String) {
         await _secureStorage.write(key: 'token', value: data['token']);
-        print("successful login!");
         // Navigator.pushReplacementNamed(context, '/library');
-        //_showDebugPopup('Login Successful! ', data['token']);
+        showDebugPopup('Login Successful! ', data['token']);
       }
     } on DioException catch (e) {
       // 2. If login fails (e.g. 401 Invalid credentials / account doesn't exist)
