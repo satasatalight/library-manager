@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class RegisterForm extends StatefulWidget {
   final String initialEmail;
@@ -23,7 +22,6 @@ class RegisterForm extends StatefulWidget {
 class _RegisterFormState extends State<RegisterForm> {
   late final TextEditingController _emailCont;
   late final TextEditingController _passwordCont;
-  final _secureStorage = const FlutterSecureStorage();
 
   @override
   void initState() {
@@ -62,10 +60,12 @@ class _RegisterFormState extends State<RegisterForm> {
 
       final data = response.data;
 
+      // guard against context not existing when async call is completed
+      if(!mounted) return;
+
       if (response.statusCode == 200 || response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account created successfully! Logging you in...')),
-        );
+          const SnackBar(content: Text('Account created successfully! Logging you in...')),);
 
         // Trigger success callback (e.g. navigate to library or auto-login)
         widget.onRegistrationSuccess();

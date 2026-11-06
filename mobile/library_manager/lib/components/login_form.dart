@@ -86,7 +86,7 @@ class _LoginFormState extends State<LoginForm> {
         // Navigator.pushReplacementNamed(context, '/library');
         showDebugPopup('Login Successful! ', data['token']);
       }
-    } on DioException catch (e) {
+    } on DioException {
       // 2. If login fails (e.g. 401 Invalid credentials / account doesn't exist)
       // Prompt the user if they want to create an account instead
       widget.onLoginFailed(email, password);

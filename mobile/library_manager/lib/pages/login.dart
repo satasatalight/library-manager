@@ -1,13 +1,9 @@
-import 'dart:convert';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:library_manager/components/login_form.dart' as login_form;
 import 'package:library_manager/components/forgot_password_form.dart'
     as forgot_password_form;
 import 'package:library_manager/components/register_form.dart' as register_form;
-import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -18,7 +14,6 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   //final TextEditingController _forgotEmailCont = TextEditingController();
-  final _secureStorage = const FlutterSecureStorage();
   late Widget currentField;
   bool isLoginView = true;
 

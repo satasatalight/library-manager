@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:library_manager/components/login_form.dart' as login_form;
-import 'package:library_manager/components/forgot_password_form.dart'
-as forgot_password_form;
-import 'package:library_manager/components/register_form.dart' as register_form;
 
 void main() {
   runApp(const MaterialApp(
