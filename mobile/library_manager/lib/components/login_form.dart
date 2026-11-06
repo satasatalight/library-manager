@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:library_manager/pages/library.dart';
 
 class LoginForm extends StatefulWidget {
-  final Function(String email, String password) onLoginFailed; // Triggers the register prompt in parent
+  final Function(String email, String password)
+  onLoginFailed; // Triggers the register prompt in parent
 
-  const LoginForm({
-    super.key,
-    required this.onLoginFailed,
-  });
+  const LoginForm({super.key, required this.onLoginFailed});
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -26,9 +25,8 @@ class _LoginFormState extends State<LoginForm> {
     // Email format validation
     final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
     if (!emailRegex.hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid email format.')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Invalid email format.')));
       return;
     }
 
@@ -81,10 +79,15 @@ class _LoginFormState extends State<LoginForm> {
 
       final data = response.data;
 
-      if (response.statusCode == 200 && data['status'] == 'success' && data['token'] is String) {
+      if (response.statusCode == 200 &&
+          data['status'] == 'success' &&
+          data['token'] is String) {
         await _secureStorage.write(key: 'token', value: data['token']);
-        Navigator.pushReplacementNamed(context, '/library');
         //_showDebugPopup('Login Successful! ', data['token']);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Library()), // Replace 'Library' with the exact class name inside your library.dart
+        );
       }
     } on DioException catch (e) {
       // 2. If login fails (e.g. 401 Invalid credentials / account doesn't exist)
@@ -93,51 +96,53 @@ class _LoginFormState extends State<LoginForm> {
     }
   }
 
-
   @override
-  void dispose(){
+  void dispose() {
     _emailCont.dispose();
     _passwordCont.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 400,
-            child: TextField(
-              controller: _emailCont,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
+    return SingleChildScrollView(
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 400,
+              child: TextField(
+                controller: _emailCont,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 15),
-          SizedBox(
-            width: 400,
-            child: TextField(
-              controller: _passwordCont,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
+            const SizedBox(height: 15),
+            SizedBox(
+              width: 400,
+              child: TextField(
+                controller: _passwordCont,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 20),
-          SizedBox(
-            width: 165,
-            child: FilledButton(
-              onPressed: handleSubmit,
-              child: const Text("Login"),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: 165,
+              child: FilledButton(
+                onPressed: handleSubmit,
+                child: const Text("Login"),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

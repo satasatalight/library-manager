@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,6 +9,8 @@ import 'package:library_manager/components/forgot_password_form.dart'
 import 'package:library_manager/components/register_form.dart' as register_form;
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'library.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -22,12 +25,12 @@ class _LoginState extends State<Login> {
   late Widget currentField;
   bool isLoginView = true;
 
-
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _loadLoginForm();
   }
+
   void _loadLoginForm() {
     currentField = login_form.LoginForm(
       onLoginFailed: (email, password) {
@@ -43,11 +46,14 @@ class _LoginState extends State<Login> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Account Not Found'),
-          content: Text('It seems like $email does not have an account. Would you like to create one?'),
+          content: Text(
+            'It seems like $email does not have an account. Would you like to create one?',
+          ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Dismiss dialog (N -> back to login)
+                Navigator.of(context)
+                    .pop(); // Dismiss dialog (N -> back to login)
               },
               child: const Text('No'),
             ),
@@ -61,7 +67,10 @@ class _LoginState extends State<Login> {
                     initialPassword: password,
                     onRegistrationSuccess: () {
                       // After successful registration, navigate to library or reload login
-                      Navigator.pushReplacementNamed(context, '/library');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => Library()),
+                      );
                     },
                     onBackToLogin: _loadLoginForm,
                   );
@@ -75,8 +84,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Future<void> handlePasswordReset() async {
-  }
+  Future<void> handlePasswordReset() async {}
   void changeToForgotPassword() {
     setState(() {
       currentField = forgot_password_form.ForgotPasswordForm(
@@ -85,36 +93,40 @@ class _LoginState extends State<Login> {
     });
   }
 
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).colorScheme.surface,
-      padding: EdgeInsets.symmetric(vertical: 70, horizontal: 20),
-      alignment: Alignment.topLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Lit\nLog",
-            style: GoogleFonts.kurale(fontSize: 150, height: 0.72),
-          ),
-          SizedBox(height: 65),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 7),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                currentField,
-                FilledButton(
-                  onPressed: changeToForgotPassword,
-                  child: Text("Forgot Password?"),
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: SingleChildScrollView(
+        child: Container(
+          color: Theme.of(context).colorScheme.surface,
+          padding: EdgeInsets.symmetric(vertical: 70, horizontal: 20),
+          alignment: Alignment.topLeft,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Lit\nLog",
+                style: GoogleFonts.kurale(fontSize: 150, height: 0.72),
+              ),
+              SizedBox(height: 65),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 7),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    currentField,
+                    FilledButton(
+                      onPressed: changeToForgotPassword,
+                      child: Text("Forgot Password?"),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
