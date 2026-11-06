@@ -89,8 +89,8 @@ class _LoginState extends State<Login> {
       color: Theme.of(context).colorScheme.surface,
       padding: EdgeInsets.symmetric(vertical: 70, horizontal: 20),
       alignment: Alignment.topLeft,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             "Lit\nLog",
