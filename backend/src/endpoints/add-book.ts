@@ -1,12 +1,10 @@
 import type { Response } from 'express';
 import jwt from 'jsonwebtoken';
 import {
-  Db,
   type Document,
   type InsertOneResult,
   MongoClient,
   type ObjectId,
-  type WithId,
 } from 'mongodb';
 
 import { getMongoClient } from '../app.ts';
@@ -23,7 +21,7 @@ interface NewBook {
   cover_image: URL | null;
 }
 
-interface AddBookBody {
+export interface AddBookBody {
   title: string;
   author: string | null;
   genre: string | null;
@@ -36,7 +34,6 @@ interface AddBookBody {
 let mongoClient: MongoClient;
 
 const DB_NAME = 'litlog';
-const USERS_TABLE_NAME = 'users';
 const USER_BOOKS_TABLE_NAME = 'userBooks';
 const LIBRARY_TABLE_NAME = 'library';
 
