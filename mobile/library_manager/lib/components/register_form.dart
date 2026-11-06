@@ -22,6 +22,8 @@ class RegisterForm extends StatefulWidget {
 class _RegisterFormState extends State<RegisterForm> {
   late final TextEditingController _emailCont;
   late final TextEditingController _passwordCont;
+  late final TextEditingController _fnameCont;
+  late final TextEditingController _lnameCont;
 
   @override
   void initState() {
@@ -29,11 +31,15 @@ class _RegisterFormState extends State<RegisterForm> {
     // Pre-fill fields with the credentials the user originally typed
     _emailCont = TextEditingController(text: widget.initialEmail);
     _passwordCont = TextEditingController(text: widget.initialPassword);
+    _lnameCont = TextEditingController(text: "");
+    _fnameCont = TextEditingController(text: "");
   }
 
   Future<void> handleRegister() async {
     String email = _emailCont.text.trim();
     String password = _passwordCont.text;
+    String fname = _fnameCont.text;
+    String lname = _lnameCont.text;
 
     // Email format validation
     final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
@@ -55,7 +61,7 @@ class _RegisterFormState extends State<RegisterForm> {
       final dio = Dio();
       final response = await dio.post(
         'https://library-manager-ashy.vercel.app/users/register',
-        data: {'email': email, 'password': password},
+        data: {'email': email, 'password': password, 'first_name': fname, 'last_name': lname},
       );
 
       final data = response.data;
@@ -120,6 +126,28 @@ class _RegisterFormState extends State<RegisterForm> {
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: 'Password',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
+          SizedBox(
+            width: 400,
+            child: TextField(
+              controller: _fnameCont,
+              decoration: const InputDecoration(
+                labelText: 'First Name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          const SizedBox(height: 15),
+          SizedBox(
+            width: 400,
+            child: TextField(
+              controller: _lnameCont,
+              decoration: const InputDecoration(
+                labelText: 'Last Name',
                 border: OutlineInputBorder(),
               ),
             ),
