@@ -3,12 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginForm extends StatefulWidget {
-  final Function(String email, String password) onLoginFailed; // Triggers the register prompt in parent
+  final Function(String email, String password)
+  onLoginFailed; // Triggers the register prompt in parent
 
-  const LoginForm({
-    super.key,
-    required this.onLoginFailed,
-  });
+  const LoginForm({super.key, required this.onLoginFailed});
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -26,9 +24,8 @@ class _LoginFormState extends State<LoginForm> {
     // Email format validation
     final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
     if (!emailRegex.hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid email format.')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Invalid email format.')));
       return;
     }
 
@@ -81,7 +78,9 @@ class _LoginFormState extends State<LoginForm> {
 
       final data = response.data;
 
-      if (response.statusCode == 200 && data['status'] == 'success' && data['token'] is String) {
+      if (response.statusCode == 200 &&
+          data['status'] == 'success' &&
+          data['token'] is String) {
         await _secureStorage.write(key: 'token', value: data['token']);
         // Navigator.pushReplacementNamed(context, '/library');
         showDebugPopup('Login Successful! ', data['token']);
@@ -93,13 +92,13 @@ class _LoginFormState extends State<LoginForm> {
     }
   }
 
-
   @override
-  void dispose(){
+  void dispose() {
     _emailCont.dispose();
     _passwordCont.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Center(

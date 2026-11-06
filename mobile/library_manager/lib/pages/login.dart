@@ -17,12 +17,12 @@ class _LoginState extends State<Login> {
   late Widget currentField;
   bool isLoginView = true;
 
-
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _loadLoginForm();
   }
+
   void _loadLoginForm() {
     currentField = login_form.LoginForm(
       onLoginFailed: (email, password) {
@@ -38,11 +38,14 @@ class _LoginState extends State<Login> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Account Not Found'),
-          content: Text('It seems like $email does not have an account. Would you like to create one?'),
+          content: Text(
+            'It seems like $email does not have an account. Would you like to create one?',
+          ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Dismiss dialog (N -> back to login)
+                Navigator.of(context)
+                    .pop(); // Dismiss dialog (N -> back to login)
               },
               child: const Text('No'),
             ),
@@ -70,8 +73,7 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Future<void> handlePasswordReset() async {
-  }
+  Future<void> handlePasswordReset() async {}
   void changeToForgotPassword() {
     setState(() {
       currentField = forgot_password_form.ForgotPasswordForm(
@@ -79,7 +81,6 @@ class _LoginState extends State<Login> {
       );
     });
   }
-
 
   // This widget is the root of your application.
   @override

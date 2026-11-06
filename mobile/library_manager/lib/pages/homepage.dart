@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: Home(),
-  ));
+  runApp(const MaterialApp(debugShowCheckedModeBanner: false, home: Home()));
 }
 
 class Home extends StatefulWidget {
@@ -16,7 +13,6 @@ class Home extends StatefulWidget {
 }
 
 class Homepage extends State<Home> {
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -42,7 +38,9 @@ class Homepage extends State<Home> {
                   ),
                   decoration: ShapeDecoration(
                     color: const Color(0xFF8F4670),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -250,7 +248,9 @@ class Homepage extends State<Home> {
                   ),
                   decoration: ShapeDecoration(
                     color: const Color(0xFF8F4670),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -283,15 +283,20 @@ class Homepage extends State<Home> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               spacing: 8,
-                              children: [
-                              ],
+                              children: [],
                             ),
                             Container(
                               width: double.infinity,
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 12,
+                              ),
                               decoration: ShapeDecoration(
                                 shape: RoundedRectangleBorder(
-                                  side: BorderSide(width: 1, color: Colors.white),
+                                  side: BorderSide(
+                                    width: 1,
+                                    color: Colors.white,
+                                  ),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                               ),
@@ -318,10 +323,17 @@ class Homepage extends State<Home> {
                       Container(
                         width: 130,
                         height: 33,
-                        padding: const EdgeInsets.only(top: 4, left: 14, right: 17, bottom: 6),
+                        padding: const EdgeInsets.only(
+                          top: 4,
+                          left: 14,
+                          right: 17,
+                          bottom: 6,
+                        ),
                         decoration: ShapeDecoration(
                           color: const Color(0xFFDB68AA),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -352,7 +364,9 @@ class Homepage extends State<Home> {
                   padding: const EdgeInsets.only(top: 6, left: 50, right: 50),
                   decoration: ShapeDecoration(
                     color: const Color(0xFF8F4670),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,

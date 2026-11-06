@@ -11,10 +11,7 @@ void main() {
           surface: Color(0xffe6ddc5),
         ),
       ),
-      home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Login()
-      ),
+      home: Scaffold(resizeToAvoidBottomInset: false, body: Login()),
     ),
   );
 }

@@ -44,16 +44,15 @@ class _RegisterFormState extends State<RegisterForm> {
     // Email format validation
     final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
     if (!emailRegex.hasMatch(email)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid email format.')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Invalid email format.')));
       return;
     }
 
     if (password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a password.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please enter a password.')));
       return;
     }
 
@@ -61,17 +60,25 @@ class _RegisterFormState extends State<RegisterForm> {
       final dio = Dio();
       final response = await dio.post(
         'https://library-manager-ashy.vercel.app/users/register',
-        data: {'email': email, 'password': password, 'first_name': fname, 'last_name': lname},
+        data: {
+          'email': email,
+          'password': password,
+          'first_name': fname,
+          'last_name': lname,
+        },
       );
 
       final data = response.data;
 
       // guard against context not existing when async call is completed
-      if(!mounted) return;
+      if (!mounted) return;
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Account created successfully! Logging you in...')),);
+          const SnackBar(
+            content: Text('Account created successfully! Logging you in...'),
+          ),
+        );
 
         // Trigger success callback (e.g. navigate to library or auto-login)
         widget.onRegistrationSuccess();
@@ -85,7 +92,8 @@ class _RegisterFormState extends State<RegisterForm> {
       if (e.response != null && e.response?.data != null) {
         errorMsg = e.response?.data['reason'] ?? errorMsg;
       }
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(errorMsg)));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(errorMsg)));
     }
   }
 
