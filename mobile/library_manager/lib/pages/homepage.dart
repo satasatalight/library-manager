@@ -164,7 +164,7 @@ class Homepage extends State<Home> {
               Positioned(
                 left: 217,
                 top: 234,
-                child: Container(
+                child: SizedBox(
                   width: 156,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -270,7 +270,7 @@ class Homepage extends State<Home> {
                           ),
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         width: 209,
                         height: 49,
                         child: Column(
