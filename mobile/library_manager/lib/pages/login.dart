@@ -61,7 +61,8 @@ class _LoginState extends State<Login> {
                     initialPassword: password,
                     onRegistrationSuccess: () {
                       // After successful registration, navigate to library or reload login
-                      Navigator.pushReplacementNamed(context, '/library');
+                      print("successful registration!");
+                      // Navigator.pushReplacementNamed(context, '/library');
                     },
                     onBackToLogin: _loadLoginForm,
                   );

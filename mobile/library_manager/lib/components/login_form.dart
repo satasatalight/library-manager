@@ -83,7 +83,8 @@ class _LoginFormState extends State<LoginForm> {
 
       if (response.statusCode == 200 && data['status'] == 'success' && data['token'] is String) {
         await _secureStorage.write(key: 'token', value: data['token']);
-        Navigator.pushReplacementNamed(context, '/library');
+        print("successful login!");
+        // Navigator.pushReplacementNamed(context, '/library');
         //_showDebugPopup('Login Successful! ', data['token']);
       }
     } on DioException catch (e) {
