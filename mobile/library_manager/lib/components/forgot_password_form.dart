@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ForgotPasswordForm extends Container {
-  ForgotPasswordForm({super.key});
+  final VoidCallback onResetRequested;
 
-  @override
-  Widget? get child => Text("Put Forgot Password Component Here");
+  ForgotPasswordForm({super.key, required this.onResetRequested});
 }
