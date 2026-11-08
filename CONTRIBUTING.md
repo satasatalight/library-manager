@@ -57,7 +57,6 @@ All server files are under `/src`, you will mainly be editing under `/endpoints`
 - `app.ts`: Import the endpoint function, set the input typing, and set it's routing 
 - `/endpoints`: Write the actual logic for an endpoint to be imported into `app.ts`
 - `/tests`: Write a unit test for an endpoint
-- 'config.ts':
 ## Note on Vercel:
 Vercel is a [stateless](https://amitranjan.vercel.app/system-design/stateful-vs-stateless-servers) server host. Basically that means that all local variables are wiped on the next API call and all important data should be uploaded to the database.
 
@@ -69,4 +68,45 @@ This will probably not be important for the overall implementation (we didn't wr
 - [mongodb node driver](https://www.mongodb.com/resources/languages/mongodb-and-npm-tutorial) for connecting to the database
 
 # Mobile:
-![im workin on it](https://files.catbox.moe/1n1j7t.jpg)
+The mobile app is built for Android SDK 36 using Flutter.
+
+## Quick Start:
+- Install Flutter ([manually](https://docs.flutter.dev/install/manual) or automatically through the [VSCode extension](https://docs.flutter.dev/install/with-vs-code))
+- Install [Android Studio](https://developer.android.com/studio) and select the latest Android SDK + commandline tools
+    - Check if everything is installed correctly using the command `flutter doctor`
+    - Alternatively, you can manually install the Android SDK + commandline tools, but I couldn't get this to work myself
+- Clone this repository
+- Change to directory `/mobile/library_manager/`
+
+### Test on an Android Device:
+- Connect device via USB to your computer
+- Run `flutter devices` to check if device was detected and get it's Device ID
+- Run `flutter run -d [DEVICE_ID]` to run project on device
+
+### Test on an Android Emulator:
+**Note:** This takes a lot of RAM! Testing with an actual Android device is a lot less resource intensive.
+- Run `flutter emulator` to check installed emulators and get the Emulator ID
+- Run `flutter emulator --launch [EMULATOR_ID]` to launch emulator
+- Run `flutter run -d [EMULATOR_ID]` to run project on emulator
+
+## Useful Commands:
+| Command | Description |
+| ------------- | ------------- |
+| ```flutter run -d [DEVICE_ID]``` | Runs your app locally. Hit `r` to trigger a hot refresh and see updates |
+| ```flutter build apk``` | Compiles the final app and saves it into ```./build/app/outputs/flutter-apk/app-release.apk``` |
+| ```adb install ./build/app/outputs/flutter-apk/app-release.apk``` | Installs the compiled app onto a connected Android device to preview |
+| ```flutter analyze``` | Runs the linter, which reports bad coding practices |
+| ```flutter format .``` | Refactors your code to an easy-to-read format (run in `./mobile/library_manager` last before creating a PR) |
+
+Most of these commands are also automated in Android Studio or using the Flutter VSCode extension. I just prefer the terminal, this is my own workflow.
+
+## Project Structure
+All Flutter files are under `/lib`, you will mainly be editing under `/lib/pages` and `/lib/components`
+- `/lib/pages`: Declares a page of the project.
+- `/lib/components`: Declares a reusable component in the project that can imported by larger pages for their logic. This should be where the majority of logic will be implemented.
+
+## Useful Library Docs
+- [Dio](https://pub.dev/documentation/dio/latest) for API calls to the backend
+- [Google Fonts](https://pub.dev/packages/google_fonts) for loading Google Fonts
+- [Dart](https://api.flutter.dev/) for langauge-related docs
+- [Flutter](https://docs.flutter.dev/) for pretty much everything else
