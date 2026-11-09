@@ -83,6 +83,7 @@ export default async function resetRequest(
   mongoClient = await getMongoClient();
 
   if ((await emailExists(req.email)) == false) {
+    await mongoClient.close();
     return res.status(404).send({
       status: 'error',
       reason:
@@ -92,6 +93,7 @@ export default async function resetRequest(
 
   const code: number = randomInt(100000, 1000000);
   if ((await storeResetCode(req.email, code)) == false) {
+    await mongoClient.close();
     return res.status(500).send({
       status: 'error',
       reason:
@@ -100,6 +102,7 @@ export default async function resetRequest(
   }
 
   if ((await emailResetCode(req.email, code)) == false) {
+    await mongoClient.close();
     return res.status(500).send({
       status: 'error',
       reason:
@@ -107,6 +110,7 @@ export default async function resetRequest(
     });
   }
 
+  await mongoClient.close();
   return res.status(200).send({
     status: 'success',
     reason: 'A password reset email has been sent. Please check your email.',
