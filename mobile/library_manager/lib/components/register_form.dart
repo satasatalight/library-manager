@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
+import '../pages/login.dart';
+
 class RegisterForm extends StatefulWidget {
   final String initialEmail;
   final String initialPassword;
@@ -101,6 +103,8 @@ class _RegisterFormState extends State<RegisterForm> {
   void dispose() {
     _emailCont.dispose();
     _passwordCont.dispose();
+    _fnameCont.dispose();
+    _lnameCont.dispose();
     super.dispose();
   }
 
@@ -171,7 +175,15 @@ class _RegisterFormState extends State<RegisterForm> {
           const SizedBox(height: 10),
           TextButton(
             onPressed: widget.onBackToLogin,
-            child: const Text("Back to Login"),
+              /*
+              onPressed:() {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Login()),
+              );
+            },
+            */
+              child: const Text("Back to Login"),
           ),
         ],
       ),

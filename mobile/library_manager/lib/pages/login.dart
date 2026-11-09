@@ -85,33 +85,35 @@ class _LoginState extends State<Login> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).colorScheme.surface,
-      padding: EdgeInsets.symmetric(vertical: 70, horizontal: 20),
-      alignment: Alignment.topLeft,
-      child: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Lit\nLog",
-            style: GoogleFonts.kurale(fontSize: 150, height: 0.72),
-          ),
-          SizedBox(height: 65),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 7),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                currentField,
-                FilledButton(
-                  onPressed: changeToForgotPassword,
-                  child: Text("Forgot Password?"),
+    return Scaffold(
+        body:Container(
+          color: Theme.of(context).colorScheme.surface,
+          padding: EdgeInsets.symmetric(vertical: 70, horizontal: 20),
+          alignment: Alignment.topLeft,
+          child: ListView(
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Lit\nLog",
+                style: GoogleFonts.kurale(fontSize: 150, height: 0.72),
+              ),
+              SizedBox(height: 65),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 7),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    currentField,
+                    FilledButton(
+                      onPressed: changeToForgotPassword,
+                      child: Text("Forgot Password?"),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        )
     );
   }
 }
