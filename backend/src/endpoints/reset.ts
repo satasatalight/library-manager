@@ -56,10 +56,11 @@ export default async function reset(req: ResetBody, res: Response) {
   }
 
   mongoClient = await getMongoClient();
-
   const entry: PendingVerificationEntry | null = await getVerificationEntry(
     req.email,
   );
+  await mongoClient.close();
+
   if (entry == null) {
     return res.status(404).send({
       status: 'error',
