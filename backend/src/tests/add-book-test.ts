@@ -17,8 +17,8 @@ interface LoginResponseBody {
 }
 
 describe('Test /library/add POST endpoint', function () {
-  it('Attempts to add a new book to a user library', function () {
-    request(app)
+  it('Attempts to add a new book to a user library', async function () {
+    await request(app)
       .post('/users/login')
       .send({
         email: 'authenticated@guy.com',
@@ -36,12 +36,13 @@ describe('Test /library/add POST endpoint', function () {
             publication_year: '1970',
             description: 'This is a book that was never written.',
             cover_image: null,
-            token: body.token
+            token: body.token,
           })
           .expect('Content-Type', 'application/json; charset=utf-8')
           .expect(200)
           .then((response) => {
-            const { status, reason, book_id } = response.body as AddBookResponseBody;
+            const { status, reason, book_id } =
+              response.body as AddBookResponseBody;
             assert.equal(status, 'success');
             assert.equal(reason, 'Book successfully added.');
             assert.notEqual(book_id, null);
