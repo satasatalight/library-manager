@@ -54,8 +54,6 @@ export default async function verify(req: VerifyBody, res: Response) {
   const verifyEntry: PendingVerificationEntry | null = await fetchVerifyData(
     req.email,
   );
-  await mongoClient.close();
-
   if (verifyEntry == null) {
     return res.status(404).send({
       status: 'error',
