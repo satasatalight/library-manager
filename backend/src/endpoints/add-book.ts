@@ -4,7 +4,7 @@ import {
   type Document,
   type InsertOneResult,
   MongoClient,
-  type ObjectId,
+  ObjectId,
 } from 'mongodb';
 
 import { getMongoClient } from '../app.ts';
@@ -131,8 +131,8 @@ export default async function addBook(req: AddBookBody, res: Response) {
         should be an ObjectId representing the user who made the request.
     */
   const entry_id_for_request: ObjectId | undefined = await giveBookToUser(
-    user_id,
-    book_id,
+    new ObjectId(user_id),
+    new ObjectId(book_id),
   );
   if (typeof entry_id_for_request === 'undefined') {
     return res.status(500).send({
