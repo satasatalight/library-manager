@@ -88,9 +88,7 @@ export default async function verify(req: VerifyBody, res: Response) {
       reason:
         'Your email has been verified. You may now log in using your username and password.',
     });
-  } 
-  
-  else {
+  } else {
     await mongoClient.close();
     return res.status(500).send({
       status: 'error',
