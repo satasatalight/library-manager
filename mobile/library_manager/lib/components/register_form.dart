@@ -25,7 +25,6 @@ class _RegisterFormState extends State<RegisterForm> {
   late final TextEditingController _fnameCont;
   late final TextEditingController _lnameCont;
 
-
   @override
   void initState() {
     super.initState();
@@ -62,7 +61,8 @@ class _RegisterFormState extends State<RegisterForm> {
 
       showDialog(
         context: context,
-        barrierDismissible: true, // Allows tapping outside to dismiss if desired
+        barrierDismissible:
+            true, // Allows tapping outside to dismiss if desired
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Verify Your Email'),
@@ -98,7 +98,11 @@ class _RegisterFormState extends State<RegisterForm> {
                   int? codeNum = int.tryParse(codeText);
                   if (codeText.length != 6 || codeNum == null) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please enter a valid 6-digit numeric code.')),
+                      const SnackBar(
+                        content: Text(
+                          'Please enter a valid 6-digit numeric code.',
+                        ),
+                      ),
                     );
                     return;
                   }
@@ -107,27 +111,25 @@ class _RegisterFormState extends State<RegisterForm> {
                     final dio = Dio();
                     final response = await dio.post(
                       'https://library-manager-ashy.vercel.app/users/register/verify',
-                      data: {
-                        'email': email,
-                        'code': codeNum,
-                      },
+                      data: {'email': email, 'code': codeNum},
                     );
 
                     if (!context.mounted) return;
 
                     if (response.statusCode == 200) {
-                      Navigator.of(context).pop(); // Dismiss verification dialog
+                      Navigator.of(context)
+                          .pop(); // Dismiss verification dialog
 
                       String successMsg = 'Email verified successfully!';
-                      if (response.data is Map && response.data['reason'] != null) {
+                      if (response.data is Map &&
+                          response.data['reason'] != null) {
                         successMsg = response.data['reason'];
                       } else if (response.data is String) {
                         successMsg = response.data;
                       }
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(successMsg)),
-                      );
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text(successMsg)));
 
                       widget.onBackToLogin();
                     }
@@ -141,9 +143,8 @@ class _RegisterFormState extends State<RegisterForm> {
                       }
                     }
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(errorMsg)),
-                    );
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text(errorMsg)));
                   }
                 },
                 child: const Text('Verify'),
@@ -174,7 +175,9 @@ class _RegisterFormState extends State<RegisterForm> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Account created! Please enter your verification code.'),
+            content: Text(
+              'Account created! Please enter your verification code.',
+            ),
           ),
         );
         promptForVerification(email);
@@ -268,10 +271,10 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 10),
           TextButton(
-            onPressed: (){
+            onPressed: () {
               widget.onBackToLogin();
             },
-              child: const Text("Back to Login"),
+            child: const Text("Back to Login"),
           ),
         ],
       ),
