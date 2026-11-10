@@ -23,20 +23,18 @@ interface Book {
   coverImageUrl: URL | null;
 }
 
-export interface ViewLibraryBody
-{
-    token: string | null; //JWT
+export interface ViewLibraryBody {
+  token: string | null; //JWT
 }
 
-let mongoClient : MongoClient;
+let mongoClient: MongoClient;
 
 const DB_NAME = 'litlog';
 const USER_BOOKS_TABLE_NAME = 'userBooks';
 const LIBRARY_TABLE_NAME = 'library';
 
-export default async function viewLibrary(req: ViewLibraryBody, res: Response)
-{
-    /*
+export default async function viewLibrary(req: ViewLibraryBody, res: Response) {
+  /*
         Check if the provided JWT is valid. Use the verify method.
         Handle token being invalid, and handle token being expired.
 
@@ -94,13 +92,12 @@ export default async function viewLibrary(req: ViewLibraryBody, res: Response)
   const returned_ids = await findUserOwnedBooks(new ObjectId(user_id));
 
   // An error happened when querying the database.
-  if(returned_ids == undefined)
-  {
+  if (returned_ids == undefined) {
     await mongoClient.close();
     return res.status(500).send({
-        status: 'error',
-        reason: 'An unknown error occurred.',
-        library: null
+      status: 'error',
+      reason: 'An unknown error occurred.',
+      library: null,
     });
   }
 
@@ -108,25 +105,23 @@ export default async function viewLibrary(req: ViewLibraryBody, res: Response)
   const returned_books = await findUserOwnedBooksInfo(returned_ids);
 
   // An error happened when querying the database.
-  if(returned_books == undefined)
-  {
+  if (returned_books == undefined) {
     await mongoClient.close();
     return res.status(500).send({
-        status: 'error',
-        reason: 'An unknown error occurred.',
-        library: null
+      status: 'error',
+      reason: 'An unknown error occurred.',
+      library: null,
     });
   }
 
   await mongoClient.close();
 
   // The search was successful, but the user has no books.
-  if(returned_books.length == 0)
-  {
+  if (returned_books.length == 0) {
     return res.status(200).send({
-        status: 'success',
-        reason: 'No books found in user library.',
-        library: null
+      status: 'success',
+      reason: 'No books found in user library.',
+      library: null,
     });
   }
 
@@ -134,68 +129,62 @@ export default async function viewLibrary(req: ViewLibraryBody, res: Response)
   return res.status(200).send({
     status: 'success',
     reason: 'book data obtained',
-    library: returned_books
+    library: returned_books,
   });
 }
 
-async function findUserOwnedBooks(user: ObjectId): Promise<ObjectId[] | undefined>
-{
-    let result: FindCursor<WithId<Document>>;
+async function findUserOwnedBooks(
+  user: ObjectId,
+): Promise<ObjectId[] | undefined> {
+  let result: FindCursor<WithId<Document>>;
 
-    try
-    {
-        result = mongoClient
-        .db(DB_NAME)
-        .collection(USER_BOOKS_TABLE_NAME)
-        .find({
-            userId: user
-        });
-    }
-    catch
-    {
-        return undefined
-    }
+  try {
+    result = mongoClient.db(DB_NAME).collection(USER_BOOKS_TABLE_NAME).find({
+      userId: user,
+    });
+  } catch {
+    return undefined;
+  }
 
-    const returned_documents: WithId<Document>[] = await result.toArray();
-    
-    const returned_ids: ObjectId[] = returned_documents.map(document => document.bookId as ObjectId);
+  const returned_documents: WithId<Document>[] = await result.toArray();
 
-    return returned_ids;
+  const returned_ids: ObjectId[] = returned_documents.map(
+    (document) => document.bookId as ObjectId,
+  );
+
+  return returned_ids;
 }
 
-async function findUserOwnedBooksInfo(books: ObjectId[]): Promise<Book[] | undefined>
-{
-    let result: FindCursor<WithId<Document>>;
+async function findUserOwnedBooksInfo(
+  books: ObjectId[],
+): Promise<Book[] | undefined> {
+  let result: FindCursor<WithId<Document>>;
 
-    try
-    {
-        result = mongoClient
-        .db(DB_NAME)
-        .collection(LIBRARY_TABLE_NAME)
-        .find({
-            _id: { $in: books}
-        });
-    }
-    catch
-    {
-        return undefined;
-    }
+  try {
+    result = mongoClient
+      .db(DB_NAME)
+      .collection(LIBRARY_TABLE_NAME)
+      .find({
+        _id: { $in: books },
+      });
+  } catch {
+    return undefined;
+  }
 
-    const returned_documents = await result.toArray();
+  const returned_documents = await result.toArray();
 
-    const returned_books: Book[] = returned_documents.map((document) => {
-        const book: Book = 
-        {
-            bookId: document._id,
-            title: document.title as string,
-            author: document.author as string,
-            genre: document.genre as string,
-            publicationYear: document.publicationYear as number,
-            description: document.description as string,
-            coverImageUrl: document.coverImageUrl as URL
-        }
-        return book;
-    });
+  const returned_books: Book[] = returned_documents.map((document) => {
+    const book: Book = {
+      bookId: document._id,
+      title: document.title as string,
+      author: document.author as string,
+      genre: document.genre as string,
+      publicationYear: document.publicationYear as number,
+      description: document.description as string,
+      coverImageUrl: document.coverImageUrl as URL,
+    };
+    return book;
+  });
 
-    return returned_books;
+  return returned_books;
 }

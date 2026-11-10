@@ -4,13 +4,10 @@ import request from 'supertest';
 
 import app from '../app.ts';
 
-
-
-interface ViewLibraryResponseBody
-{
-    status: string;
-    reason: string;
-    library: string | null
+interface ViewLibraryResponseBody {
+  status: string;
+  reason: string;
+  library: string | null;
 }
 
 interface LoginResponseBody {
@@ -41,7 +38,12 @@ describe('Test /library/view endpoint', function () {
             const { status, reason, library } =
               response.body as ViewLibraryResponseBody;
             assert.equal(status, 'success');
-            assert.ok(['No books found in user library.', 'book data obtained'].includes(reason));
+            assert.ok(
+              [
+                'No books found in user library.',
+                'book data obtained',
+              ].includes(reason),
+            );
             assert.notEqual(library, null);
           });
       });
