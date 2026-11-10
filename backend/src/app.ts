@@ -8,6 +8,7 @@ import example, { type ExampleBody } from './endpoints/example.ts';
 import login, { type LoginBody } from './endpoints/login.ts';
 import register, { type RegisterBody } from './endpoints/register.ts';
 import verify, { type VerifyBody } from './endpoints/verify.ts';
+import viewLibrary, { type ViewLibraryBody } from './endpoints/view-library.ts';
 
 const app = express();
 
@@ -54,6 +55,10 @@ app.post('/library/add', async (req, res) => {
 
 app.post('/library/edit', async (req, res) => {
   return await editBook(req.body as EditBookBody, res);
+});
+
+app.post('/library/view', async (req, res) => {
+  return await viewLibrary(req.body as ViewLibraryBody, res);
 });
 
 export default app;
