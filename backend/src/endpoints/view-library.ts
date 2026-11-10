@@ -96,6 +96,7 @@ export default async function viewLibrary(req: ViewLibraryBody, res: Response)
   // An error happened when querying the database.
   if(returned_ids == undefined)
   {
+    await mongoClient.close();
     return res.status(500).send({
         status: 'error',
         reason: 'An unknown error occurred.',
@@ -109,12 +110,15 @@ export default async function viewLibrary(req: ViewLibraryBody, res: Response)
   // An error happened when querying the database.
   if(returned_books == undefined)
   {
+    await mongoClient.close();
     return res.status(500).send({
         status: 'error',
         reason: 'An unknown error occurred.',
         library: null
     });
   }
+
+  await mongoClient.close();
 
   // The search was successful, but the user has no books.
   if(returned_books.length == 0)
