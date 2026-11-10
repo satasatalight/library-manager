@@ -140,7 +140,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   try {
                     final dio = Dio();
                     final response = await dio.post(
-                      'https://library-manager-ashy.vercel.app/users/registration/verify',
+                      'https://library-manager-ashy.vercel.app/users/register/verify',
                       data: {
                         'email': email,
                         'code': codeNum,
@@ -213,52 +213,7 @@ class _RegisterFormState extends State<RegisterForm> {
             content: Text('Account created! Please enter your verification code.'),
           ),
         );
-
-        // Open the 6-digit code entry dialog
         _promptForVerification(email);
-
-        /*
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Account created successfully! Logging you in...'),
-          ),
-        );
-
-        // Trigger success callback (e.g. navigate to library or auto-login)
-        try {
-          final loginResponse = await dio.post(
-            'https://library-manager-ashy.vercel.app/users/login',
-            data: {'email': email, 'password': password},
-          );
-
-          final loginData = loginResponse.data;
-
-          if (!mounted) return;
-
-          if (loginResponse.statusCode == 200 &&
-              loginData['status'] == 'success' &&
-              loginData['token'] is String) {
-
-            // Save token
-            await _secureStorage.write(key: 'token', value: loginData['token']);
-
-            // Show the token popup directly!
-            showDebugPopup('Registration & Auto-Login Successful!', loginData['token']);
-
-            // Trigger success callback
-            widget.onRegistrationSuccess();
-          }
-        } on DioException catch (loginErr) {
-          // If auto-login fails, fall back to returning to login screen
-          if (!mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Registered! Please log in manually.'),
-            ),
-          );
-          widget.onBackToLogin();
-        }
-         */
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(data['reason'] ?? 'Registration failed.')),
@@ -350,18 +305,8 @@ class _RegisterFormState extends State<RegisterForm> {
           const SizedBox(height: 10),
           TextButton(
             onPressed: (){
-              //print("BACK TO LOGIN BUTTON CLICKED");
               widget.onBackToLogin();
             },
-
-              /*
-              onPressed:() {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const Login()),
-              );
-            },
-            */
               child: const Text("Back to Login"),
           ),
         ],
