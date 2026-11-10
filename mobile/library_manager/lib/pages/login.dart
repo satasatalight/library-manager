@@ -24,11 +24,14 @@ class _LoginState extends State<Login> {
   }
 
   void _loadLoginForm() {
-    currentField = login_form.LoginForm(
-      onLoginFailed: (email, password) {
-        _showRegisterPrompt(email, password);
-      },
-    );
+    setState(() {
+      currentField = login_form.LoginForm(
+        onLoginFailed: (email, password) {
+          _showRegisterPrompt(email, password);
+        },
+      );
+    });
+
   }
 
   // 2. Prompt user when account isn't found
