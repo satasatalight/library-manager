@@ -34,7 +34,7 @@ function VerifyForm({ email, onVerifySuccess }: VerifyFormProps) {
       setMessage("Verifying email...");
 
       const response = await axios.post(
-        "https://library-manager-ashy.vercel.app/users/registration/verify",
+        "https://library-manager-ashy.vercel.app/users/register/verify",
         obj,
       );
 

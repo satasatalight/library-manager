@@ -15,7 +15,7 @@ export interface RegisterBody {
 let mongoClient: MongoClient;
 const DB_NAME = 'litlog';
 const USERS_TABLE_NAME = 'users';
-interface DatabaseUserEntry {
+export interface DatabaseUserEntry {
   email: string;
   firstName: string;
   lastName: string;
@@ -24,7 +24,7 @@ interface DatabaseUserEntry {
 }
 const VERIFY_TABLE_NAME = 'pendingVerification';
 const EXPIRY_TIME_DAYS = 7;
-interface PendingVerificationEntry {
+export interface PendingVerificationEntry {
   email: string;
   code: number;
   expiry: number;
