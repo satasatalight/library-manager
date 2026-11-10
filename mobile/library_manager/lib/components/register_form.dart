@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'login_form.dart';
-import '../pages/login.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class RegisterForm extends StatefulWidget {
   final String initialEmail;
@@ -27,7 +24,6 @@ class _RegisterFormState extends State<RegisterForm> {
   late final TextEditingController _passwordCont;
   late final TextEditingController _fnameCont;
   late final TextEditingController _lnameCont;
-  final _secureStorage = const FlutterSecureStorage();
 
 
   @override
@@ -60,38 +56,8 @@ class _RegisterFormState extends State<RegisterForm> {
       ).showSnackBar(const SnackBar(content: Text('Please enter a password.')));
       return;
     }
-    void showDebugPopup(String title, String token) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Received JWT Token:'),
-                const SizedBox(height: 8),
-                SelectableText(
-                  token,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Dismiss debug popup
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
 
-    void _promptForVerification(String email) {
+    void promptForVerification(String email) {
       final TextEditingController codeController = TextEditingController();
 
       showDialog(
@@ -147,7 +113,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       },
                     );
 
-                    if (!mounted) return;
+                    if (!context.mounted) return;
 
                     if (response.statusCode == 200) {
                       Navigator.of(context).pop(); // Dismiss verification dialog
@@ -166,8 +132,6 @@ class _RegisterFormState extends State<RegisterForm> {
                       widget.onBackToLogin();
                     }
                   } on DioException catch (e) {
-                    if (!mounted) return;
-
                     String errorMsg = 'Verification failed.';
                     if (e.response?.data != null) {
                       if (e.response?.data is Map) {
@@ -213,7 +177,7 @@ class _RegisterFormState extends State<RegisterForm> {
             content: Text('Account created! Please enter your verification code.'),
           ),
         );
-        _promptForVerification(email);
+        promptForVerification(email);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(data['reason'] ?? 'Registration failed.')),
