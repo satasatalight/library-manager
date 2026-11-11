@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:library_manager/components/login_form.dart' as login_form;
 import 'package:library_manager/components/forgot_password_form.dart'
-as forgot_password_form;
+    as forgot_password_form;
 import 'package:library_manager/components/register_form.dart' as register_form;
 //import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -21,9 +21,7 @@ class _Library extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
       ),
-      home: const Scaffold(
-        body: Library(),
-      ),
+      home: const Scaffold(body: Library()),
     );
   }
 }
@@ -114,10 +112,7 @@ class _LibraryState extends State<Library> {
               // Interactive Search Bar with Magnifying Glass Icon
               TextField(
                 controller: _searchCont,
-                style: GoogleFonts.kurale(
-                  color: Colors.black,
-                  fontSize: 16,
-                ),
+                //style: GoogleFonts.kurale(color: Colors.black, fontSize: 16),
                 decoration: InputDecoration(
                   hintText: 'Search ...',
                   hintStyle: GoogleFonts.kurale(
@@ -147,17 +142,18 @@ class _LibraryState extends State<Library> {
                 child: userBooks.isEmpty
                     ? const Center(child: Text('No books found'))
                     : GridView.builder(
-                  itemCount: userBooks.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // 2 books per row
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 0.75,
-                  ),
-                  itemBuilder: (context, index) {
-                    return BookCard(title: userBooks[index]);
-                  },
-                ),
+                        itemCount: userBooks.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2, // 2 books per row
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: 0.75,
+                            ),
+                        itemBuilder: (context, index) {
+                          return BookCard(title: userBooks[index]);
+                        },
+                      ),
               ),
 
               const SizedBox(height: 16),
@@ -172,7 +168,7 @@ class _LibraryState extends State<Library> {
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => const Login()),
-                          (route) => false,
+                      (route) => false,
                     );
                   },
                   child: Container(
@@ -181,7 +177,9 @@ class _LibraryState extends State<Library> {
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     decoration: ShapeDecoration(
                       color: const Color(0xFF8F4670),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     alignment: Alignment.center,
                     child: Text(
