@@ -59,9 +59,9 @@ export default async function reset(req: ResetBody, res: Response) {
   const entry: PendingVerificationEntry | null = await getVerificationEntry(
     req.email,
   );
-  await mongoClient.close();
 
   if (entry == null) {
+    await mongoClient.close();
     return res.status(404).send({
       status: 'error',
       reason: 'Could not find a reset code matching this email.',
@@ -69,6 +69,7 @@ export default async function reset(req: ResetBody, res: Response) {
   }
 
   if (entry.code != req.code || entry.expiry < Date.now()) {
+    await mongoClient.close();
     return res.status(401).send({
       status: 'error',
       reason: 'This code is invalid. Please try again.',
@@ -76,6 +77,7 @@ export default async function reset(req: ResetBody, res: Response) {
   }
 
   if ((await storeNewPass(req.email, req.new_password)) == false) {
+    await mongoClient.close();
     return res.status(500).send({
       status: 'error',
       reason:
@@ -83,6 +85,7 @@ export default async function reset(req: ResetBody, res: Response) {
     });
   }
 
+  await mongoClient.close();
   return res.status(200).send({
     status: 'success',
     reason:
