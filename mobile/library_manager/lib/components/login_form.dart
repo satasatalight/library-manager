@@ -4,8 +4,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../pages/library.dart';
 
-import '../pages/library.dart';
-
 class LoginForm extends StatefulWidget {
   final Function(String email, String password)
   onLoginFailed; // Triggers the register prompt in parent

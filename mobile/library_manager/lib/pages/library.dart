@@ -2,25 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-//import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../components/add_book.dart';
 
 import 'login.dart';
-
-class _Library extends StatelessWidget {
-  const _Library();
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
-      ),
-      home: const Scaffold(body: Library()),
-    );
-  }
-}
 
 class BookCard extends StatelessWidget {
   final String title;
@@ -69,8 +54,8 @@ class _LibraryState extends State<Library> {
   ];
 
   void _handleSearch() {
-    final String query = _searchCont.text.trim();
-    print('Saved search query: $query');
+    // final String query = _searchCont.text.trim();
+    // print('Saved search query: $query');
   }
 
   @override
@@ -195,11 +180,13 @@ class _LibraryState extends State<Library> {
                         const secureStorage = FlutterSecureStorage();
                         await secureStorage.delete(key: 'token');
 
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Login()),
-                          (route) => false,
-                        );
+                        if (context.mounted) {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => const Login()),
+                            (route) => false,
+                          );
+                        }
                       },
                       child: Container(
                         width: 166,
