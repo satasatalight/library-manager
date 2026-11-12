@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../pages/library.dart';
+
 class LoginForm extends StatefulWidget {
   final Function(String email, String password)
   onLoginFailed; // Triggers the register prompt in parent
@@ -82,8 +84,12 @@ class _LoginFormState extends State<LoginForm> {
           data['status'] == 'success' &&
           data['token'] is String) {
         await _secureStorage.write(key: 'token', value: data['token']);
-        // Navigator.pushReplacementNamed(context, '/library');
-        showDebugPopup('Login Successful! ', data['token']);
+        //Navigator.pushReplacementNamed(context, '/library');
+        //showDebugPopup('Login Successful! ', data['token']);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Library()), // Replace 'Library' with the exact class name inside your library.dart
+        );
       }
     } on DioException {
       // 2. If login fails (e.g. 401 Invalid credentials / account doesn't exist)
