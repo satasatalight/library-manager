@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'login.dart';
 
 class BookCard extends StatelessWidget {
@@ -63,7 +64,6 @@ class _LibraryState extends State<Library> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
@@ -91,10 +91,7 @@ class _LibraryState extends State<Library> {
               // Interactive Search Bar with Magnifying Glass Icon
               TextField(
                 controller: _searchCont,
-                style: GoogleFonts.kurale(
-                  color: Colors.black,
-                  fontSize: 16,
-                ),
+                style: GoogleFonts.kurale(color: Colors.black, fontSize: 16),
                 decoration: InputDecoration(
                   hintText: 'Search ...',
                   hintStyle: GoogleFonts.kurale(
@@ -124,21 +121,21 @@ class _LibraryState extends State<Library> {
                 child: userBooks.isEmpty
                     ? const Center(child: Text('No books found'))
                     : GridView.builder(
-                  itemCount: userBooks.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // 2 books per row
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 0.75,
-                  ),
-                  itemBuilder: (context, index) {
-                    return BookCard(title: userBooks[index]);
-                  },
-                ),
+                        itemCount: userBooks.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2, // 2 books per row
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: 0.75,
+                            ),
+                        itemBuilder: (context, index) {
+                          return BookCard(title: userBooks[index]);
+                        },
+                      ),
               ),
 
               const SizedBox(height: 16),
-
 
               // Sign Out Button
               Center(
@@ -147,12 +144,12 @@ class _LibraryState extends State<Library> {
                     const secureStorage = FlutterSecureStorage();
                     await secureStorage.delete(key: 'token');
 
-                    if(!context.mounted) return;
+                    if (!context.mounted) return;
 
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(builder: (context) => const Login()),
-                          (route) => false,
+                      (route) => false,
                     );
                   },
                   child: Container(
@@ -161,7 +158,9 @@ class _LibraryState extends State<Library> {
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     decoration: ShapeDecoration(
                       color: const Color(0xFF8F4670),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     alignment: Alignment.center,
                     child: Text(

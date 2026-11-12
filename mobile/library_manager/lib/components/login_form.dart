@@ -57,7 +57,7 @@ class _LoginFormState extends State<LoginForm> {
         //Navigator.pushReplacementNamed(context, '/library');
         //showDebugPopup('Login Successful! ', data['token']);
 
-        if(mounted) {
+        if (mounted) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => Library()), // Replace 'Library' with the exact class name inside your library.dart
