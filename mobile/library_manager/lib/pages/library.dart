@@ -1,0 +1,184 @@
+//import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'login.dart';
+
+class BookCard extends StatelessWidget {
+  final String title;
+
+  const BookCard({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF8F4670),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: const EdgeInsets.all(16),
+      alignment: Alignment.topLeft,
+      child: Text(
+        title,
+        textAlign: TextAlign.left,
+        style: GoogleFonts.kurale(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+    );
+  }
+}
+
+class Library extends StatefulWidget {
+  const Library({super.key});
+
+  @override
+  State<Library> createState() => _LibraryState();
+}
+
+class _LibraryState extends State<Library> {
+  final TextEditingController _searchCont = TextEditingController();
+
+  // Example list of books the user owns
+  final List<String> userBooks = [
+    'Clean Code',
+    'Design Patterns',
+    'Refactoring',
+    'Flutter Complete Reference',
+    'Algorithmic Complexity',
+  ];
+
+  void _handleSearch() {
+    // final String query = _searchCont.text.trim();
+    // print('Saved search query: $query');
+  }
+
+  @override
+  void dispose() {
+    _searchCont.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 16),
+              // App Bar / Header section
+              Center(
+                child: Text(
+                  'LitLog',
+                  style: GoogleFonts.kurale(
+                    color: Colors.black,
+                    fontSize: 48,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Divider(thickness: 2, color: Colors.black),
+              const SizedBox(height: 12),
+
+              // Interactive Search Bar with Magnifying Glass Icon
+              TextField(
+                controller: _searchCont,
+                style: GoogleFonts.kurale(color: Colors.black, fontSize: 16),
+                decoration: InputDecoration(
+                  hintText: 'Search ...',
+                  hintStyle: GoogleFonts.kurale(
+                    color: Colors.black38,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                  prefixIcon: IconButton(
+                    icon: const Icon(Icons.search, color: Colors.black),
+                    onPressed: _handleSearch, // Triggers when magnifying glass is clicked
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 1, color: Colors.black),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(width: 2, color: Colors.black),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+                onSubmitted: (_) => _handleSearch(),
+              ),
+              const SizedBox(height: 20),
+
+              // Dynamic Grid of Books
+              Expanded(
+                child: userBooks.isEmpty
+                    ? const Center(child: Text('No books found'))
+                    : GridView.builder(
+                        itemCount: userBooks.length,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2, // 2 books per row
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: 0.75,
+                            ),
+                        itemBuilder: (context, index) {
+                          return BookCard(title: userBooks[index]);
+                        },
+                      ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Sign Out Button
+              Center(
+                child: GestureDetector(
+                  onTap: () async {
+                    const secureStorage = FlutterSecureStorage();
+                    await secureStorage.delete(key: 'token');
+
+                    if (!context.mounted) return;
+
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Login()),
+                      (route) => false,
+                    );
+                  },
+                  child: Container(
+                    width: 166,
+                    height: 44,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFF8F4670),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      'Sign Out',
+                      style: GoogleFonts.kurale(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
