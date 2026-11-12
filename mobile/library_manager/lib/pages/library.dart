@@ -1,32 +1,8 @@
 //import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:library_manager/components/login_form.dart' as login_form;
-import 'package:library_manager/components/forgot_password_form.dart'
-as forgot_password_form;
-import 'package:library_manager/components/register_form.dart' as register_form;
-//import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
 import 'login.dart';
-
-class _Library extends StatelessWidget {
-  const _Library({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
-      ),
-      home: const Scaffold(
-        body: Library(),
-      ),
-    );
-  }
-}
 
 class BookCard extends StatelessWidget {
   final String title;
@@ -75,8 +51,8 @@ class _LibraryState extends State<Library> {
   ];
 
   void _handleSearch() {
-    final String query = _searchCont.text.trim();
-    print('Saved search query: $query');
+    // final String query = _searchCont.text.trim();
+    // print('Saved search query: $query');
   }
 
   @override
@@ -87,6 +63,7 @@ class _LibraryState extends State<Library> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
@@ -162,12 +139,15 @@ class _LibraryState extends State<Library> {
 
               const SizedBox(height: 16),
 
+
               // Sign Out Button
               Center(
                 child: GestureDetector(
                   onTap: () async {
                     const secureStorage = FlutterSecureStorage();
                     await secureStorage.delete(key: 'token');
+
+                    if(!context.mounted) return;
 
                     Navigator.pushAndRemoveUntil(
                       context,

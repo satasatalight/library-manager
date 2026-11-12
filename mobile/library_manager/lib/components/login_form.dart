@@ -38,37 +38,6 @@ class _LoginFormState extends State<LoginForm> {
       return;
     }
 
-    void showDebugPopup(String title, String token) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(title),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('Received JWT Token:'),
-                const SizedBox(height: 8),
-                SelectableText(
-                  token,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop(); // Dismiss debug popup
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-
     final dio = Dio();
 
     try {
@@ -84,12 +53,16 @@ class _LoginFormState extends State<LoginForm> {
           data['status'] == 'success' &&
           data['token'] is String) {
         await _secureStorage.write(key: 'token', value: data['token']);
-         //Navigator.pushReplacementNamed(context, '/library');
+
+        //Navigator.pushReplacementNamed(context, '/library');
         //showDebugPopup('Login Successful! ', data['token']);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Library()), // Replace 'Library' with the exact class name inside your library.dart
-        );
+
+        if(mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => Library()), // Replace 'Library' with the exact class name inside your library.dart
+          );
+        }
       }
     } on DioException {
       // 2. If login fails (e.g. 401 Invalid credentials / account doesn't exist)
