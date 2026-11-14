@@ -1,7 +1,10 @@
 //import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import '../components/add_book.dart';
 
 import 'login.dart';
 
@@ -91,7 +94,7 @@ class _LibraryState extends State<Library> {
               // Interactive Search Bar with Magnifying Glass Icon
               TextField(
                 controller: _searchCont,
-                style: GoogleFonts.kurale(color: Colors.black, fontSize: 16),
+                //style: GoogleFonts.kurale(color: Colors.black, fontSize: 16),
                 decoration: InputDecoration(
                   hintText: 'Search ...',
                   hintStyle: GoogleFonts.kurale(
@@ -139,39 +142,74 @@ class _LibraryState extends State<Library> {
 
               // Sign Out Button
               Center(
-                child: GestureDetector(
-                  onTap: () async {
-                    const secureStorage = FlutterSecureStorage();
-                    await secureStorage.delete(key: 'token');
-
-                    if (!context.mounted) return;
-
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Login()),
-                      (route) => false,
-                    );
-                  },
-                  child: Container(
-                    width: 166,
-                    height: 44,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    decoration: ShapeDecoration(
-                      color: const Color(0xFF8F4670),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FilledButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AddBook(),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: ShapeDecoration(
+                          color: const Color(0xFF8F4670),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Add Book',
+                          style: GoogleFonts.kurale(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                       ),
                     ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Sign Out',
-                      style: GoogleFonts.kurale(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
+                    const SizedBox(width: 16),
+
+                    FilledButton(
+                      onPressed: () async {
+                        const secureStorage = FlutterSecureStorage();
+                        await secureStorage.delete(key: 'token');
+
+                        if (context.mounted) {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Login(),
+                            ),
+                            (route) => false,
+                          );
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        decoration: ShapeDecoration(
+                          color: const Color(0xFF8F4670),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Sign Out',
+                          style: GoogleFonts.kurale(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
               const SizedBox(height: 16),
