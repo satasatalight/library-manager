@@ -60,10 +60,7 @@ export default function AddBook({ onAdd, onCancel }: AddBookProps) {
 
       const data = response.data;
 
-      if (
-        data?.status !== "success" ||
-        !Number.isFinite(Number(data.book_id))
-      ) {
+      if (data?.status !== "success") {
         throw new Error(data?.reason || "The book could not be added.");
       }
 
