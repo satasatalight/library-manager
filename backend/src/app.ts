@@ -7,7 +7,9 @@ import editBook, { type EditBookBody } from './endpoints/edit-book.ts';
 import example, { type ExampleBody } from './endpoints/example.ts';
 import login, { type LoginBody } from './endpoints/login.ts';
 import register, { type RegisterBody } from './endpoints/register.ts';
-import resetRequest, { type ResetRequestBody } from './endpoints/reset-request.ts';
+import resetRequest, {
+  type ResetRequestBody,
+} from './endpoints/reset-request.ts';
 import reset, { type ResetBody } from './endpoints/reset.ts';
 import verify, { type VerifyBody } from './endpoints/verify.ts';
 import viewLibrary, { type ViewLibraryBody } from './endpoints/view-library.ts';
