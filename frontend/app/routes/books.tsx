@@ -74,6 +74,7 @@ export default function Books() {
   }, []);
 
   function addBook(book: Book) {
+    console.log("ihgoi");
     setBooks((current) => [...current, book]);
     setDialog(null);
   }
@@ -193,7 +194,7 @@ export default function Books() {
           </p>
         )}
 
-        <section className="books-list mx-auto" aria-label="Book list">
+        <section className="books-list mx-auto overflow-scroll" aria-label="Book list">
           {isLoading ? (
             <p className="text-center py-4 mb-0">Loading your library...</p>
           ) : (isSearchOpen ? searchResults : books).length > 0 ? (
