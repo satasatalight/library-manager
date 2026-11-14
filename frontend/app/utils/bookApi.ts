@@ -1,7 +1,6 @@
 import axios from "axios";
 import type { Book } from "../types/book";
 
-
 export const API_BASE_URL = "https://library-manager-ashy.vercel.app";
 
 export function getAuthToken(): string {
@@ -29,7 +28,6 @@ export function getApiErrorMessage(error: unknown, fallback: string): string {
 
   return fallback;
 }
-
 
 export function normalizeBook(value: unknown): Book {
   if (!value || typeof value !== "object") {
