@@ -68,7 +68,7 @@ export default function AddBook({ onAdd, onCancel }: AddBookProps) {
       }
 
       onAdd({
-        id: Number(data.book_id),
+        id: data.book_id,
         title: title.trim(),
         author: author.trim(),
         genre: genre.trim(),
