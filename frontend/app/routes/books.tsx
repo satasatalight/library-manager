@@ -86,7 +86,7 @@ export default function Books() {
     setActionMode(null);
   }
 
-  function removeBook(bookId: number) {
+  function removeBook(bookId: string) {
     setBooks((current) => current.filter((book) => book.id !== bookId));
     setDialog(null);
     setActionMode(null);

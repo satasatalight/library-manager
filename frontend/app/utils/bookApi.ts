@@ -37,12 +37,7 @@ export function normalizeBook(value: unknown): Book {
   }
 
   const book = value as Record<string, unknown>;
-  const rawId = book.book_id ?? book.id ?? book._id;
-  const id = Number(rawId);
-
-  if (!Number.isFinite(id)) {
-    throw new Error("The server returned a book without a valid ID.");
-  }
+  const id = book.bookId as string;
 
   const rawYear = book.publication_year ?? book.year;
   const year =
