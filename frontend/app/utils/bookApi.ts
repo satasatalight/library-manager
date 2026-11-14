@@ -39,7 +39,7 @@ export function normalizeBook(value: unknown): Book {
   const book = value as Record<string, unknown>;
   const id = book.bookId as string;
 
-  const rawYear = book.publication_year ?? book.year;
+  const rawYear = book.publicationYear;
   const year =
     rawYear === null || rawYear === undefined || rawYear === ""
       ? null
