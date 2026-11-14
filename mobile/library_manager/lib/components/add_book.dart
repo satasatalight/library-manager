@@ -30,7 +30,10 @@ class _AddBookState extends State<AddBook> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Success', style: GoogleFonts.kurale()),
-          content: Text('Book added successfully!', style: GoogleFonts.kurale()),
+          content: Text(
+            'Book added successfully!',
+            style: GoogleFonts.kurale(),
+          ),
           actions: [
             TextButton(
               onPressed: () {
@@ -109,15 +112,13 @@ class _AddBookState extends State<AddBook> {
         errorMessage = e.response?.data['reason'];
       }
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage)),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(errorMessage)));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.toString())));
       }
     } finally {
       if (mounted) {
@@ -231,11 +232,16 @@ class _AddBookState extends State<AddBook> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       OutlinedButton(
-                        onPressed: _isSubmitting ? null : () => Navigator.pop(context),
+                        onPressed: _isSubmitting
+                            ? null
+                            : () => Navigator.pop(context),
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size(130, 44),
                         ),
-                        child: Text('Cancel', style: GoogleFonts.kurale(fontSize: 16)),
+                        child: Text(
+                          'Cancel',
+                          style: GoogleFonts.kurale(fontSize: 16),
+                        ),
                       ),
                       const SizedBox(width: 16),
                       ElevatedButton(
@@ -250,7 +256,10 @@ class _AddBookState extends State<AddBook> {
                         ),
                         child: Text(
                           _isSubmitting ? 'Adding...' : 'Submit',
-                          style: GoogleFonts.kurale(fontSize: 16, color: Colors.white),
+                          style: GoogleFonts.kurale(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
