@@ -4,9 +4,8 @@ import { randomInt } from 'node:crypto';
 import nodemailer from 'nodemailer';
 
 import { getMongoClient } from '../app.ts';
-import config from '../config.ts';
-
 import { transporter } from '../app.ts';
+import config from '../config.ts';
 
 export interface ResetRequestBody {
   email: string;
