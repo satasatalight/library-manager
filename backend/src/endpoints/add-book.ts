@@ -16,9 +16,9 @@ interface NewBook {
   title: string;
   author: string | null;
   genre: string | null;
-  publication_year: number | null;
+  publicationYear: number | null;
   description: string | null;
-  cover_image: URL | null;
+  coverImageUrl: URL | null;
 }
 
 export interface AddBookBody {
@@ -107,9 +107,9 @@ export default async function addBook(req: AddBookBody, res: Response) {
     title: req.title,
     author: req.author,
     genre: req.genre,
-    publication_year: req.publication_year,
+    publicationYear: req.publication_year,
     description: req.description,
-    cover_image: req.cover_image,
+    coverImageUrl: req.cover_image,
   };
 
   /*

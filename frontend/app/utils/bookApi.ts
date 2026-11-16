@@ -1,7 +1,6 @@
 import axios from "axios";
 import type { Book } from "../types/book";
 
-
 export const API_BASE_URL = "https://library-manager-ashy.vercel.app";
 
 export function getAuthToken(): string {
@@ -30,21 +29,15 @@ export function getApiErrorMessage(error: unknown, fallback: string): string {
   return fallback;
 }
 
-
 export function normalizeBook(value: unknown): Book {
   if (!value || typeof value !== "object") {
     throw new Error("The server returned an invalid book.");
   }
 
   const book = value as Record<string, unknown>;
-  const rawId = book.book_id ?? book.id ?? book._id;
-  const id = Number(rawId);
+  const id = book.bookId as string;
 
-  if (!Number.isFinite(id)) {
-    throw new Error("The server returned a book without a valid ID.");
-  }
-
-  const rawYear = book.publication_year ?? book.year;
+  const rawYear = book.publicationYear;
   const year =
     rawYear === null || rawYear === undefined || rawYear === ""
       ? null
