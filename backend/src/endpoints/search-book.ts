@@ -13,7 +13,7 @@ import config from '../config.ts';
 
 const { verify, JsonWebTokenError, TokenExpiredError } = jwt;
 
-interface Book {
+export interface Book {
   bookId: ObjectId;
   title: string;
   author: string | null;
