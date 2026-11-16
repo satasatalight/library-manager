@@ -1,8 +1,6 @@
 import type { Response } from 'express';
 import jwt from 'jsonwebtoken';
 import {
-  type Document,
-  type InsertOneResult,
   MongoClient,
   ObjectId,
 } from 'mongodb';
@@ -41,14 +39,12 @@ export default async function deleteBook(req: DeleteBookBody, res: Response)
   }
 
   // Check if the token is valid and can be verified.
-  let user_id: ObjectId | undefined;
   interface JWTBody {
     userId: ObjectId;
   }
 
   try {
-    const verified_token = verify(req.token, config.jwt_key) as JWTBody;
-    user_id = verified_token.userId;
+    verify(req.token, config.jwt_key) as JWTBody;
   } catch (error) {
     if (error instanceof TokenExpiredError) // Token expired
     {
@@ -79,7 +75,7 @@ export default async function deleteBook(req: DeleteBookBody, res: Response)
 
   const deletion_result: boolean = await removeBookEntries(req.book_id);
 
-  mongoClient.close();
+  await mongoClient.close();
 
   if(deletion_result == false)
   {
@@ -97,7 +93,7 @@ export default async function deleteBook(req: DeleteBookBody, res: Response)
 
 async function removeBookEntries(book_id: ObjectId): Promise<boolean>
 {
-    let remove_from_library = async (id: ObjectId): Promise<boolean> => {
+    const remove_from_library = async (id: ObjectId): Promise<boolean> => {
         try
         {
             const result = await mongoClient
@@ -124,10 +120,10 @@ async function removeBookEntries(book_id: ObjectId): Promise<boolean>
         
     };
 
-    let remove_from_user_books = async (id: ObjectId): Promise<boolean> => {
+    const remove_from_user_books = async (id: ObjectId): Promise<boolean> => {
         try
         {
-            let result = await mongoClient
+            const result = await mongoClient
             .db(DB_NAME)
             .collection(USER_BOOKS_TABLE_NAME)
             .deleteOne({
