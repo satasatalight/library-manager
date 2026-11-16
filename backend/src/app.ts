@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer';
 
 import config from './config.ts';
 import addBook, { type AddBookBody } from './endpoints/add-book.ts';
+import deleteBook, { type DeleteBookBody } from './endpoints/delete-book.ts';
 import editBook, { type EditBookBody } from './endpoints/edit-book.ts';
 import example, { type ExampleBody } from './endpoints/example.ts';
 import login, { type LoginBody } from './endpoints/login.ts';
@@ -82,6 +83,10 @@ app.post('/library/edit', async (req, res) => {
 
 app.post('/library/view', async (req, res) => {
   return await viewLibrary(req.body as ViewLibraryBody, res);
+});
+
+app.post('/library/delete', async (req, res) => {
+  return await deleteBook(req.body as DeleteBookBody, res);
 });
 
 export default app;
