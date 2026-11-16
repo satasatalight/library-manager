@@ -9,8 +9,20 @@ import '../components/edit_book.dart';
 
 import 'login.dart';
 
+class Book {
+  String bookId = "";
+  String title = "";
+  String author = "";
+  String genre = "";
+  int publicationYear = 0;
+  String description = "";
+  String coverImageUrl = "";
+
+  Book(this.bookId, this.title, this.author, this.genre, this.publicationYear, this.description, this.coverImageUrl);
+}
+
 class BookCard extends StatelessWidget {
-  final Map<String, dynamic> book;
+  final Book book;
   final VoidCallback onTap;
 
   const BookCard({super.key, required this.book, required this.onTap});
@@ -27,7 +39,7 @@ class BookCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         alignment: Alignment.topLeft,
         child: Text(
-          book['title'] ?? '',
+          book.title,
           textAlign: TextAlign.left,
           style: GoogleFonts.kurale(
             color: Colors.white,
@@ -51,22 +63,16 @@ class _LibraryState extends State<Library> {
   final TextEditingController _searchCont = TextEditingController();
 
   // Example list of books the user owns
-  final List<Map<String, dynamic>> userBooks = [
-  {
-    'title': 'Clean Code',
-    'author': 'Robert C. Martin',
-    'genre': 'Programming',
-    'publication_year': 2008,
-    'description': 'A handbook of agile software craftsmanship.',
-    'cover_image': '',
-    },
+  final List<Book> userBooks = [
+    Book("book id", "Example Book", "author", "genre", 1000, "description", "cover image url")
   ];
-  void _showBookOptions(Map<String, dynamic> book) {
+
+  void _showBookOptions(Book book) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(book['title'], style: GoogleFonts.kurale()),
+          title: Text(book.title, style: GoogleFonts.kurale()),
           content: Text(
             'Would you like to edit or delete this book?',
             style: GoogleFonts.kurale(),

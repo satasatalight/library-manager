@@ -6,7 +6,7 @@ import 'package:dio/dio.dart';
 import '../pages/library.dart';
 
 class EditBook extends StatefulWidget {
-  final Map<String, dynamic> book;
+  final Book book;
 
   const EditBook({super.key, required this.book});
 
@@ -29,19 +29,16 @@ class _EditBookState extends State<EditBook> {
   void initState() {
     super.initState();
     // Pre-populate controllers with the current book values
-    _titleCont = TextEditingController(text: widget.book['title'] ?? '');
-    _authorCont = TextEditingController(text: widget.book['author'] ?? '');
-    _genreCont = TextEditingController(text: widget.book['genre'] ?? '');
+    _titleCont = TextEditingController(text: widget.book.title);
+    _authorCont = TextEditingController(text: widget.book.author);
+    _genreCont = TextEditingController(text: widget.book.genre);
     _yearCont = TextEditingController(
-      text: widget.book['publication_year'] != null &&
-          widget.book['publication_year'] != 0
-          ? widget.book['publication_year'].toString()
-          : '',
+      text: widget.book.publicationYear.toString()
     );
     _descriptionCont =
-        TextEditingController(text: widget.book['description'] ?? '');
+        TextEditingController(text: widget.book.description);
     _coverImageCont =
-        TextEditingController(text: widget.book['cover_image'] ?? '');
+        TextEditingController(text: widget.book.coverImageUrl);
   }
 
   void _showSuccessDialog() {
@@ -76,15 +73,15 @@ class _EditBookState extends State<EditBook> {
     // If a field is left empty by the user, fallback to the existing book value
     String title = _titleCont.text.trim().isNotEmpty
         ? _titleCont.text.trim()
-        : (widget.book['title'] ?? '');
+        : (widget.book.title);
 
     String author = _authorCont.text.trim().isNotEmpty
         ? _authorCont.text.trim()
-        : (widget.book['author'] ?? '');
+        : (widget.book.author);
 
     String genre = _genreCont.text.trim().isNotEmpty
         ? _genreCont.text.trim()
-        : (widget.book['genre'] ?? '');
+        : (widget.book.genre);
 
     String yearStr = _yearCont.text.trim();
     int? publicationYear;
@@ -97,16 +94,16 @@ class _EditBookState extends State<EditBook> {
         return;
       }
     } else {
-      publicationYear = widget.book['publication_year'] ?? 0;
+      publicationYear = widget.book.publicationYear;
     }
 
     String description = _descriptionCont.text.trim().isNotEmpty
         ? _descriptionCont.text.trim()
-        : (widget.book['description'] ?? '');
+        : (widget.book.description);
 
     String coverImageUrl = _coverImageCont.text.trim().isNotEmpty
         ? _coverImageCont.text.trim()
-        : (widget.book['cover_image'] ?? '');
+        : (widget.book.coverImageUrl);
 
     if (title.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -128,7 +125,7 @@ class _EditBookState extends State<EditBook> {
       final response = await dio.post(
         'https://library-manager-ashy.vercel.app/library/edit',
         data: {
-          'book_id': widget.book['id'],
+          'book_id': widget.book.bookId,
           'title': title,
           'author': author.isEmpty ? null : author,
           'genre': genre.isEmpty ? null : genre,
