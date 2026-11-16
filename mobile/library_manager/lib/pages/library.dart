@@ -9,20 +9,6 @@ import '../components/edit_book.dart';
 
 import 'login.dart';
 
-class _Library extends StatelessWidget {
-  const _Library();
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
-      ),
-      home: const Scaffold(body: Library()),
-    );
-  }
-}
-
 class BookCard extends StatelessWidget {
   final Map<String, dynamic> book;
   final VoidCallback onTap;
@@ -116,8 +102,8 @@ class _LibraryState extends State<Library> {
     );
   }
   void _handleSearch() {
-    final String query = _searchCont.text.trim();
-    print('Saved search query: $query');
+    // final String query = _searchCont.text.trim();
+    // print('Saved search query: $query');
   }
 
   @override
