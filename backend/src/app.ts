@@ -14,6 +14,7 @@ import resetRequest, {
 import reset, { type ResetBody } from './endpoints/reset.ts';
 import verify, { type VerifyBody } from './endpoints/verify.ts';
 import viewLibrary, { type ViewLibraryBody } from './endpoints/view-library.ts';
+import search, { type SearchBody } from './endpoints/search-book.ts';
 
 const app = express();
 
@@ -83,5 +84,9 @@ app.post('/library/edit', async (req, res) => {
 app.post('/library/view', async (req, res) => {
   return await viewLibrary(req.body as ViewLibraryBody, res);
 });
+
+app.post('/library/search', async (req, res) => {
+  return await search(req.body as SearchBody, res);
+})
 
 export default app;
