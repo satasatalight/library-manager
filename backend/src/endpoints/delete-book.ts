@@ -79,7 +79,7 @@ export default async function deleteBook(req: DeleteBookBody, res: Response)
 
   if(deletion_result == false)
   {
-    return res.status(500).send({
+    return res.status(400).send({
         status: 'error',
         reason: 'The book could not be found.'
     });
