@@ -1,5 +1,6 @@
 import express from 'express';
 import { MongoClient } from 'mongodb';
+import nodemailer from 'nodemailer';
 
 import config from './config.ts';
 import addBook, { type AddBookBody } from './endpoints/add-book.ts';
@@ -7,7 +8,9 @@ import editBook, { type EditBookBody } from './endpoints/edit-book.ts';
 import example, { type ExampleBody } from './endpoints/example.ts';
 import login, { type LoginBody } from './endpoints/login.ts';
 import register, { type RegisterBody } from './endpoints/register.ts';
-import resetRequest, { type ResetRequestBody } from './endpoints/reset-request.ts';
+import resetRequest, {
+  type ResetRequestBody,
+} from './endpoints/reset-request.ts';
 import reset, { type ResetBody } from './endpoints/reset.ts';
 import verify, { type VerifyBody } from './endpoints/verify.ts';
 import viewLibrary, { type ViewLibraryBody } from './endpoints/view-library.ts';
@@ -33,6 +36,16 @@ export async function getMongoClient() {
     process.exit(1);
   }
 }
+
+// export nodemailer transporter
+export const transporter = nodemailer.createTransport({
+  service: config.email_provider,
+  secure: false,
+  auth: {
+    user: config.email_user,
+    pass: config.email_pass,
+  },
+});
 
 // routing
 app.post('/example', (req, res) => {

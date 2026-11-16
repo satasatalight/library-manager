@@ -3,7 +3,7 @@ import type { MongoClient } from 'mongodb';
 import { hash, randomInt } from 'node:crypto';
 import nodemailer from 'nodemailer';
 
-import { getMongoClient } from '../app.ts';
+import { getMongoClient, transporter } from '../app.ts';
 import config from '../config.ts';
 
 export interface RegisterBody {
@@ -112,15 +112,6 @@ async function storeValidationData(
 }
 
 async function sendVerificationEmail(email: string, code: number) {
-  const transporter = nodemailer.createTransport({
-    service: 'Ethereal',
-    secure: false,
-    auth: {
-      user: config.email_user,
-      pass: config.email_pass,
-    },
-  });
-
   const info = await transporter.sendMail({
     from: `"LitLog" <${config.email_user}>`,
     to: email,

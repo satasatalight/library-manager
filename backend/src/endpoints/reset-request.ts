@@ -4,6 +4,7 @@ import { randomInt } from 'node:crypto';
 import nodemailer from 'nodemailer';
 
 import { getMongoClient } from '../app.ts';
+import { transporter } from '../app.ts';
 import config from '../config.ts';
 
 export interface ResetRequestBody {
@@ -42,15 +43,6 @@ async function storeResetCode(email: string, code: number): Promise<boolean> {
 }
 async function emailResetCode(email: string, code: number) {
   try {
-    const transporter = nodemailer.createTransport({
-      service: 'Ethereal',
-      secure: false,
-      auth: {
-        user: config.email_user,
-        pass: config.email_pass,
-      },
-    });
-
     const info = await transporter.sendMail({
       from: `"LitLog" <${config.email_user}>`,
       to: email,
