@@ -85,7 +85,7 @@ export default async function deleteBook(req: DeleteBookBody, res: Response)
   {
     return res.status(500).send({
         status: 'error',
-        reason: 'An error occurred within the database.'
+        reason: 'The book could not be found.'
     });
   }
 
@@ -100,31 +100,49 @@ async function removeBookEntries(book_id: ObjectId): Promise<boolean>
     let remove_from_library = async (id: ObjectId): Promise<boolean> => {
         try
         {
-            await mongoClient
+            const result = await mongoClient
             .db(DB_NAME)
             .collection(LIBRARY_TABLE_NAME)
             .deleteOne({
                 _id: id
             });
-            return true;
+
+            if(result.deletedCount == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         catch(error)
         {
             console.log("Error when removing from library table: " + error);
             return false;
         }
+        
     };
 
     let remove_from_user_books = async (id: ObjectId): Promise<boolean> => {
         try
         {
-            await mongoClient
+            let result = await mongoClient
             .db(DB_NAME)
             .collection(USER_BOOKS_TABLE_NAME)
             .deleteOne({
                 bookId: id
             });
-            return true;
+
+            if(result.deletedCount == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            
         }
         catch(error)
         {
