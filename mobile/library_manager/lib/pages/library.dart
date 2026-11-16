@@ -64,7 +64,8 @@ class _LibraryState extends State<Library> {
 
   // Example list of books the user owns
   final List<Book> userBooks = [
-    Book("book id", "Example Book", "author", "genre", 1000, "description", "cover image url")
+    // example book ID that matches a real ID in the authenticatedguy's library
+    Book("6afb54f20fbc180d9c8e9cd8", "Example Book", "author", "genre", 1000, "description", "cover image url")
   ];
 
   void _showBookOptions(Book book) {
