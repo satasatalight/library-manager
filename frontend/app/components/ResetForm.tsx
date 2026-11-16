@@ -32,7 +32,7 @@ function ResetForm({ onResetRequested }: ResetFormProps) {
       setMessage("Sending recovery email...");
 
       const response = await axios.post(
-        "https://library-manager-ashy.vercel.app/users/login/request_reset",
+        "https://library-manager-ashy.vercel.app/users/login/reset_request",
         obj,
       );
 
