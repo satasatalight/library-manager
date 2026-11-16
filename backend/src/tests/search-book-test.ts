@@ -30,17 +30,15 @@ describe('Test /library/search endpoint', function () {
         const token = (response.body as LoginResponseBody).token;
 
         // add example book to search
-        await request(app)
-          .post('/library/add')
-          .send({
-            title: 'Endpoint Test Book',
-            author: 'Testing Search',
-            genre: 'Test',
-            publication_year: '1970',
-            description: 'This is a book that was never written.',
-            cover_image: null,
-            token: token,
-          });
+        await request(app).post('/library/add').send({
+          title: 'Endpoint Test Book',
+          author: 'Testing Search',
+          genre: 'Test',
+          publication_year: '1970',
+          description: 'This is a book that was never written.',
+          cover_image: null,
+          token: token,
+        });
 
         // run search test
         const result = await request(app)
@@ -64,7 +62,7 @@ describe('Test /library/search endpoint', function () {
             book_id: body.library.at(0)?.bookId,
             token: token,
           });
-        
+
         return result;
       });
   });
