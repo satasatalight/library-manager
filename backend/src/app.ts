@@ -14,6 +14,7 @@ import resetRequest, {
 import reset, { type ResetBody } from './endpoints/reset.ts';
 import verify, { type VerifyBody } from './endpoints/verify.ts';
 import viewLibrary, { type ViewLibraryBody } from './endpoints/view-library.ts';
+import deleteBook, { type DeleteBookBody } from './endpoints/delete-book.ts';
 
 const app = express();
 
@@ -82,6 +83,10 @@ app.post('/library/edit', async (req, res) => {
 
 app.post('/library/view', async (req, res) => {
   return await viewLibrary(req.body as ViewLibraryBody, res);
+});
+
+app.post('/library/delete', async (req, res) => {
+  return await deleteBook(req.body as DeleteBookBody, res);
 });
 
 export default app;
