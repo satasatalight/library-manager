@@ -26,22 +26,46 @@ describe('Test /library/search endpoint', function () {
         password: 'theverifiedguy',
       })
       .expect(200)
-      .then((response) => {
-        const body = response.body as LoginResponseBody;
+      .then(async (response) => {
+        const token = (response.body as LoginResponseBody).token;
 
-        return request(app)
+        // add example book to search
+        await request(app)
+          .post('/library/add')
+          .send({
+            title: 'Endpoint Test Book',
+            author: 'Testing Search',
+            genre: 'Test',
+            publication_year: '1970',
+            description: 'This is a book that was never written.',
+            cover_image: null,
+            token: token,
+          });
+
+        // run search test
+        const result = await request(app)
           .post('/library/search')
           .send({
-            token: body.token,
+            token: token,
             search_string: 'Endpoint',
           })
-          .expect(200)
-          .then((response) => {
-            const body = response.body as ResponseBody;
-            assert.equal(body.status, 'success');
-            assert.equal(body.reason, 'book data obtained');
-            assert.equal(body.library.at(0)?.title, 'Endpoint Test Book');
+          .expect(200);
+
+        // verify test success
+        const body = result.body as ResponseBody;
+        assert.equal(body.status, 'success');
+        assert.equal(body.reason, 'book data obtained');
+        assert.equal(body.library.at(0)?.title, 'Endpoint Test Book');
+
+        // remove example book from library
+        await request(app)
+          .post('/library/delete')
+          .send({
+            book_id: body.library.at(0)?.bookId,
+            token: token,
           });
+        
+        return result;
       });
   });
 });
