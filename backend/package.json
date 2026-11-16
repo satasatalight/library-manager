@@ -4,11 +4,12 @@
   "type": "module",
   "scripts": {
     "install:clean": "node -e \"fs.rmSync('node_modules', { recursive: true, force: true }); fs.rmSync('package-lock.json', { force: true })\" && npm i",
-    "dev": "node --env-file=./.env --watch src/server.ts",
+    "dev": "node --env-file=./.env.dev --watch src/server.ts",
+    "prod": "node --env-file=./.env.prod --watch src/server.ts",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "start": "node --env-file-if-exists=./.env src/server.ts",
-    "test": "node --env-file=./.env --test --test-concurrency=1",
+    "start": "node --env-file-if-exists=./.env.dev src/server.ts",
+    "test": "node --env-file=./.env.dev --test --test-concurrency=1",
     "typecheck": "tsc -b --noEmit"
   },
   "imports": {

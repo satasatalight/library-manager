@@ -50,15 +50,15 @@ export default function Books() {
         // example data
         // uncomment this to test
         // const library = [
-          // {
-            // book_id: 1,
-            // title: "example",
-            // author: "mr. example",
-            // genre: "example-like",
-            // publication_year: 1000,
-            // description: "this is an example",
-            // cover_image: null
-          // }
+        // {
+        // book_id: 1,
+        // title: "example",
+        // author: "mr. example",
+        // genre: "example-like",
+        // publication_year: 1000,
+        // description: "this is an example",
+        // cover_image: null
+        // }
         // ];
 
         setBooks(Array.isArray(library) ? library.map(normalizeBook) : []);
@@ -74,6 +74,7 @@ export default function Books() {
   }, []);
 
   function addBook(book: Book) {
+    console.log("ihgoi");
     setBooks((current) => [...current, book]);
     setDialog(null);
   }
@@ -86,7 +87,7 @@ export default function Books() {
     setActionMode(null);
   }
 
-  function removeBook(bookId: number) {
+  function removeBook(bookId: string) {
     setBooks((current) => current.filter((book) => book.id !== bookId));
     setDialog(null);
     setActionMode(null);
@@ -193,7 +194,10 @@ export default function Books() {
           </p>
         )}
 
-        <section className="books-list mx-auto" aria-label="Book list">
+        <section
+          className="books-list mx-auto overflow-scroll"
+          aria-label="Book list"
+        >
           {isLoading ? (
             <p className="text-center py-4 mb-0">Loading your library...</p>
           ) : (isSearchOpen ? searchResults : books).length > 0 ? (

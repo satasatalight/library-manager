@@ -1,13 +1,21 @@
 import express from 'express';
 import { MongoClient } from 'mongodb';
+import nodemailer from 'nodemailer';
 
 import config from './config.ts';
 import addBook, { type AddBookBody } from './endpoints/add-book.ts';
+import deleteBook, { type DeleteBookBody } from './endpoints/delete-book.ts';
 import editBook, { type EditBookBody } from './endpoints/edit-book.ts';
 import example, { type ExampleBody } from './endpoints/example.ts';
 import login, { type LoginBody } from './endpoints/login.ts';
 import register, { type RegisterBody } from './endpoints/register.ts';
+import resetRequest, {
+  type ResetRequestBody,
+} from './endpoints/reset-request.ts';
+import reset, { type ResetBody } from './endpoints/reset.ts';
+import search, { type SearchBody } from './endpoints/search-book.ts';
 import verify, { type VerifyBody } from './endpoints/verify.ts';
+import viewLibrary, { type ViewLibraryBody } from './endpoints/view-library.ts';
 
 const app = express();
 
@@ -22,9 +30,7 @@ export async function getMongoClient() {
 
   try {
     mongoClient = new MongoClient(DB_URI);
-    console.log('Connecting to MongoDB Atlas cluster...');
     await mongoClient.connect();
-    console.log('Successfully connected to MongoDB Atlas!');
 
     return mongoClient;
   } catch (error) {
@@ -33,13 +39,25 @@ export async function getMongoClient() {
   }
 }
 
+// export nodemailer transporter
+export const transporter = nodemailer.createTransport({
+  service: config.email_provider,
+  secure: false,
+  auth: {
+    user: config.email_user,
+    pass: config.email_pass,
+  },
+});
+
 // routing
 app.post('/example', (req, res) => {
   return example((req.body as ExampleBody).message, res);
 });
+
 app.post('/users/register', async (req, res) => {
   return await register(req.body as RegisterBody, res);
 });
+
 app.post('/users/login', async (req, res) => {
   return await login(req.body as LoginBody, res);
 });
@@ -48,12 +66,32 @@ app.post('/users/register/verify', async (req, res) => {
   return await verify(req.body as VerifyBody, res);
 });
 
+app.post('/users/login/reset_request', async (req, res) => {
+  return await resetRequest(req.body as ResetRequestBody, res);
+});
+
+app.post('/users/login/reset', async (req, res) => {
+  return await reset(req.body as ResetBody, res);
+});
+
 app.post('/library/add', async (req, res) => {
   return await addBook(req.body as AddBookBody, res);
 });
 
 app.post('/library/edit', async (req, res) => {
   return await editBook(req.body as EditBookBody, res);
+});
+
+app.post('/library/view', async (req, res) => {
+  return await viewLibrary(req.body as ViewLibraryBody, res);
+});
+
+app.post('/library/search', async (req, res) => {
+  return await search(req.body as SearchBody, res);
+});
+
+app.post('/library/delete', async (req, res) => {
+  return await deleteBook(req.body as DeleteBookBody, res);
 });
 
 export default app;

@@ -3,7 +3,7 @@ import type { MongoClient } from 'mongodb';
 import { hash, randomInt } from 'node:crypto';
 import nodemailer from 'nodemailer';
 
-import { getMongoClient } from '../app.ts';
+import { getMongoClient, transporter } from '../app.ts';
 import config from '../config.ts';
 
 export interface RegisterBody {
@@ -112,15 +112,6 @@ async function storeValidationData(
 }
 
 async function sendVerificationEmail(email: string, code: number) {
-  const transporter = nodemailer.createTransport({
-    service: 'Ethereal',
-    secure: false,
-    auth: {
-      user: config.email_user,
-      pass: config.email_pass,
-    },
-  });
-
   const info = await transporter.sendMail({
     from: `"LitLog" <${config.email_user}>`,
     to: email,
@@ -146,6 +137,7 @@ export default async function register(req: RegisterBody, res: Response) {
   mongoClient = await getMongoClient();
 
   if ((await validateEmail(req.email)) == false) {
+    await mongoClient.close();
     return res.status(400).send({
       status: 'error',
       reason:
@@ -153,6 +145,7 @@ export default async function register(req: RegisterBody, res: Response) {
     });
   }
   if (validateNames(req) == false) {
+    await mongoClient.close();
     return res.status(400).send({
       status: 'error',
       reason:
@@ -160,6 +153,7 @@ export default async function register(req: RegisterBody, res: Response) {
     });
   }
   if (validatePassword(req.password) == false) {
+    await mongoClient.close();
     return res.status(400).send({
       status: 'error',
       reason:
@@ -176,6 +170,7 @@ export default async function register(req: RegisterBody, res: Response) {
     // validation_code: randomInt(100000, 1000000), // Random 6-digit code
   };
   if ((await storeData(entry)) == false) {
+    await mongoClient.close();
     return res.status(500).send({
       status: 'error',
       reason:
@@ -190,6 +185,7 @@ export default async function register(req: RegisterBody, res: Response) {
     expiry: Date.now() + EXPIRY_TIME_DAYS * 24 * 60 * 60 * 1000,
   };
   if ((await storeValidationData(verifyEntry)) == false) {
+    await mongoClient.close();
     return res.status(500).send({
       status: 'error',
       reason:
@@ -202,6 +198,7 @@ export default async function register(req: RegisterBody, res: Response) {
     await sendVerificationEmail(verifyEntry.email, verifyEntry.code);
   } catch (error) {
     console.error(error);
+    await mongoClient.close();
     return res.status(500).send({
       status: 'error',
       reason: 'Verification email could not be sent.',

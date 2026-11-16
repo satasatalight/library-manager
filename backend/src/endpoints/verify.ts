@@ -54,7 +54,9 @@ export default async function verify(req: VerifyBody, res: Response) {
   const verifyEntry: PendingVerificationEntry | null = await fetchVerifyData(
     req.email,
   );
+
   if (verifyEntry == null) {
+    await mongoClient.close();
     return res.status(404).send({
       status: 'error',
       reason:
@@ -63,6 +65,7 @@ export default async function verify(req: VerifyBody, res: Response) {
   }
 
   if (isCodeExpired(verifyEntry.expiry)) {
+    await mongoClient.close();
     return res.status(403).send({
       status: 'error',
       reason: 'Your code has expired.',
@@ -70,6 +73,7 @@ export default async function verify(req: VerifyBody, res: Response) {
   }
 
   if (req.code != verifyEntry.code) {
+    await mongoClient.close();
     return res.status(403).send({
       status: 'error',
       reason:
@@ -78,12 +82,14 @@ export default async function verify(req: VerifyBody, res: Response) {
   }
 
   if (await verifyUser(req.email)) {
+    await mongoClient.close();
     return res.status(200).send({
       status: 'success',
       reason:
         'Your email has been verified. You may now log in using your username and password.',
     });
   } else {
+    await mongoClient.close();
     return res.status(500).send({
       status: 'error',
       reason:

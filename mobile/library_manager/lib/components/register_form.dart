@@ -31,15 +31,15 @@ class _RegisterFormState extends State<RegisterForm> {
     // Pre-fill fields with the credentials the user originally typed
     _emailCont = TextEditingController(text: widget.initialEmail);
     _passwordCont = TextEditingController(text: widget.initialPassword);
-    _lnameCont = TextEditingController(text: "");
     _fnameCont = TextEditingController(text: "");
+    _lnameCont = TextEditingController(text: "");
   }
 
   Future<void> handleRegister() async {
     String email = _emailCont.text.trim();
     String password = _passwordCont.text;
-    String fname = _fnameCont.text;
-    String lname = _lnameCont.text;
+    String fname = _fnameCont.text.trim();
+    String lname = _lnameCont.text.trim();
 
     // Email format validation
     final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
@@ -54,6 +54,105 @@ class _RegisterFormState extends State<RegisterForm> {
         context,
       ).showSnackBar(const SnackBar(content: Text('Please enter a password.')));
       return;
+    }
+
+    void promptForVerification(String email) {
+      final TextEditingController codeController = TextEditingController();
+
+      showDialog(
+        context: context,
+        barrierDismissible:
+            true, // Allows tapping outside to dismiss if desired
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Verify Your Email'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Enter the 6-digit code sent for $email.'),
+                const SizedBox(height: 15),
+                TextField(
+                  controller: codeController,
+                  keyboardType: TextInputType.number,
+                  maxLength: 6,
+                  decoration: const InputDecoration(
+                    labelText: '6-Digit Code',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              // Cancel / Close button added here
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Dismisses the popup
+                },
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  String codeText = codeController.text.trim();
+
+                  int? codeNum = int.tryParse(codeText);
+                  if (codeText.length != 6 || codeNum == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Please enter a valid 6-digit numeric code.',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+
+                  try {
+                    final dio = Dio();
+                    final response = await dio.post(
+                      'https://library-manager-ashy.vercel.app/users/register/verify',
+                      data: {'email': email, 'code': codeNum},
+                    );
+
+                    if (!context.mounted) return;
+
+                    if (response.statusCode == 200) {
+                      Navigator.of(context)
+                          .pop(); // Dismiss verification dialog
+
+                      String successMsg = 'Email verified successfully!';
+                      if (response.data is Map &&
+                          response.data['reason'] != null) {
+                        successMsg = response.data['reason'];
+                      } else if (response.data is String) {
+                        successMsg = response.data;
+                      }
+
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text(successMsg)));
+
+                      widget.onBackToLogin();
+                    }
+                  } on DioException catch (e) {
+                    String errorMsg = 'Verification failed.';
+                    if (e.response?.data != null) {
+                      if (e.response?.data is Map) {
+                        errorMsg = e.response?.data['reason'] ?? errorMsg;
+                      } else if (e.response?.data is String) {
+                        errorMsg = e.response?.data;
+                      }
+                    }
+
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text(errorMsg)));
+                  }
+                },
+                child: const Text('Verify'),
+              ),
+            ],
+          );
+        },
+      );
     }
 
     try {
@@ -76,12 +175,12 @@ class _RegisterFormState extends State<RegisterForm> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Account created successfully! Logging you in...'),
+            content: Text(
+              'Account created! Please enter your verification code.',
+            ),
           ),
         );
-
-        // Trigger success callback (e.g. navigate to library or auto-login)
-        widget.onRegistrationSuccess();
+        promptForVerification(email);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(data['reason'] ?? 'Registration failed.')),
@@ -101,6 +200,8 @@ class _RegisterFormState extends State<RegisterForm> {
   void dispose() {
     _emailCont.dispose();
     _passwordCont.dispose();
+    _fnameCont.dispose();
+    _lnameCont.dispose();
     super.dispose();
   }
 
@@ -170,7 +271,9 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 10),
           TextButton(
-            onPressed: widget.onBackToLogin,
+            onPressed: () {
+              widget.onBackToLogin();
+            },
             child: const Text("Back to Login"),
           ),
         ],
