@@ -33,12 +33,10 @@ class _EditBookState extends State<EditBook> {
     _authorCont = TextEditingController(text: widget.book.author);
     _genreCont = TextEditingController(text: widget.book.genre);
     _yearCont = TextEditingController(
-      text: widget.book.publicationYear.toString()
+      text: widget.book.publicationYear.toString(),
     );
-    _descriptionCont =
-        TextEditingController(text: widget.book.description);
-    _coverImageCont =
-        TextEditingController(text: widget.book.coverImageUrl);
+    _descriptionCont = TextEditingController(text: widget.book.description);
+    _coverImageCont = TextEditingController(text: widget.book.coverImageUrl);
   }
 
   void _showSuccessDialog() {
@@ -89,7 +87,9 @@ class _EditBookState extends State<EditBook> {
       publicationYear = int.tryParse(yearStr);
       if (publicationYear == null || publicationYear < 1) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please enter a valid publication year.')),
+          const SnackBar(
+            content: Text('Please enter a valid publication year.'),
+          ),
         );
         return;
       }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 //import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import '../components/add_book.dart';
 import '../components/edit_book.dart';
 
@@ -18,7 +19,15 @@ class Book {
   String description = "";
   String coverImageUrl = "";
 
-  Book(this.bookId, this.title, this.author, this.genre, this.publicationYear, this.description, this.coverImageUrl);
+  Book(
+    this.bookId,
+    this.title,
+    this.author,
+    this.genre,
+    this.publicationYear,
+    this.description,
+    this.coverImageUrl,
+  );
 }
 
 class BookCard extends StatelessWidget {
@@ -65,7 +74,15 @@ class _LibraryState extends State<Library> {
   // Example list of books the user owns
   final List<Book> userBooks = [
     // example book ID that matches a real ID in the authenticatedguy's library
-    Book("6afb54f20fbc180d9c8e9cd8", "Example Book", "author", "genre", 1000, "description", "cover image url")
+    Book(
+      "6afb54f20fbc180d9c8e9cd8",
+      "Example Book",
+      "author",
+      "genre",
+      1000,
+      "description",
+      "cover image url",
+    ),
   ];
 
   void _showBookOptions(Book book) {
@@ -84,9 +101,7 @@ class _LibraryState extends State<Library> {
                 Navigator.of(context).pop(); // Close dialog
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => EditBook(book: book),
-                  ),
+                  MaterialPageRoute(builder: (context) => EditBook(book: book)),
                 );
               },
               child: Text(
@@ -108,6 +123,7 @@ class _LibraryState extends State<Library> {
       },
     );
   }
+
   void _handleSearch() {
     // final String query = _searchCont.text.trim();
     // print('Saved search query: $query');
@@ -180,12 +196,12 @@ class _LibraryState extends State<Library> {
                     : GridView.builder(
                         itemCount: userBooks.length,
                         gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                          childAspectRatio: 0.75,
-                        ),
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: 0.75,
+                            ),
                         itemBuilder: (context, index) {
                           return BookCard(
                             book: userBooks[index],
