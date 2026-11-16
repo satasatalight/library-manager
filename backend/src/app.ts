@@ -1,15 +1,20 @@
 import express from 'express';
 import { MongoClient } from 'mongodb';
+import nodemailer from 'nodemailer';
 
 import config from './config.ts';
 import addBook, { type AddBookBody } from './endpoints/add-book.ts';
+import deleteBook, { type DeleteBookBody } from './endpoints/delete-book.ts';
 import editBook, { type EditBookBody } from './endpoints/edit-book.ts';
 import example, { type ExampleBody } from './endpoints/example.ts';
 import login, { type LoginBody } from './endpoints/login.ts';
 import register, { type RegisterBody } from './endpoints/register.ts';
-import resetRequest, { type ResetRequestBody } from './endpoints/reset-request.ts';
+import resetRequest, {
+  type ResetRequestBody,
+} from './endpoints/reset-request.ts';
 import reset, { type ResetBody } from './endpoints/reset.ts';
 import verify, { type VerifyBody } from './endpoints/verify.ts';
+import viewLibrary, { type ViewLibraryBody } from './endpoints/view-library.ts';
 
 const app = express();
 
@@ -32,6 +37,16 @@ export async function getMongoClient() {
     process.exit(1);
   }
 }
+
+// export nodemailer transporter
+export const transporter = nodemailer.createTransport({
+  service: config.email_provider,
+  secure: false,
+  auth: {
+    user: config.email_user,
+    pass: config.email_pass,
+  },
+});
 
 // routing
 app.post('/example', (req, res) => {
@@ -64,6 +79,14 @@ app.post('/library/add', async (req, res) => {
 
 app.post('/library/edit', async (req, res) => {
   return await editBook(req.body as EditBookBody, res);
+});
+
+app.post('/library/view', async (req, res) => {
+  return await viewLibrary(req.body as ViewLibraryBody, res);
+});
+
+app.post('/library/delete', async (req, res) => {
+  return await deleteBook(req.body as DeleteBookBody, res);
 });
 
 export default app;

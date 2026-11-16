@@ -209,16 +209,16 @@ class _LibraryState extends State<Library> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    GestureDetector(
-                      onTap: () {
+                    FilledButton(
+                      onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const AddBook()),
+                          MaterialPageRoute(
+                            builder: (context) => const AddBook(),
+                          ),
                         );
                       },
                       child: Container(
-                        width: 166,
-                        height: 44,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: ShapeDecoration(
                           color: const Color(0xFF8F4670),
@@ -239,21 +239,22 @@ class _LibraryState extends State<Library> {
                     ),
                     const SizedBox(width: 16),
 
-
-                    GestureDetector(
-                      onTap: () async {
+                    FilledButton(
+                      onPressed: () async {
                         const secureStorage = FlutterSecureStorage();
                         await secureStorage.delete(key: 'token');
 
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Login()),
-                          (route) => false,
-                        );
+                        if (context.mounted) {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Login(),
+                            ),
+                            (route) => false,
+                          );
+                        }
                       },
                       child: Container(
-                        width: 166,
-                        height: 44,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         decoration: ShapeDecoration(
                           color: const Color(0xFF8F4670),
