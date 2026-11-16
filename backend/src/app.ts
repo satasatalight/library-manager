@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer';
 
 import config from './config.ts';
 import addBook, { type AddBookBody } from './endpoints/add-book.ts';
+import deleteBook, { type DeleteBookBody } from './endpoints/delete-book.ts';
 import editBook, { type EditBookBody } from './endpoints/edit-book.ts';
 import example, { type ExampleBody } from './endpoints/example.ts';
 import login, { type LoginBody } from './endpoints/login.ts';
@@ -14,7 +15,6 @@ import resetRequest, {
 import reset, { type ResetBody } from './endpoints/reset.ts';
 import verify, { type VerifyBody } from './endpoints/verify.ts';
 import viewLibrary, { type ViewLibraryBody } from './endpoints/view-library.ts';
-import deleteBook, { type DeleteBookBody } from './endpoints/delete-book.ts';
 
 const app = express();
 
