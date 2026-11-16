@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import axios from "axios";
 
 interface NewPasswordFormProps {
+  email: string;
   onPasswordResetSuccess: () => void;
 }
 
-function NewPasswordForm({ onPasswordResetSuccess }: NewPasswordFormProps) {
+function NewPasswordForm({
+  email,
+  onPasswordResetSuccess,
+}: NewPasswordFormProps) {
   const [code, setCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -29,6 +33,7 @@ function NewPasswordForm({ onPasswordResetSuccess }: NewPasswordFormProps) {
     }
 
     const obj = {
+      email: email,
       code: code,
       new_password: newPassword,
     };
