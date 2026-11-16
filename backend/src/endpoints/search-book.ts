@@ -119,9 +119,11 @@ export default async function viewLibrary(req: SearchBody, res: Response) {
 
   const books: Book[] = [];
   returned_books.forEach((book: Book) => {
-    if (book.title.toLowerCase().includes(req.search_string.toLowerCase()) ||
-        (book.author?.toLowerCase().includes(req.search_string.toLowerCase()))) {
-        books.push(book);
+    if (
+      book.title.toLowerCase().includes(req.search_string.toLowerCase()) ||
+      book.author?.toLowerCase().includes(req.search_string.toLowerCase())
+    ) {
+      books.push(book);
     }
   });
 
@@ -181,7 +183,7 @@ async function findUserOwnedBooksInfo(
   }
 
   const returned_documents = await result.toArray();
-  
+
   const returned_books: Book[] = returned_documents.map((document) => {
     const book: Book = {
       bookId: document._id,
