@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 
 interface ResetFormProps {
-  onResetRequested: () => void;
+  onResetRequested: (email: string) => void;
 }
 
 function ResetForm({ onResetRequested }: ResetFormProps) {
@@ -32,14 +32,14 @@ function ResetForm({ onResetRequested }: ResetFormProps) {
       setMessage("Sending recovery email...");
 
       const response = await axios.post(
-        "https://library-manager-ashy.vercel.app/users/login/reset_request",
+        "https://library-manager-ashy.vercel.app/users/login/request_reset",
         obj,
       );
 
       const res = response.data;
 
       if (res.status === "success") {
-        onResetRequested();
+        onResetRequested(email);
       } else {
         setMessage(res.reason || "Unable to request password reset.");
       }
