@@ -80,7 +80,7 @@ class _LoginState extends State<Login> {
   void changeToForgotPassword() {
     setState(() {
       currentField = forgot_password_form.ForgotPasswordForm(
-        // onResetRequested: handlePasswordReset,
+        onBackToLogin: _loadLoginForm,
       );
     });
   }

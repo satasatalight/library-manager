@@ -4,11 +4,20 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:library_manager/pages/library.dart';
 
 class ForgotPasswordForm extends Container {
-  // final VoidCallback onResetRequested;
-  ForgotPasswordForm({super.key});
+  final VoidCallback onBackToLogin;
+
+  ForgotPasswordForm({super.key, required this.onBackToLogin});
 
   @override
-  Widget? get child => ChangeForm();
+  Widget? get child => Column(children: [
+    ChangeForm(),
+    TextButton(
+      onPressed: () {
+        onBackToLogin();
+      },
+      child: const Text("Back to Login"),
+    ),
+  ],);
 }
 
 class ChangeForm extends StatefulWidget {
@@ -146,7 +155,7 @@ class _ChangeFormState extends State<ChangeForm> {
     return Column(
       children: [
         currentForm,
-        currentButton
+        currentButton,
       ],
     );
   }
@@ -196,7 +205,7 @@ class VerifyForm extends Container {
           border: OutlineInputBorder(),
         ),
       ),
-      SizedBox(height: 20,)
+      SizedBox(height: 20,),
     ],
   );
 }
