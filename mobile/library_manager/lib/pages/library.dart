@@ -100,22 +100,30 @@ class _LibraryState extends State<Library> {
     _booksFuture = _fetchLibraryBooks();
   }
 
-  Future<List<Book>> _fetchLibraryBooks() async {
+  Future<List<Book>> _fetchLibraryBooks({String searchQuery = ''}) async {
     try {
       String? token = await _secureStorage.read(key: 'token');
       final dio = Dio();
 
-      final response = await dio.post(
-        'https://library-manager-ashy.vercel.app/library/view',
-        data: {'token': token},
-      );
+      final bool isSearching = searchQuery.trim().isNotEmpty;
+      final endpoint = isSearching
+          ? 'https://library-manager-ashy.vercel.app/library/search'
+          : 'https://library-manager-ashy.vercel.app/library/view';
 
+      final payload = isSearching
+          ? {'token': token, 'search_string': searchQuery.trim()}
+          : {'token': token};
+
+      final response = await dio.post(endpoint, data: payload);
       final data = response.data;
 
       if (response.statusCode == 200 && data['status'] == 'success') {
         final List booksJson = data['library'] ?? [];
         return booksJson.map((json) => Book.fromJson(json)).toList();
       } else {
+        if (data['reason'] == 'No books found in user library.') {
+          return [];
+        }
         throw Exception(data['reason'] ?? 'Failed to load books.');
       }
     } on DioException catch (e) {
@@ -127,10 +135,11 @@ class _LibraryState extends State<Library> {
 
   void _refreshLibrary() {
     setState(() {
-      _booksFuture = _fetchLibraryBooks();
+      _booksFuture = _fetchLibraryBooks(searchQuery: _searchCont.text);
     });
   }
 
+  /*
   bool _matchTerm(Book book, String term) {
     final lowerTerm = term.toLowerCase();
 
@@ -229,7 +238,7 @@ class _LibraryState extends State<Library> {
     }
     return 5;
   }
-
+  */
   void _showBookOptions(Book book) {
     showDialog(
       context: context,
@@ -268,12 +277,12 @@ class _LibraryState extends State<Library> {
       },
     );
   }
-
+/*
   void _handleSearch() {
     // final String query = _searchCont.text.trim();
     // print('Saved search query: $query');
   }
-
+*/
   @override
   void dispose() {
     _searchCont.dispose();
@@ -310,7 +319,9 @@ class _LibraryState extends State<Library> {
               TextField(
                 controller: _searchCont,
                 onChanged: (value) {
-                  setState(() {}); // Triggers live filtering as you type
+                  setState(() {
+                    _booksFuture = _fetchLibraryBooks(searchQuery: value);
+                  });
                 },
                 decoration: InputDecoration(
                   hintText: 'Search ...',
@@ -322,7 +333,11 @@ class _LibraryState extends State<Library> {
                   prefixIcon: IconButton(
                     icon: const Icon(Icons.search, color: Colors.black),
                     onPressed: () {
-                      setState(() {});
+                      setState(() {
+                        _booksFuture = _fetchLibraryBooks(
+                          searchQuery: _searchCont.text,
+                        );
+                      });
                     },
                   ),
                   enabledBorder: OutlineInputBorder(
@@ -334,14 +349,67 @@ class _LibraryState extends State<Library> {
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ),
-                onSubmitted: (_) {
-                  setState(() {});
+                onSubmitted: (value) {
+                  setState(() {
+                    _booksFuture = _fetchLibraryBooks(searchQuery: value);
+                  });
                 },
               ),
               const SizedBox(height: 20),
 
               // Dynamic Grid of Books with Search Applied
               Expanded(
+                child: FutureBuilder<List<Book>>(
+                  future: _booksFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xFF8F4670),
+                        ),
+                      );
+                    }
+
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text(
+                          'Error: ${snapshot.error}',
+                          style: GoogleFonts.kurale(color: Colors.red),
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    }
+
+                    final userBooks = snapshot.data ?? [];
+
+                    if (userBooks.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No books found',
+                          style: GoogleFonts.kurale(fontSize: 18),
+                        ),
+                      );
+                    }
+
+                    return GridView.builder(
+                      itemCount: userBooks.length,
+                      gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        childAspectRatio: 0.75,
+                      ),
+                      itemBuilder: (context, index) {
+                        return BookCard(
+                          book: userBooks[index],
+                          onTap: () => _showBookOptions(userBooks[index]),
+                        );
+                      },
+                    );
+                  },
+                ),
+                /*
                 child: FutureBuilder<List<Book>>(
                   future: _booksFuture,
                   builder: (context, snapshot) {
@@ -396,6 +464,7 @@ class _LibraryState extends State<Library> {
                     );
                   },
                 ),
+                */
               ),
 
               const SizedBox(height: 16),
