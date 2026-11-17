@@ -29,6 +29,7 @@ class _LoginState extends State<Login> {
         onLoginFailed: (email, password) {
           _showRegisterPrompt(email, password);
         },
+        changeToForgotPassword: () => changeToForgotPassword(),
       );
     });
   }
@@ -106,10 +107,6 @@ class _LoginState extends State<Login> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   currentField,
-                  FilledButton(
-                    onPressed: changeToForgotPassword,
-                    child: Text("Forgot Password?"),
-                  ),
                 ],
               ),
             ),
