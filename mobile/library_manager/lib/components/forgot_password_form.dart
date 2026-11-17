@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordForm extends Container {
   // final VoidCallback onResetRequested;
+  ForgotPasswordForm({super.key});
 
   @override
   Widget? get child => ChangeForm();
@@ -15,14 +17,45 @@ class ChangeForm extends StatefulWidget {
 }
 
 class _ChangeFormState extends State<ChangeForm> {
-  Container currentForm = EmailForm();
+  final dio = Dio();
+  final TextEditingController emailCont = TextEditingController();
+  final TextEditingController codeCont = TextEditingController();
+  final TextEditingController newPasswordCont = TextEditingController();
+
+  Container currentForm = Container();
   FilledButton currentButton = FilledButton(onPressed: () => {}, child: Text("Submit Password Reset Request"));
 
-  void submitResetRequest() {
-    setState(() {
-      currentForm = VerifyForm();
-      currentButton = FilledButton(onPressed: submitReset, child: Text("Reset Password"));
-    });
+  void submitResetRequest() async {
+    final email = emailCont.text.trim();
+
+    if (email.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter an email.')),
+      );
+      return;
+    }
+
+    try {
+      Response res = await dio.post(
+          "https://library-manager-ashy.vercel.app/users/login/reset_request",
+          data: {'email': email}
+      );
+
+      if (res.statusCode == 200 && res.data['status'] == 'success') {
+        setState(() {
+          currentForm = VerifyForm(codeCont: codeCont, newPasswordCont: newPasswordCont);
+          currentButton = FilledButton(onPressed: submitReset, child: Text("Reset Password"));
+        });
+      }
+    }
+
+    on DioException catch (e){
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.response?.data['reason']}')),
+        );
+      }
+    }
   }
 
   void submitReset() {
@@ -32,6 +65,7 @@ class _ChangeFormState extends State<ChangeForm> {
   initState() {
     super.initState();
     currentButton = FilledButton(onPressed: submitResetRequest, child: Text("Submit Password Reset Request"));
+    currentForm = EmailForm(emailCont: emailCont);
   }
 
   @override
@@ -46,15 +80,15 @@ class _ChangeFormState extends State<ChangeForm> {
 }
 
 class EmailForm extends Container {
-  EmailForm({super.key});
+  final TextEditingController emailCont;
 
-  final TextEditingController _emailCont = TextEditingController();
+  EmailForm({super.key, required this.emailCont});
 
   @override
   Widget? get child => Column(
     children: [
       TextField(
-        controller: _emailCont,
+        controller: emailCont,
         decoration: const InputDecoration(
           labelText: 'Email',
           border: OutlineInputBorder(),
@@ -66,16 +100,16 @@ class EmailForm extends Container {
 }
 
 class VerifyForm extends Container {
-  VerifyForm({super.key});
+  final TextEditingController codeCont;
+  final TextEditingController newPasswordCont;
 
-  final TextEditingController _codeCont = TextEditingController();
-  final TextEditingController _newPasswordCont = TextEditingController();
+  VerifyForm({super.key, required this.codeCont, required this.newPasswordCont});
 
   @override
   Widget? get child => Column(
     children: [
       TextField(
-        controller: _codeCont,
+        controller: codeCont,
         decoration: const InputDecoration(
           labelText: 'Verification Code',
           border: OutlineInputBorder(),
@@ -83,7 +117,7 @@ class VerifyForm extends Container {
       ),
       SizedBox(height: 20,),
       TextField(
-        controller: _newPasswordCont,
+        controller: newPasswordCont,
         decoration: const InputDecoration(
           labelText: 'New Password',
           border: OutlineInputBorder(),
