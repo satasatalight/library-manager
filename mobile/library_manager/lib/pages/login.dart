@@ -28,6 +28,7 @@ class _LoginState extends State<Login> {
         onLoginFailed: (email, password) {
           _showRegisterPrompt(email, password);
         },
+        changeToForgotPassword: () => changeToForgotPassword(),
       );
     });
   }
@@ -71,6 +72,7 @@ class _LoginState extends State<Login> {
                     initialEmail: email,
                     initialPassword: password,
                     onRegistrationSuccess: () {
+                      // After successful registration, navigate to library or reload login
                       Navigator.pushReplacementNamed(context, '/library');
                     },
                     onBackToLogin: _loadLoginForm,
@@ -95,11 +97,12 @@ class _LoginState extends State<Login> {
   void changeToForgotPassword() {
     setState(() {
       currentField = forgot_password_form.ForgotPasswordForm(
-        onResetRequested: handlePasswordReset,
+        onBackToLogin: _loadLoginForm,
       );
     });
   }
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
