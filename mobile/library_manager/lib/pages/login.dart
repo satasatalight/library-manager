@@ -105,9 +105,7 @@ class _LoginState extends State<Login> {
               padding: EdgeInsets.symmetric(horizontal: 7),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  currentField,
-                ],
+                children: [currentField],
               ),
             ),
           ],

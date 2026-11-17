@@ -9,15 +9,17 @@ class ForgotPasswordForm extends Container {
   ForgotPasswordForm({super.key, required this.onBackToLogin});
 
   @override
-  Widget? get child => Column(children: [
-    ChangeForm(),
-    TextButton(
-      onPressed: () {
-        onBackToLogin();
-      },
-      child: const Text("Back to Login"),
-    ),
-  ],);
+  Widget? get child => Column(
+    children: [
+      ChangeForm(),
+      TextButton(
+        onPressed: () {
+          onBackToLogin();
+        },
+        child: const Text("Back to Login"),
+      ),
+    ],
+  );
 }
 
 class ChangeForm extends StatefulWidget {
@@ -34,7 +36,10 @@ class _ChangeFormState extends State<ChangeForm> {
   final TextEditingController newPasswordCont = TextEditingController();
 
   Container currentForm = Container();
-  FilledButton currentButton = FilledButton(onPressed: () => {}, child: Text("Submit Password Reset Request"));
+  FilledButton currentButton = FilledButton(
+    onPressed: () => {},
+    child: Text("Submit Password Reset Request"),
+  );
   String email = "";
 
   void submitResetRequest() async {
@@ -49,25 +54,33 @@ class _ChangeFormState extends State<ChangeForm> {
 
     try {
       Response res = await dio.post(
-          "https://library-manager-ashy.vercel.app/users/login/reset_request",
-          data: {'email': email}
+        "https://library-manager-ashy.vercel.app/users/login/reset_request",
+        data: {'email': email},
       );
 
       if (res.statusCode == 200 && res.data['status'] == 'success') {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Success! Check your email for a verification code'))
+            SnackBar(
+              content: Text(
+                'Success! Check your email for a verification code',
+              ),
+            ),
           );
         }
 
         setState(() {
-          currentForm = VerifyForm(codeCont: codeCont, newPasswordCont: newPasswordCont);
-          currentButton = FilledButton(onPressed: submitReset, child: Text("Reset Password"));
+          currentForm = VerifyForm(
+            codeCont: codeCont,
+            newPasswordCont: newPasswordCont,
+          );
+          currentButton = FilledButton(
+            onPressed: submitReset,
+            child: Text("Reset Password"),
+          );
         });
       }
-    }
-
-    on DioException catch (e){
+    } on DioException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${e.response?.data['reason']}')),
@@ -89,8 +102,8 @@ class _ChangeFormState extends State<ChangeForm> {
 
     try {
       Response res = await dio.post(
-          "https://library-manager-ashy.vercel.app/users/login/reset",
-          data: {'email': email, 'code': code, 'new_password': newPassword}
+        "https://library-manager-ashy.vercel.app/users/login/reset",
+        data: {'email': email, 'code': code, 'new_password': newPassword},
       );
 
       if (res.statusCode == 200 && res.data['status'] == 'success') {
@@ -118,13 +131,11 @@ class _ChangeFormState extends State<ChangeForm> {
             if (mounted) {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => Library()), 
+                MaterialPageRoute(builder: (context) => Library()),
               );
             }
           }
-        } 
-        
-        on DioException catch (e) {
+        } on DioException catch (e) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Error: ${e.response?.data['reason']}')),
@@ -132,9 +143,7 @@ class _ChangeFormState extends State<ChangeForm> {
           }
         }
       }
-    }
-
-    on DioException catch (e){
+    } on DioException catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: ${e.response?.data['reason']}')),
@@ -146,18 +155,16 @@ class _ChangeFormState extends State<ChangeForm> {
   @override
   initState() {
     super.initState();
-    currentButton = FilledButton(onPressed: submitResetRequest, child: Text("Submit Password Reset Request"));
+    currentButton = FilledButton(
+      onPressed: submitResetRequest,
+      child: Text("Submit Password Reset Request"),
+    );
     currentForm = EmailForm(emailCont: emailCont);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        currentForm,
-        currentButton,
-      ],
-    );
+    return Column(children: [currentForm, currentButton]);
   }
 }
 
@@ -176,7 +183,7 @@ class EmailForm extends Container {
           border: OutlineInputBorder(),
         ),
       ),
-      SizedBox(height: 20,)
+      SizedBox(height: 20),
     ],
   );
 }
@@ -185,7 +192,11 @@ class VerifyForm extends Container {
   final TextEditingController codeCont;
   final TextEditingController newPasswordCont;
 
-  VerifyForm({super.key, required this.codeCont, required this.newPasswordCont});
+  VerifyForm({
+    super.key,
+    required this.codeCont,
+    required this.newPasswordCont,
+  });
 
   @override
   Widget? get child => Column(
@@ -197,7 +208,7 @@ class VerifyForm extends Container {
           border: OutlineInputBorder(),
         ),
       ),
-      SizedBox(height: 20,),
+      SizedBox(height: 20),
       TextField(
         controller: newPasswordCont,
         decoration: const InputDecoration(
@@ -205,7 +216,7 @@ class VerifyForm extends Container {
           border: OutlineInputBorder(),
         ),
       ),
-      SizedBox(height: 20,),
+      SizedBox(height: 20),
     ],
   );
 }
