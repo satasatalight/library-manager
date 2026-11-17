@@ -85,11 +85,20 @@ class _LoginFormState extends State<LoginForm> {
       children: [
         TextField(
           controller: _emailCont,
-          style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w500),
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             labelText: 'Email',
-            labelStyle: GoogleFonts.plusJakartaSans(color: Colors.black54, fontSize: 14),
-            prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF8F4670)),
+            labelStyle: GoogleFonts.plusJakartaSans(
+              color: Colors.black54,
+              fontSize: 14,
+            ),
+            prefixIcon: const Icon(
+              Icons.email_outlined,
+              color: Color(0xFF8F4670),
+            ),
             filled: true,
             fillColor: Colors.grey[50],
             border: OutlineInputBorder(
@@ -110,11 +119,20 @@ class _LoginFormState extends State<LoginForm> {
         TextField(
           controller: _passwordCont,
           obscureText: true,
-          style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w500),
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+          ),
           decoration: InputDecoration(
             labelText: 'Password',
-            labelStyle: GoogleFonts.plusJakartaSans(color: Colors.black54, fontSize: 14),
-            prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF8F4670)),
+            labelStyle: GoogleFonts.plusJakartaSans(
+              color: Colors.black54,
+              fontSize: 14,
+            ),
+            prefixIcon: const Icon(
+              Icons.lock_outline,
+              color: Color(0xFF8F4670),
+            ),
             filled: true,
             fillColor: Colors.grey[50],
             border: OutlineInputBorder(

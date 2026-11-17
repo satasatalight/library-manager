@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:library_manager/components/login_form.dart' as login_form;
 import 'package:library_manager/components/forgot_password_form.dart'
-as forgot_password_form;
+    as forgot_password_form;
 import 'package:library_manager/components/register_form.dart' as register_form;
 
 class Login extends StatefulWidget {
@@ -38,7 +38,9 @@ class _LoginState extends State<Login> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: Text(
             'Account Not Found',
             style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
@@ -63,7 +65,9 @@ class _LoginState extends State<Login> {
             FilledButton(
               style: FilledButton.styleFrom(
                 backgroundColor: const Color(0xFF8F4670),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -120,7 +124,10 @@ class _LoginState extends State<Login> {
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 32.0,
+              ),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 440),
                 child: Column(

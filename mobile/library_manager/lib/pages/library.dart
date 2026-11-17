@@ -19,14 +19,14 @@ class Book {
   String coverImageUrl = "";
 
   Book(
-      this.bookId,
-      this.title,
-      this.author,
-      this.genre,
-      this.publicationYear,
-      this.description,
-      this.coverImageUrl,
-      );
+    this.bookId,
+    this.title,
+    this.author,
+    this.genre,
+    this.publicationYear,
+    this.description,
+    this.coverImageUrl,
+  );
   factory Book.fromJson(Map<String, dynamic> json) {
     var rawYear = json['publicationYear'] ?? json['publication_year'];
     int parsedYear = 0;
@@ -229,7 +229,9 @@ class _LibraryState extends State<Library> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
           contentPadding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
           title: Column(
@@ -275,7 +277,8 @@ class _LibraryState extends State<Library> {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF8F4670).withValues(alpha: 0.1),
+                              color: const Color(0xFF8F4670)
+                                  .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
@@ -366,7 +369,9 @@ class _LibraryState extends State<Library> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: Text(
             book.title,
             style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
@@ -491,11 +496,17 @@ class _LibraryState extends State<Library> {
                   fillColor: Colors.white,
                   contentPadding: const EdgeInsets.symmetric(vertical: 14),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade300,
+                      width: 1,
+                    ),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 2, color: Color(0xFF8F4670)),
+                    borderSide: const BorderSide(
+                      width: 2,
+                      color: Color(0xFF8F4670),
+                    ),
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
@@ -559,12 +570,12 @@ class _LibraryState extends State<Library> {
                     return GridView.builder(
                       itemCount: userBooks.length,
                       gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 18,
-                        mainAxisSpacing: 20,
-                        childAspectRatio: 0.62,
-                      ),
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 18,
+                            mainAxisSpacing: 20,
+                            childAspectRatio: 0.62,
+                          ),
                       itemBuilder: (context, index) {
                         return BookCard(
                           book: userBooks[index],
@@ -639,7 +650,7 @@ class _LibraryState extends State<Library> {
                               MaterialPageRoute(
                                 builder: (context) => const Login(),
                               ),
-                                  (route) => false,
+                              (route) => false,
                             );
                           }
                         },
