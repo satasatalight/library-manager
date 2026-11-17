@@ -13,6 +13,7 @@ import resetRequest, {
   type ResetRequestBody,
 } from './endpoints/reset-request.ts';
 import reset, { type ResetBody } from './endpoints/reset.ts';
+import search, { type SearchBody } from './endpoints/search-book.ts';
 import verify, { type VerifyBody } from './endpoints/verify.ts';
 import viewLibrary, { type ViewLibraryBody } from './endpoints/view-library.ts';
 
@@ -83,6 +84,10 @@ app.post('/library/edit', async (req, res) => {
 
 app.post('/library/view', async (req, res) => {
   return await viewLibrary(req.body as ViewLibraryBody, res);
+});
+
+app.post('/library/search', async (req, res) => {
+  return await search(req.body as SearchBody, res);
 });
 
 app.post('/library/delete', async (req, res) => {
