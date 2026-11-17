@@ -2,33 +2,59 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+//import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../components/add_book.dart';
+import '../components/edit_book.dart';
 
 import 'login.dart';
 
-class BookCard extends StatelessWidget {
-  final String title;
+class Book {
+  String bookId = "";
+  String title = "";
+  String author = "";
+  String genre = "";
+  int publicationYear = 0;
+  String description = "";
+  String coverImageUrl = "";
 
-  const BookCard({super.key, required this.title});
+  Book(
+    this.bookId,
+    this.title,
+    this.author,
+    this.genre,
+    this.publicationYear,
+    this.description,
+    this.coverImageUrl,
+  );
+}
+
+class BookCard extends StatelessWidget {
+  final Book book;
+  final VoidCallback onTap;
+
+  const BookCard({super.key, required this.book, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF8F4670),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      padding: const EdgeInsets.all(16),
-      alignment: Alignment.topLeft,
-      child: Text(
-        title,
-        textAlign: TextAlign.left,
-        style: GoogleFonts.kurale(
-          color: Colors.white,
-          fontSize: 20,
-          fontWeight: FontWeight.w400,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF8F4670),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        padding: const EdgeInsets.all(16),
+        alignment: Alignment.topLeft,
+        child: Text(
+          book.title,
+          textAlign: TextAlign.left,
+          style: GoogleFonts.kurale(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w400,
+          ),
         ),
       ),
     );
@@ -46,13 +72,57 @@ class _LibraryState extends State<Library> {
   final TextEditingController _searchCont = TextEditingController();
 
   // Example list of books the user owns
-  final List<String> userBooks = [
-    'Clean Code',
-    'Design Patterns',
-    'Refactoring',
-    'Flutter Complete Reference',
-    'Algorithmic Complexity',
+  final List<Book> userBooks = [
+    // example book ID that matches a real ID in the authenticatedguy's library
+    Book(
+      "6afb54f20fbc180d9c8e9cd8",
+      "Example Book",
+      "author",
+      "genre",
+      1000,
+      "description",
+      "cover image url",
+    ),
   ];
+
+  void _showBookOptions(Book book) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(book.title, style: GoogleFonts.kurale()),
+          content: Text(
+            'Would you like to edit or delete this book?',
+            style: GoogleFonts.kurale(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EditBook(book: book)),
+                );
+              },
+              child: Text(
+                'Edit',
+                style: GoogleFonts.kurale(color: const Color(0xFF8F4670)),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+              },
+              child: Text(
+                'Delete',
+                style: GoogleFonts.kurale(color: Colors.red),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _handleSearch() {
     // final String query = _searchCont.text.trim();
@@ -127,13 +197,16 @@ class _LibraryState extends State<Library> {
                         itemCount: userBooks.length,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2, // 2 books per row
+                              crossAxisCount: 2,
                               crossAxisSpacing: 16,
                               mainAxisSpacing: 16,
                               childAspectRatio: 0.75,
                             ),
                         itemBuilder: (context, index) {
-                          return BookCard(title: userBooks[index]);
+                          return BookCard(
+                            book: userBooks[index],
+                            onTap: () => _showBookOptions(userBooks[index]),
+                          );
                         },
                       ),
               ),
