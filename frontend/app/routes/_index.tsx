@@ -19,9 +19,12 @@ function Login() {
     <LoginForm onLoginSuccess={() => navigate("/books")} />,
   );
 
-  function handleResetRequested(): void {
+  function handleResetRequested(email: string): void {
     setEntryFieldComponent(
-      <NewPasswordForm onPasswordResetSuccess={handlePasswordResetSuccess} />,
+      <NewPasswordForm
+        email={email}
+        onPasswordResetSuccess={handlePasswordResetSuccess}
+      />,
     );
   }
 
