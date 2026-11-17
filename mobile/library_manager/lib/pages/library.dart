@@ -51,12 +51,17 @@ class Book {
 class BookCard extends StatelessWidget {
   final Book book;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
 
-  const BookCard({super.key, required this.book, required this.onTap});
+  const BookCard({
+    super.key,
+    required this.book,
+    required this.onTap,
+    this.onLongPress,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // Realistic asymmetric book corners: flat spine on the left, rounded pages on the right
     const bookRadius = BorderRadius.only(
       topLeft: Radius.circular(3),
       bottomLeft: Radius.circular(3),
@@ -66,6 +71,7 @@ class BookCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: onTap,
+      onLongPress: onLongPress,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -218,6 +224,143 @@ class _LibraryState extends State<Library> {
     });
   }
 
+  void _showBookDetails(Book book) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+          contentPadding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                book.title,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black87,
+                ),
+              ),
+              if (book.author.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  'by ${book.author}',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF8F4670),
+                  ),
+                ),
+              ],
+            ],
+          ),
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 320),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (book.genre.isNotEmpty || book.publicationYear > 0) ...[
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 6,
+                      children: [
+                        if (book.genre.isNotEmpty)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF8F4670).withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              book.genre,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF8F4670),
+                              ),
+                            ),
+                          ),
+                        if (book.publicationYear > 0)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '${book.publicationYear}',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                  ],
+                  const Divider(height: 1),
+                  const SizedBox(height: 14),
+                  Text(
+                    'Description',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black45,
+                      letterSpacing: 0.4,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    book.description.trim().isNotEmpty
+                        ? book.description
+                        : 'No description available for this book.',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      height: 1.5,
+                      color: book.description.trim().isNotEmpty
+                          ? Colors.black87
+                          : Colors.black45,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF8F4670),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Close',
+                style: GoogleFonts.plusJakartaSans(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showBookOptions(Book book) {
     showDialog(
       context: context,
@@ -319,7 +462,10 @@ class _LibraryState extends State<Library> {
               // Crisp Modern Search Bar
               TextField(
                 controller: _searchCont,
-                style: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w500),
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
                 onChanged: (value) {
                   setState(() {
                     _booksFuture = _fetchLibraryBooks(searchQuery: value);
@@ -391,7 +537,11 @@ class _LibraryState extends State<Library> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.menu_book_rounded, size: 64, color: Colors.black26),
+                            const Icon(
+                              Icons.menu_book_rounded,
+                              size: 64,
+                              color: Colors.black26,
+                            ),
                             const SizedBox(height: 12),
                             Text(
                               'No books found',
@@ -418,7 +568,8 @@ class _LibraryState extends State<Library> {
                       itemBuilder: (context, index) {
                         return BookCard(
                           book: userBooks[index],
-                          onTap: () => _showBookOptions(userBooks[index]),
+                          onLongPress: () => _showBookOptions(userBooks[index]),
+                          onTap: () => _showBookDetails(userBooks[index]),
                         );
                       },
                     );
@@ -438,7 +589,10 @@ class _LibraryState extends State<Library> {
                       FilledButton.icon(
                         style: FilledButton.styleFrom(
                           backgroundColor: const Color(0xFF8F4670),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -467,7 +621,10 @@ class _LibraryState extends State<Library> {
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFF8F4670),
                           side: const BorderSide(color: Color(0xFF8F4670)),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
