@@ -1,9 +1,6 @@
-//import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-//import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../components/add_book.dart';
@@ -146,106 +143,6 @@ class _LibraryState extends State<Library> {
     });
   }
 
-  /*
-  bool _matchTerm(Book book, String term) {
-    final lowerTerm = term.toLowerCase();
-
-    // Check for advanced search syntax (field: value)
-    if (term.contains(':')) {
-      final colonIndex = term.indexOf(':');
-      final field = term.substring(0, colonIndex).trim().toLowerCase();
-      final value = term.substring(colonIndex + 1).trim().toLowerCase();
-
-      if (value.isEmpty) return true;
-
-      switch (field) {
-        case 'title':
-          return book.title.toLowerCase().contains(value);
-        case 'author':
-          return book.author.toLowerCase().contains(value);
-        case 'genre':
-          return book.genre.toLowerCase().contains(value);
-        case 'description':
-          return book.description.toLowerCase().contains(value);
-        case 'year':
-        case 'publicationyear':
-        case 'publication_year':
-          return book.publicationYear.toString().contains(value);
-        default:
-          // Fallback to basic match if field name isn't recognized
-          return _basicMatch(book, lowerTerm);
-      }
-    } else {
-      // Basic search across all text fields
-      return _basicMatch(book, lowerTerm);
-    }
-  }
-
-  bool _basicMatch(Book book, String lowerTerm) {
-    return book.title.toLowerCase().contains(lowerTerm) ||
-        book.author.toLowerCase().contains(lowerTerm) ||
-        book.genre.toLowerCase().contains(lowerTerm) ||
-        book.description.toLowerCase().contains(lowerTerm);
-  }
-
-  List<Book> _filterAndSortBooks(List<Book> books, String rawQuery) {
-    final query = rawQuery.trim();
-    if (query.isEmpty) {
-      return books;
-    }
-
-    // Split by '||' for OR conditions
-    final orClauses = query.split('||');
-    List<Book> matchedBooks = [];
-
-    for (var book in books) {
-      bool matchesQuery = false;
-
-      for (var orClause in orClauses) {
-        // Split each OR clause by '&&' for AND conditions
-        final andTerms = orClause.split('&&');
-        bool andMatch = true;
-
-        for (var term in andTerms) {
-          final trimmedTerm = term.trim();
-          if (trimmedTerm.isEmpty) continue;
-
-          if (!_matchTerm(book, trimmedTerm)) {
-            andMatch = false;
-            break;
-          }
-        }
-
-        if (andMatch) {
-          matchesQuery = true;
-          break; // Matched at least one OR clause
-        }
-      }
-
-      if (matchesQuery) {
-        matchedBooks.add(book);
-      }
-    }
-
-    // Sort results by priority tier: Title (1) -> Author (2) -> Genre (3) -> Description (4)
-    matchedBooks.sort(
-      (a, b) => _getBookTier(a, query).compareTo(_getBookTier(b, query)),
-    );
-
-    return matchedBooks;
-  }
-
-  int _getBookTier(Book book, String rawQuery) {
-    if (!rawQuery.contains(':')) {
-      final q = rawQuery.toLowerCase();
-      if (book.title.toLowerCase().contains(q)) return 1;
-      if (book.author.toLowerCase().contains(q)) return 2;
-      if (book.genre.toLowerCase().contains(q)) return 3;
-      if (book.description.toLowerCase().contains(q)) return 4;
-    }
-    return 5;
-  }
-  */
   void _showBookOptions(Book book) {
     showDialog(
       context: context,
@@ -284,12 +181,7 @@ class _LibraryState extends State<Library> {
       },
     );
   }
-/*
-  void _handleSearch() {
-    // final String query = _searchCont.text.trim();
-    // print('Saved search query: $query');
-  }
-*/
+
   @override
   void dispose() {
     _searchCont.dispose();
@@ -401,61 +293,6 @@ class _LibraryState extends State<Library> {
                     return GridView.builder(
                       itemCount: userBooks.length,
                       gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        childAspectRatio: 0.75,
-                      ),
-                      itemBuilder: (context, index) {
-                        return BookCard(
-                          book: userBooks[index],
-                          onTap: () => _showBookOptions(userBooks[index]),
-                        );
-                      },
-                    );
-                  },
-                ),
-                /*
-                child: FutureBuilder<List<Book>>(
-                  future: _booksFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: Color(0xFF8F4670),
-                        ),
-                      );
-                    }
-
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text(
-                          'Error: ${snapshot.error}',
-                          style: GoogleFonts.kurale(color: Colors.red),
-                          textAlign: TextAlign.center,
-                        ),
-                      );
-                    }
-
-                    final allBooks = snapshot.data ?? [];
-                    final userBooks = _filterAndSortBooks(
-                      allBooks,
-                      _searchCont.text,
-                    );
-
-                    if (userBooks.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'No books found',
-                          style: GoogleFonts.kurale(fontSize: 18),
-                        ),
-                      );
-                    }
-
-                    return GridView.builder(
-                      itemCount: userBooks.length,
-                      gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
                             crossAxisSpacing: 16,
@@ -471,7 +308,6 @@ class _LibraryState extends State<Library> {
                     );
                   },
                 ),
-                */
               ),
 
               const SizedBox(height: 16),
