@@ -58,6 +58,18 @@ class BookCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget display = Image.network(book.coverImageUrl, errorBuilder: (context, error, stackTrace) {
+      return Text(
+        book.title,
+        textAlign: TextAlign.left,
+        style: GoogleFonts.kurale(
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.w400,
+        )
+      );
+    },);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -67,15 +79,7 @@ class BookCard extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(16),
         alignment: Alignment.topLeft,
-        child: Text(
-          book.title,
-          textAlign: TextAlign.left,
-          style: GoogleFonts.kurale(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
+        child: display
       ),
     );
   }
