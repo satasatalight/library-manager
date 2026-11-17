@@ -156,7 +156,7 @@ class _LibraryState extends State<Library> {
         case 'publication_year':
           return book.publicationYear.toString().contains(value);
         default:
-        // Fallback to basic match if field name isn't recognized
+          // Fallback to basic match if field name isn't recognized
           return _basicMatch(book, lowerTerm);
       }
     } else {
@@ -212,10 +212,13 @@ class _LibraryState extends State<Library> {
     }
 
     // Sort results by priority tier: Title (1) -> Author (2) -> Genre (3) -> Description (4)
-    matchedBooks.sort((a, b) => _getBookTier(a, query).compareTo(_getBookTier(b, query)));
+    matchedBooks.sort(
+      (a, b) => _getBookTier(a, query).compareTo(_getBookTier(b, query)),
+    );
 
     return matchedBooks;
   }
+
   int _getBookTier(Book book, String rawQuery) {
     if (!rawQuery.contains(':')) {
       final q = rawQuery.toLowerCase();
@@ -361,7 +364,10 @@ class _LibraryState extends State<Library> {
                     }
 
                     final allBooks = snapshot.data ?? [];
-                    final userBooks = _filterAndSortBooks(allBooks, _searchCont.text);
+                    final userBooks = _filterAndSortBooks(
+                      allBooks,
+                      _searchCont.text,
+                    );
 
                     if (userBooks.isEmpty) {
                       return Center(
@@ -375,12 +381,12 @@ class _LibraryState extends State<Library> {
                     return GridView.builder(
                       itemCount: userBooks.length,
                       gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        childAspectRatio: 0.75,
-                      ),
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            childAspectRatio: 0.75,
+                          ),
                       itemBuilder: (context, index) {
                         return BookCard(
                           book: userBooks[index],
@@ -441,7 +447,7 @@ class _LibraryState extends State<Library> {
                             MaterialPageRoute(
                               builder: (context) => const Login(),
                             ),
-                                (route) => false,
+                            (route) => false,
                           );
                         }
                       },
