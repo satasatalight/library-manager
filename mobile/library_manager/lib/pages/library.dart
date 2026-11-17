@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../components/add_book.dart';
 import '../components/edit_book.dart';
+import '../components/delete_book.dart';
 
 import 'login.dart';
 
@@ -170,7 +171,26 @@ class _LibraryState extends State<Library> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
+                Navigator.of(context).pop(); // Close options dialog
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return DeleteBookDialog(
+                      bookId: book.bookId,
+                      onDeleteSuccess: () {
+                        _refreshLibrary();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Book deleted successfully.',
+                              style: GoogleFonts.kurale(),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
               },
               child: Text(
                 'Delete',
