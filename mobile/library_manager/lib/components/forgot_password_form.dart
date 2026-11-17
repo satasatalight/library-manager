@@ -48,13 +48,48 @@ class _ChangeFormState extends State<ChangeForm> {
 class EmailForm extends Container {
   EmailForm({super.key});
 
+  final TextEditingController _emailCont = TextEditingController();
+
   @override
-  Widget? get child => Text("Put email form here");
+  Widget? get child => Column(
+    children: [
+      TextField(
+        controller: _emailCont,
+        decoration: const InputDecoration(
+          labelText: 'Email',
+          border: OutlineInputBorder(),
+        ),
+      ),
+      SizedBox(height: 20,)
+    ],
+  );
 }
 
 class VerifyForm extends Container {
   VerifyForm({super.key});
 
+  final TextEditingController _codeCont = TextEditingController();
+  final TextEditingController _newPasswordCont = TextEditingController();
+
   @override
-  Widget? get child => Text("Put verify form here");
+  Widget? get child => Column(
+    children: [
+      TextField(
+        controller: _codeCont,
+        decoration: const InputDecoration(
+          labelText: 'Verification Code',
+          border: OutlineInputBorder(),
+        ),
+      ),
+      SizedBox(height: 20,),
+      TextField(
+        controller: _newPasswordCont,
+        decoration: const InputDecoration(
+          labelText: 'New Password',
+          border: OutlineInputBorder(),
+        ),
+      ),
+      SizedBox(height: 20,)
+    ],
+  );
 }
