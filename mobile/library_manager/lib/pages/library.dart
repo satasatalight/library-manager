@@ -1,5 +1,3 @@
-//import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -107,22 +105,30 @@ class _LibraryState extends State<Library> {
     _booksFuture = _fetchLibraryBooks();
   }
 
-  Future<List<Book>> _fetchLibraryBooks() async {
+  Future<List<Book>> _fetchLibraryBooks({String searchQuery = ''}) async {
     try {
       String? token = await _secureStorage.read(key: 'token');
       final dio = Dio();
 
-      final response = await dio.post(
-        'https://library-manager-ashy.vercel.app/library/view',
-        data: {'token': token},
-      );
+      final bool isSearching = searchQuery.trim().isNotEmpty;
+      final endpoint = isSearching
+          ? 'https://library-manager-ashy.vercel.app/library/search'
+          : 'https://library-manager-ashy.vercel.app/library/view';
 
+      final payload = isSearching
+          ? {'token': token, 'search_string': searchQuery.trim()}
+          : {'token': token};
+
+      final response = await dio.post(endpoint, data: payload);
       final data = response.data;
 
       if (response.statusCode == 200 && data['status'] == 'success') {
         final List booksJson = data['library'] ?? [];
         return booksJson.map((json) => Book.fromJson(json)).toList();
       } else {
+        if (data['reason'] == 'No books found in user library.') {
+          return [];
+        }
         throw Exception(data['reason'] ?? 'Failed to load books.');
       }
     } on DioException catch (e) {
@@ -134,7 +140,7 @@ class _LibraryState extends State<Library> {
 
   void _refreshLibrary() {
     setState(() {
-      _booksFuture = _fetchLibraryBooks();
+      _booksFuture = _fetchLibraryBooks(searchQuery: _searchCont.text);
     });
   }
 
@@ -177,11 +183,6 @@ class _LibraryState extends State<Library> {
     );
   }
 
-  void _handleSearch() {
-    // final String query = _searchCont.text.trim();
-    // print('Saved search query: $query');
-  }
-
   @override
   void dispose() {
     _searchCont.dispose();
@@ -214,10 +215,14 @@ class _LibraryState extends State<Library> {
               const Divider(thickness: 2, color: Colors.black),
               const SizedBox(height: 12),
 
-              // Interactive Search Bar with Magnifying Glass Icon
+              // Interactive Search Bar with Live Filtering
               TextField(
                 controller: _searchCont,
-                //style: GoogleFonts.kurale(color: Colors.black, fontSize: 16),
+                onChanged: (value) {
+                  setState(() {
+                    _booksFuture = _fetchLibraryBooks(searchQuery: value);
+                  });
+                },
                 decoration: InputDecoration(
                   hintText: 'Search ...',
                   hintStyle: GoogleFonts.kurale(
@@ -227,7 +232,13 @@ class _LibraryState extends State<Library> {
                   ),
                   prefixIcon: IconButton(
                     icon: const Icon(Icons.search, color: Colors.black),
-                    onPressed: _handleSearch, // Triggers when magnifying glass is clicked
+                    onPressed: () {
+                      setState(() {
+                        _booksFuture = _fetchLibraryBooks(
+                          searchQuery: _searchCont.text,
+                        );
+                      });
+                    },
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: const BorderSide(width: 1, color: Colors.black),
@@ -238,16 +249,19 @@ class _LibraryState extends State<Library> {
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ),
-                onSubmitted: (_) => _handleSearch(),
+                onSubmitted: (value) {
+                  setState(() {
+                    _booksFuture = _fetchLibraryBooks(searchQuery: value);
+                  });
+                },
               ),
               const SizedBox(height: 20),
 
-              // Dynamic Grid of Books
+              // Dynamic Grid of Books with Search Applied
               Expanded(
                 child: FutureBuilder<List<Book>>(
                   future: _booksFuture,
                   builder: (context, snapshot) {
-                    // Loading state
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
                         child: CircularProgressIndicator(
@@ -258,23 +272,16 @@ class _LibraryState extends State<Library> {
 
                     if (snapshot.hasError) {
                       return Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Text(
-                            'Error: ${snapshot.error}',
-                            style: GoogleFonts.kurale(
-                              color: Colors.red,
-                              fontSize: 16,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                        child: Text(
+                          'Error: ${snapshot.error}',
+                          style: GoogleFonts.kurale(color: Colors.red),
+                          textAlign: TextAlign.center,
                         ),
                       );
                     }
 
                     final userBooks = snapshot.data ?? [];
 
-                    // Empty state
                     if (userBooks.isEmpty) {
                       return Center(
                         child: Text(
@@ -284,7 +291,6 @@ class _LibraryState extends State<Library> {
                       );
                     }
 
-                    // Render Book Grid
                     return GridView.builder(
                       itemCount: userBooks.length,
                       gridDelegate:
@@ -307,14 +313,14 @@ class _LibraryState extends State<Library> {
 
               const SizedBox(height: 16),
 
-              // Sign Out Button
+              // Bottom Action Buttons
               Center(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     FilledButton(
-                      onPressed: () {
-                        Navigator.push(
+                      onPressed: () async {
+                        await Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => const AddBook(),
