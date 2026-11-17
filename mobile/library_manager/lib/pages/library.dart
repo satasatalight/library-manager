@@ -1,5 +1,6 @@
 //import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 //import 'package:http/http.dart' as http;
@@ -28,6 +29,25 @@ class Book {
     this.description,
     this.coverImageUrl,
   );
+  factory Book.fromJson(Map<String, dynamic> json) {
+    var rawYear = json['publicationYear'] ?? json['publication_year'];
+    int parsedYear = 0;
+    if (rawYear is int) {
+      parsedYear = rawYear;
+    } else if (rawYear is String) {
+      parsedYear = int.tryParse(rawYear) ?? 0;
+    }
+
+    return Book(
+      json['bookId']?.toString() ?? json['_id']?.toString() ?? '',
+      json['title'] ?? '',
+      json['author'] ?? '',
+      json['genre'] ?? '',
+      parsedYear,
+      json['description'] ?? '',
+      json['coverImageUrl'] ?? json['cover_image'] ?? '',
+    );
+  }
 }
 
 class BookCard extends StatelessWidget {
@@ -70,6 +90,46 @@ class Library extends StatefulWidget {
 
 class _LibraryState extends State<Library> {
   final TextEditingController _searchCont = TextEditingController();
+  final _secureStorage = const FlutterSecureStorage();
+
+  late Future<List<Book>> _booksFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _booksFuture = _fetchLibraryBooks();
+  }
+
+  Future<List<Book>> _fetchLibraryBooks() async {
+    try {
+      String? token = await _secureStorage.read(key: 'token');
+      final dio = Dio();
+
+      final response = await dio.post(
+        'https://library-manager-ashy.vercel.app/library/view',
+        data: {'token': token},
+      );
+
+      final data = response.data;
+
+      if (response.statusCode == 200 && data['status'] == 'success') {
+        final List booksJson = data['library'] ?? [];
+        return booksJson.map((json) => Book.fromJson(json)).toList();
+      } else {
+        throw Exception(data['reason'] ?? 'Failed to load books.');
+      }
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data['reason'] ?? 'Unable to connect to server.',
+      );
+    }
+  }
+
+  void _refreshLibrary() {
+    setState(() {
+      _booksFuture = _fetchLibraryBooks();
+    });
+  }
 
   // Example list of books the user owns
   final List<Book> userBooks = [
@@ -191,24 +251,65 @@ class _LibraryState extends State<Library> {
 
               // Dynamic Grid of Books
               Expanded(
-                child: userBooks.isEmpty
-                    ? const Center(child: Text('No books found'))
-                    : GridView.builder(
-                        itemCount: userBooks.length,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 16,
-                              mainAxisSpacing: 16,
-                              childAspectRatio: 0.75,
+                child: FutureBuilder<List<Book>>(
+                  future: _booksFuture,
+                  builder: (context, snapshot) {
+                    // Loading state
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: Color(0xFF8F4670),
+                        ),
+                      );
+                    }
+
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            'Error: ${snapshot.error}',
+                            style: GoogleFonts.kurale(
+                              color: Colors.red,
+                              fontSize: 16,
                             ),
-                        itemBuilder: (context, index) {
-                          return BookCard(
-                            book: userBooks[index],
-                            onTap: () => _showBookOptions(userBooks[index]),
-                          );
-                        },
-                      ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    }
+
+                    final userBooks = snapshot.data ?? [];
+
+                    // Empty state
+                    if (userBooks.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No books found',
+                          style: GoogleFonts.kurale(fontSize: 18),
+                        ),
+                      );
+                    }
+
+                    // Render Book Grid
+                    return GridView.builder(
+                      itemCount: userBooks.length,
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            childAspectRatio: 0.75,
+                          ),
+                      itemBuilder: (context, index) {
+                        return BookCard(
+                          book: userBooks[index],
+                          onTap: () => _showBookOptions(userBooks[index]),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
 
               const SizedBox(height: 16),
@@ -226,6 +327,7 @@ class _LibraryState extends State<Library> {
                             builder: (context) => const AddBook(),
                           ),
                         );
+                        _refreshLibrary();
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 12),
