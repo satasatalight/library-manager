@@ -113,7 +113,7 @@ class _LoginState extends State<Login> {
             end: Alignment.bottomCenter,
             colors: [
               Theme.of(context).colorScheme.surface,
-              const Color(0xFF8F4670).withOpacity(0.08),
+              const Color(0xFF8F4670).withValues(alpha: 0.08),
             ],
           ),
         ),
@@ -161,12 +161,13 @@ class _LoginState extends State<Login> {
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.06),
+                            color: Colors.black.withValues(alpha: 0.06),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
                         ],
                       ),
+
                       child: Column(
                         children: [
                           currentField,
