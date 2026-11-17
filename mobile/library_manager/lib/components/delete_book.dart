@@ -21,10 +21,7 @@ class DeleteBookDialog extends StatelessWidget {
 
       final response = await dio.post(
         'https://library-manager-ashy.vercel.app/library/delete',
-        data: {
-          'token': token,
-          'book_id': bookId,
-        },
+        data: {'token': token, 'book_id': bookId},
       );
 
       final data = response.data;
@@ -54,10 +51,7 @@ class DeleteBookDialog extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'An error occurred: $e',
-              style: GoogleFonts.kurale(),
-            ),
+            content: Text('An error occurred: $e', style: GoogleFonts.kurale()),
           ),
         );
       }
