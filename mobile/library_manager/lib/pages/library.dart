@@ -99,9 +99,7 @@ class BookCard extends StatelessWidget {
                   height: double.infinity,
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
-                      decoration: const BoxDecoration(
-                        
-                      ),
+                      decoration: const BoxDecoration(),
                       padding: const EdgeInsets.all(14),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
