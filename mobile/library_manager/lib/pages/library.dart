@@ -452,7 +452,7 @@ class _LibraryState extends State<Library> {
                 child: Text(
                   'LitLog',
                   style: GoogleFonts.kurale(
-                    color: COlors.black,
+                    color: Colors.black,
                     fontSize: 72,
                     fontWeight: FontWeight.w600,
                   ),

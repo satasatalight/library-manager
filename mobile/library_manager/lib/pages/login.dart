@@ -111,16 +111,6 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Theme.of(context).colorScheme.surface,
-              const Color(0xFF8F4670).withValues(alpha: 0.08),
-            ],
-          ),
-        ),
         child: SafeArea(
           child: Center(
             child: SingleChildScrollView(
@@ -142,7 +132,7 @@ class _LoginState extends State<Login> {
                           fontSize: 72,
                           height: 1.1,
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFF8F4670),
+                          color: Colors.black,
                         ),
                       ),
                     ),
