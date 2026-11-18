@@ -100,11 +100,7 @@ class BookCard extends StatelessWidget {
                   errorBuilder: (context, error, stackTrace) {
                     return Container(
                       decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Color(0xFF9E517D), Color(0xFF733559)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
+                        
                       ),
                       padding: const EdgeInsets.all(14),
                       child: Column(
@@ -456,8 +452,8 @@ class _LibraryState extends State<Library> {
                 child: Text(
                   'LitLog',
                   style: GoogleFonts.kurale(
-                    color: const Color(0xFF8F4670),
-                    fontSize: 42,
+                    color: COlors.black,
+                    fontSize: 72,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
