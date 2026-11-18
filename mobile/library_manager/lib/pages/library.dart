@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-//import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../components/add_book.dart';
@@ -52,36 +51,116 @@ class Book {
 class BookCard extends StatelessWidget {
   final Book book;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
 
-  const BookCard({super.key, required this.book, required this.onTap});
+  const BookCard({
+    super.key,
+    required this.book,
+    required this.onTap,
+    this.onLongPress,
+  });
 
   @override
   Widget build(BuildContext context) {
-    Widget display = Image.network(
-      book.coverImageUrl,
-      errorBuilder: (context, error, stackTrace) {
-        return Text(
-          book.title,
-          textAlign: TextAlign.left,
-          style: GoogleFonts.kurale(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w400,
-          ),
-        );
-      },
+    const bookRadius = BorderRadius.only(
+      topLeft: Radius.circular(3),
+      bottomLeft: Radius.circular(3),
+      topRight: Radius.circular(10),
+      bottomRight: Radius.circular(10),
     );
 
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF8F4670),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        padding: const EdgeInsets.all(16),
-        alignment: Alignment.topLeft,
-        child: display,
+      onLongPress: onLongPress,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Book Cover with soft, natural elevation
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: const Color(0xFF8F4670),
+                borderRadius: bookRadius,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.12),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: bookRadius,
+                child: Image.network(
+                  book.coverImageUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Color(0xFF9E517D), Color(0xFF733559)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      padding: const EdgeInsets.all(14),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.auto_stories_rounded,
+                            color: Colors.white.withValues(alpha: 0.6),
+                            size: 24,
+                          ),
+                          Text(
+                            book.title,
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.plusJakartaSans(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                              height: 1.25,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          // Clean Book Title below the cover
+          Text(
+            book.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: Colors.black87,
+            ),
+          ),
+          if (book.author.isNotEmpty) ...[
+            const SizedBox(height: 2),
+            Text(
+              book.author,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -145,20 +224,166 @@ class _LibraryState extends State<Library> {
     });
   }
 
+  void _showBookDetails(Book book) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+          contentPadding: const EdgeInsets.fromLTRB(24, 8, 24, 16),
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                book.title,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black87,
+                ),
+              ),
+              if (book.author.isNotEmpty) ...[
+                const SizedBox(height: 4),
+                Text(
+                  'by ${book.author}',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF8F4670),
+                  ),
+                ),
+              ],
+            ],
+          ),
+          content: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 320),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (book.genre.isNotEmpty || book.publicationYear > 0) ...[
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 6,
+                      children: [
+                        if (book.genre.isNotEmpty)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF8F4670)
+                                  .withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              book.genre,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: const Color(0xFF8F4670),
+                              ),
+                            ),
+                          ),
+                        if (book.publicationYear > 0)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              '${book.publicationYear}',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 14),
+                  ],
+                  const Divider(height: 1),
+                  const SizedBox(height: 14),
+                  Text(
+                    'Description',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black45,
+                      letterSpacing: 0.4,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    book.description.trim().isNotEmpty
+                        ? book.description
+                        : 'No description available for this book.',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      height: 1.5,
+                      color: book.description.trim().isNotEmpty
+                          ? Colors.black87
+                          : Colors.black45,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF8F4670),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Close',
+                style: GoogleFonts.plusJakartaSans(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void _showBookOptions(Book book) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(book.title, style: GoogleFonts.kurale()),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          title: Text(
+            book.title,
+            style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
+          ),
           content: Text(
             'Would you like to edit or delete this book?',
-            style: GoogleFonts.kurale(),
+            style: GoogleFonts.plusJakartaSans(fontSize: 14),
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
+                Navigator.of(context).pop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => EditBook(book: book)),
@@ -166,12 +391,15 @@ class _LibraryState extends State<Library> {
               },
               child: Text(
                 'Edit',
-                style: GoogleFonts.kurale(color: const Color(0xFF8F4670)),
+                style: GoogleFonts.plusJakartaSans(
+                  color: const Color(0xFF8F4670),
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close options dialog
+                Navigator.of(context).pop();
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -183,7 +411,7 @@ class _LibraryState extends State<Library> {
                           SnackBar(
                             content: Text(
                               'Book deleted successfully.',
-                              style: GoogleFonts.kurale(),
+                              style: GoogleFonts.plusJakartaSans(),
                             ),
                           ),
                         );
@@ -194,7 +422,10 @@ class _LibraryState extends State<Library> {
               },
               child: Text(
                 'Delete',
-                style: GoogleFonts.kurale(color: Colors.red),
+                style: GoogleFonts.plusJakartaSans(
+                  color: Colors.red,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
@@ -215,43 +446,44 @@ class _LibraryState extends State<Library> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 16),
-              // App Bar / Header section
+              // Kept Kurale for the main LitLog logo
               Center(
                 child: Text(
                   'LitLog',
                   style: GoogleFonts.kurale(
                     color: Colors.black,
-                    fontSize: 48,
-                    fontWeight: FontWeight.w400,
+                    fontSize: 42,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-              const Divider(thickness: 2, color: Colors.black),
-              const SizedBox(height: 12),
 
-              // Interactive Search Bar with Live Filtering
+              // Crisp Modern Search Bar
               TextField(
                 controller: _searchCont,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
                 onChanged: (value) {
                   setState(() {
                     _booksFuture = _fetchLibraryBooks(searchQuery: value);
                   });
                 },
                 decoration: InputDecoration(
-                  hintText: 'Search ...',
-                  hintStyle: GoogleFonts.kurale(
+                  hintText: 'Search your library...',
+                  hintStyle: GoogleFonts.plusJakartaSans(
                     color: Colors.black38,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
+                    fontSize: 15,
                   ),
                   prefixIcon: IconButton(
-                    icon: const Icon(Icons.search, color: Colors.black),
+                    icon: const Icon(Icons.search, color: Color(0xFF8F4670)),
                     onPressed: () {
                       setState(() {
                         _booksFuture = _fetchLibraryBooks(
@@ -260,13 +492,22 @@ class _LibraryState extends State<Library> {
                       });
                     },
                   ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 1, color: Colors.black),
-                    borderRadius: BorderRadius.circular(6),
+                    borderSide: BorderSide(
+                      color: Colors.grey.shade300,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(width: 2, color: Colors.black),
-                    borderRadius: BorderRadius.circular(6),
+                    borderSide: const BorderSide(
+                      width: 2,
+                      color: Color(0xFF8F4670),
+                    ),
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 onSubmitted: (value) {
@@ -294,7 +535,7 @@ class _LibraryState extends State<Library> {
                       return Center(
                         child: Text(
                           'Error: ${snapshot.error}',
-                          style: GoogleFonts.kurale(color: Colors.red),
+                          style: GoogleFonts.plusJakartaSans(color: Colors.red),
                           textAlign: TextAlign.center,
                         ),
                       );
@@ -304,9 +545,24 @@ class _LibraryState extends State<Library> {
 
                     if (userBooks.isEmpty) {
                       return Center(
-                        child: Text(
-                          'No books found',
-                          style: GoogleFonts.kurale(fontSize: 18),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.menu_book_rounded,
+                              size: 64,
+                              color: Colors.black26,
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              'No books found',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     }
@@ -316,14 +572,15 @@ class _LibraryState extends State<Library> {
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                            childAspectRatio: 0.75,
+                            crossAxisSpacing: 18,
+                            mainAxisSpacing: 20,
+                            childAspectRatio: 0.62,
                           ),
                       itemBuilder: (context, index) {
                         return BookCard(
                           book: userBooks[index],
-                          onTap: () => _showBookOptions(userBooks[index]),
+                          onLongPress: () => _showBookOptions(userBooks[index]),
+                          onTap: () => _showBookDetails(userBooks[index]),
                         );
                       },
                     );
@@ -331,82 +588,85 @@ class _LibraryState extends State<Library> {
                 ),
               ),
 
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
 
               // Bottom Action Buttons
               Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    FilledButton(
-                      onPressed: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const AddBook(),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 16.0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FilledButton.icon(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: const Color(0xFF8F4670),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
                           ),
-                        );
-                        _refreshLibrary();
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        decoration: ShapeDecoration(
-                          color: const Color(0xFF8F4670),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Add Book',
-                          style: GoogleFonts.kurale(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-
-                    FilledButton(
-                      onPressed: () async {
-                        const secureStorage = FlutterSecureStorage();
-                        await secureStorage.delete(key: 'token');
-
-                        if (context.mounted) {
-                          Navigator.pushAndRemoveUntil(
+                        onPressed: () async {
+                          await Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const Login(),
+                              builder: (context) => const AddBook(),
                             ),
-                            (route) => false,
                           );
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        decoration: ShapeDecoration(
-                          color: const Color(0xFF8F4670),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Sign Out',
-                          style: GoogleFonts.kurale(
+                          _refreshLibrary();
+                        },
+                        icon: const Icon(Icons.add, color: Colors.white),
+                        label: Text(
+                          'Add Book',
+                          style: GoogleFonts.plusJakartaSans(
                             color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 14),
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF8F4670),
+                          side: const BorderSide(color: Color(0xFF8F4670)),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: () async {
+                          const secureStorage = FlutterSecureStorage();
+                          await secureStorage.delete(key: 'token');
+
+                          if (context.mounted) {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const Login(),
+                              ),
+                              (route) => false,
+                            );
+                          }
+                        },
+                        icon: const Icon(Icons.logout),
+                        label: Text(
+                          'Sign Out',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 16),
             ],
           ),
         ),

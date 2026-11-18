@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../pages/library.dart';
 
 class LoginForm extends StatefulWidget {
-  final Function(String email, String password)
-  onLoginFailed; // Triggers the register prompt in parent
+  final Function(String email, String password) onLoginFailed;
 
   final Function() changeToForgotPassword;
 
@@ -29,7 +29,6 @@ class _LoginFormState extends State<LoginForm> {
     String email = _emailCont.text.trim();
     String password = _passwordCont.text;
 
-    // Email format validation
     final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
     if (!emailRegex.hasMatch(email)) {
       ScaffoldMessenger.of(context)
@@ -47,7 +46,6 @@ class _LoginFormState extends State<LoginForm> {
     final dio = Dio();
 
     try {
-      // 1. First, attempt to log in
       final response = await dio.post(
         'https://library-manager-ashy.vercel.app/users/login',
         data: {'email': email, 'password': password},
@@ -60,19 +58,14 @@ class _LoginFormState extends State<LoginForm> {
           data['token'] is String) {
         await _secureStorage.write(key: 'token', value: data['token']);
 
-        //Navigator.pushReplacementNamed(context, '/library');
-        //showDebugPopup('Login Successful! ', data['token']);
-
         if (mounted) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => Library()), // Replace 'Library' with the exact class name inside your library.dart
+            MaterialPageRoute(builder: (context) => Library()),
           );
         }
       }
     } on DioException {
-      // 2. If login fails (e.g. 401 Invalid credentials / account doesn't exist)
-      // Prompt the user if they want to create an account instead
       widget.onLoginFailed(email, password);
     }
   }
@@ -86,48 +79,100 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 400,
-            child: TextField(
-              controller: _emailCont,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextField(
+          controller: _emailCont,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+          ),
+          decoration: InputDecoration(
+            labelText: 'Email',
+            labelStyle: GoogleFonts.plusJakartaSans(
+              color: Colors.black54,
+              fontSize: 14,
+            ),
+            prefixIcon: const Icon(
+              Icons.email_outlined,
+              color: Color(0xFF8F4670),
+            ),
+            filled: true,
+            fillColor: Colors.grey[50],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFF8F4670), width: 2),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          controller: _passwordCont,
+          obscureText: true,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+          ),
+          decoration: InputDecoration(
+            labelText: 'Password',
+            labelStyle: GoogleFonts.plusJakartaSans(
+              color: Colors.black54,
+              fontSize: 14,
+            ),
+            prefixIcon: const Icon(
+              Icons.lock_outline,
+              color: Color(0xFF8F4670),
+            ),
+            filled: true,
+            fillColor: Colors.grey[50],
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Color(0xFF8F4670), width: 2),
+            ),
+          ),
+        ),
+        const SizedBox(height: 24),
+        SizedBox(
+          height: 50,
+          child: FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFF8F4670),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 2,
+            ),
+            onPressed: handleSubmit,
+            child: Text(
+              "Login / Register",
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+                letterSpacing: 0.3,
               ),
             ),
           ),
-          const SizedBox(height: 15),
-          SizedBox(
-            width: 400,
-            child: TextField(
-              controller: _passwordCont,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          SizedBox(
-            width: 165,
-            child: FilledButton(
-              onPressed: handleSubmit,
-              child: const Text("Login"),
-            ),
-          ),
-
-          FilledButton(
-            onPressed: widget.changeToForgotPassword,
-            child: Text("Forgot Password?"),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
