@@ -29,6 +29,7 @@ class _LoginState extends State<Login> {
         onLoginFailed: (email, password) {
           _showRegisterPrompt(email, password);
         },
+        changeToForgotPassword: () => changeToForgotPassword(),
       );
     });
   }
@@ -79,7 +80,7 @@ class _LoginState extends State<Login> {
   void changeToForgotPassword() {
     setState(() {
       currentField = forgot_password_form.ForgotPasswordForm(
-        onResetRequested: handlePasswordReset,
+        onBackToLogin: _loadLoginForm,
       );
     });
   }
@@ -104,13 +105,7 @@ class _LoginState extends State<Login> {
               padding: EdgeInsets.symmetric(horizontal: 7),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  currentField,
-                  FilledButton(
-                    onPressed: changeToForgotPassword,
-                    child: Text("Forgot Password?"),
-                  ),
-                ],
+                children: [currentField],
               ),
             ),
           ],

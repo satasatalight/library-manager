@@ -8,7 +8,13 @@ class LoginForm extends StatefulWidget {
   final Function(String email, String password)
   onLoginFailed; // Triggers the register prompt in parent
 
-  const LoginForm({super.key, required this.onLoginFailed});
+  final Function() changeToForgotPassword;
+
+  const LoginForm({
+    super.key,
+    required this.onLoginFailed,
+    required this.changeToForgotPassword,
+  });
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -114,6 +120,11 @@ class _LoginFormState extends State<LoginForm> {
               onPressed: handleSubmit,
               child: const Text("Login"),
             ),
+          ),
+
+          FilledButton(
+            onPressed: widget.changeToForgotPassword,
+            child: Text("Forgot Password?"),
           ),
         ],
       ),
