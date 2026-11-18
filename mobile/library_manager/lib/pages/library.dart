@@ -518,7 +518,7 @@ class _LibraryState extends State<Library> {
               ),
               const SizedBox(height: 20),
 
-              // Dynamic Grid of Books
+              // Dynamic Grid of Books with Search Applied
               Expanded(
                 child: FutureBuilder<List<Book>>(
                   future: _booksFuture,
